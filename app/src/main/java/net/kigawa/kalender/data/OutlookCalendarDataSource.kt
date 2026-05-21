@@ -1,6 +1,5 @@
 package net.kigawa.kalender.data
 
-import android.graphics.Color
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import net.kigawa.kalender.model.CalendarEvent
@@ -11,17 +10,17 @@ import java.net.URL
 import java.net.URLEncoder
 import java.time.Instant
 import java.time.OffsetDateTime
-import java.time.format.DateTimeFormatter
 
 class OutlookCalendarDataSource(private val accessToken: String) : CalendarDataSource {
 
     private var cachedCalendars: List<UserCalendar>? = null
 
-    private fun get(url: String): JSONObject {
+    private fun get(url: String, extraHeaders: Map<String, String> = emptyMap()): JSONObject {
         val conn = URL(url).openConnection() as HttpURLConnection
         try {
             conn.setRequestProperty("Authorization", "Bearer $accessToken")
             conn.setRequestProperty("Accept", "application/json")
+            extraHeaders.forEach { (k, v) -> conn.setRequestProperty(k, v) }
             conn.connect()
             if (conn.responseCode !in 200..299) {
                 val error = conn.errorStream?.bufferedReader()?.readText()
@@ -44,7 +43,7 @@ class OutlookCalendarDataSource(private val accessToken: String) : CalendarDataS
                     id = item.getString("id").toLongId(),
                     name = item.optString("name", ""),
                     color = item.optString("color").toOutlookColor(),
-                    accountName = item.optJSONObject("owner")?.optString("address") ?: "Outlook",
+                    accountName = item.getString("id"),
                 )
             }
             cachedCalendars = result
@@ -61,25 +60,21 @@ class OutlookCalendarDataSource(private val accessToken: String) : CalendarDataS
     }
 
     private fun fetchCalendarEvents(calendar: UserCalendar, startMs: Long, endMs: Long): List<CalendarEvent> {
-        val calId = calendar.accountName // 本来は item.getString("id") を保持すべきだが、UserCalendar.accountName に入れていると仮定
-        // UserCalendar の id は Long なので、元の String ID をどこかに保持する必要がある。
-        // 現状の設計では accountName に元の ID を入れるか、hashCode を使う。
-        // GoogleDataSource では accountName に ID を入れている。
-        val originalId = calendar.accountName 
-
+        val calId = URLEncoder.encode(calendar.accountName, "UTF-8")
         val start = Instant.ofEpochMilli(startMs).toString()
         val end = Instant.ofEpochMilli(endMs).toString()
-        val url = "https://graph.microsoft.com/v1.0/me/calendars/$originalId/calendarView" +
+        val url = "https://graph.microsoft.com/v1.0/me/calendars/$calId/calendarView" +
                 "?startDateTime=$start&endDateTime=$end&\$select=id,subject,start,end,isAllDay,bodyPreview,location"
-        
+
         return try {
-            val items = get(url).optJSONArray("value") ?: return emptyList()
+            val items = get(url, mapOf("Prefer" to "outlook.timezone=\"UTC\""))
+                .optJSONArray("value") ?: return emptyList()
             (0 until items.length()).map { i ->
                 val item = items.getJSONObject(i)
                 val startObj = item.getJSONObject("start")
                 val endObj = item.getJSONObject("end")
                 val isAllDay = item.optBoolean("isAllDay", false)
-                
+
                 CalendarEvent(
                     id = item.getString("id").toLongId(),
                     calendarId = calendar.id,
@@ -88,7 +83,7 @@ class OutlookCalendarDataSource(private val accessToken: String) : CalendarDataS
                     endMs = OffsetDateTime.parse(endObj.getString("dateTime") + "Z").toInstant().toEpochMilli(),
                     allDay = isAllDay,
                     color = calendar.color,
-                    timeZone = startObj.optString("timeZone", "UTC"),
+                    timeZone = "UTC",
                     description = item.optString("bodyPreview", ""),
                     location = item.optJSONObject("location")?.optString("displayName", "") ?: "",
                 )
