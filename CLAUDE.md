@@ -59,6 +59,11 @@ All dependency versions are centralized in `gradle/libs.versions.toml`.
 
 Types: `feat` / `fix` / `refactor` / `test` / `chore` / `docs` / `style`
 
+### Issue 管理
+- issue に紐づく作業が完了したら、必ず該当 issue をクローズする
+- PR マージ時は `Closes #<issue番号>` をコミットメッセージまたは PR 本文に記載し、自動クローズを活用する
+- 作業途中で issue が不要になった場合も、理由をコメントしてからクローズする
+
 ### 変更前チェックリスト
 1. `./gradlew lint` — 警告ゼロを目標にする
 2. `./gradlew test` — ユニットテスト全通過
