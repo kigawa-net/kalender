@@ -1,5 +1,9 @@
 package net.kigawa.kalender.ui.screen
 
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideOutHorizontally
+import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectHorizontalDragGestures
 import androidx.compose.foundation.layout.Arrangement
@@ -13,6 +17,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
@@ -38,8 +43,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
-import androidx.compose.ui.layout.Layout
-import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -65,7 +68,7 @@ fun WeeklyCalendarScreen(
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
-    Column(modifier = modifier.fillMaxSize()) {
+    Column(modifier = modifier.fillMaxSize().statusBarsPadding()) {
         WeekNavigationHeader(
             weekStart = uiState.weekStart,
             onPrevious = viewModel::previousWeek,
@@ -73,22 +76,41 @@ fun WeeklyCalendarScreen(
             onToday = viewModel::goToToday,
         )
         HorizontalDivider()
-        WeekDayHeaders(
-            weekStart = uiState.weekStart,
-            onSwipeLeft = viewModel::nextWeek,
-            onSwipeRight = viewModel::previousWeek,
-        )
-        HorizontalDivider()
-        val allDayEvents = uiState.events.filter { it.allDay }
-        if (allDayEvents.isNotEmpty()) {
-            AllDayEventsRow(weekStart = uiState.weekStart, events = allDayEvents, onEventClick = onEventClick)
-            HorizontalDivider()
+
+        AnimatedContent(
+            targetState = uiState.weekStart,
+            modifier = Modifier.weight(1f).fillMaxWidth(),
+            transitionSpec = {
+                if (targetState > initialState) {
+                    slideInHorizontally { it } togetherWith slideOutHorizontally { -it }
+                } else {
+                    slideInHorizontally { -it } togetherWith slideOutHorizontally { it }
+                }
+            },
+            label = "week_slide",
+        ) { weekStart ->
+            Column(modifier = Modifier.fillMaxSize()) {
+                WeekDayHeaders(
+                    weekStart = weekStart,
+                    onSwipeLeft = viewModel::nextWeek,
+                    onSwipeRight = viewModel::previousWeek,
+                )
+                HorizontalDivider()
+                val allDayEvents = uiState.events.filter { it.allDay }
+                if (allDayEvents.isNotEmpty()) {
+                    AllDayEventsRow(weekStart = weekStart, events = allDayEvents, onEventClick = onEventClick)
+                    HorizontalDivider()
+                }
+                WeekTimeGrid(
+                    weekStart = weekStart,
+                    events = uiState.events.filter { !it.allDay },
+                    onEventClick = onEventClick,
+                    onSwipeLeft = viewModel::nextWeek,
+                    onSwipeRight = viewModel::previousWeek,
+                    modifier = Modifier.weight(1f),
+                )
+            }
         }
-        WeekTimeGrid(
-            uiState = uiState,
-            onEventClick = onEventClick,
-            modifier = Modifier.weight(1f),
-        )
     }
 }
 
@@ -221,23 +243,38 @@ private fun AllDayEventsRow(
 
 @Composable
 private fun WeekTimeGrid(
-    uiState: WeeklyCalendarUiState,
+    weekStart: LocalDate,
+    events: List<CalendarEvent>,
     onEventClick: (Long) -> Unit,
+    onSwipeLeft: () -> Unit,
+    onSwipeRight: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val scrollState = rememberScrollState()
-    val density = LocalDensity.current
     val today = LocalDate.now()
     val now = LocalTime.now()
+    var dragAccumulation by remember { mutableFloatStateOf(0f) }
 
     LaunchedEffect(Unit) {
-        val px = with(density) { (HourHeight * now.hour).toPx() }
-        scrollState.scrollTo(maxOf(0, px.toInt() - 300))
+        val scrollPx = (HourHeight.value * now.hour * 4 - 300).coerceAtLeast(0f).toInt()
+        scrollState.scrollTo(scrollPx)
     }
 
     Row(
         modifier = modifier
             .fillMaxSize()
+            .pointerInput(onSwipeLeft, onSwipeRight) {
+                detectHorizontalDragGestures(
+                    onDragStart = { dragAccumulation = 0f },
+                    onDragEnd = {
+                        if (dragAccumulation > 80f) onSwipeRight()
+                        else if (dragAccumulation < -80f) onSwipeLeft()
+                        dragAccumulation = 0f
+                    },
+                    onDragCancel = { dragAccumulation = 0f },
+                    onHorizontalDrag = { _, delta -> dragAccumulation += delta },
+                )
+            }
             .verticalScroll(scrollState),
     ) {
         Column(modifier = Modifier.width(TimeColumnWidth)) {
@@ -257,11 +294,10 @@ private fun WeekTimeGrid(
         }
 
         for (i in 0..6) {
-            val date = uiState.weekStart.plusDays(i.toLong())
+            val date = weekStart.plusDays(i.toLong())
             val isToday = date == today
-            val dayEvents = uiState.events.filter { event ->
-                !event.allDay &&
-                    Instant.ofEpochMilli(event.startMs).atZone(ZoneId.systemDefault()).toLocalDate() == date
+            val dayEvents = events.filter { event ->
+                Instant.ofEpochMilli(event.startMs).atZone(ZoneId.systemDefault()).toLocalDate() == date
             }
 
             Box(

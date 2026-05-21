@@ -24,7 +24,6 @@ import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteScaffo
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -119,7 +118,6 @@ fun KalenderApp() {
     } ?: AppDestinations.HOME
 
     NavigationSuiteScaffold(
-        modifier = Modifier.statusBarsPadding(),
         navigationSuiteItems = {
             AppDestinations.entries.forEach { dest ->
                 item(

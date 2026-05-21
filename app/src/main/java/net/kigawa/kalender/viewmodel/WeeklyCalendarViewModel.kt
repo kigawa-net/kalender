@@ -64,6 +64,7 @@ class WeeklyCalendarViewModel(application: Application) : AndroidViewModel(appli
         val repository = CalendarRepository(
             dataSources = dataSources,
             localSource = localSource,
+            cacheMetaDao = db.cacheMetaDao(),
             scope = viewModelScope,
         )
         repository.syncCalendars()
