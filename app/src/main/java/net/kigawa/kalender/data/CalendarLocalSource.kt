@@ -1,0 +1,37 @@
+package net.kigawa.kalender.data
+
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
+import net.kigawa.kalender.data.db.CalendarDao
+import net.kigawa.kalender.data.db.CalendarEntity
+import net.kigawa.kalender.data.db.EventDao
+import net.kigawa.kalender.data.db.EventEntity
+import net.kigawa.kalender.model.CalendarEvent
+import net.kigawa.kalender.model.UserCalendar
+
+class CalendarLocalSource(
+    private val calendarDao: CalendarDao,
+    private val eventDao: EventDao,
+) {
+    fun observeCalendars(): Flow<List<UserCalendar>> =
+        calendarDao.observeAll().map { list -> list.map { it.toModel() } }
+
+    fun observeEvents(startMs: Long, endMs: Long): Flow<List<CalendarEvent>> =
+        eventDao.observeByRange(startMs, endMs).map { list -> list.map { it.toModel() } }
+
+    fun observeEventById(id: Long): Flow<CalendarEvent?> =
+        eventDao.observeById(id).map { it?.toModel() }
+
+    suspend fun upsertCalendars(calendars: List<UserCalendar>) {
+        calendarDao.upsertAll(calendars.map { it.toEntity() })
+    }
+
+    suspend fun upsertEvents(events: List<CalendarEvent>, startMs: Long, endMs: Long) {
+        eventDao.replaceByRange(startMs, endMs, events.map { it.toEntity() })
+    }
+
+    private fun CalendarEntity.toModel() = UserCalendar(id, name, color, accountName)
+    private fun EventEntity.toModel() = CalendarEvent(id, calendarId, title, startMs, endMs, allDay, color, timeZone, description, location)
+    private fun UserCalendar.toEntity() = CalendarEntity(id, name, color, accountName)
+    private fun CalendarEvent.toEntity() = EventEntity(id, calendarId, title, startMs, endMs, allDay, color, timeZone, description, location)
+}
