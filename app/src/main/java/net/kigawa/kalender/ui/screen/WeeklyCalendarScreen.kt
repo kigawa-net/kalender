@@ -92,9 +92,10 @@ fun WeeklyCalendarScreen(
         HorizontalPager(
             state = pagerState,
             modifier = Modifier.weight(1f).fillMaxWidth(),
+            beyondViewportPageCount = 1,
         ) { page ->
             val weekStart = pageToWeek(page)
-            val events = if (weekStart == uiState.weekStart) uiState.events else emptyList()
+            val events = uiState.eventsByWeek[weekStart].orEmpty()
 
             Column(modifier = Modifier.fillMaxSize()) {
                 WeekDayHeaders(weekStart = weekStart)

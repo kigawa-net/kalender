@@ -29,6 +29,7 @@ import java.time.temporal.TemporalAdjusters
 data class WeeklyCalendarUiState(
     val weekStart: LocalDate = LocalDate.now().with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY)),
     val events: List<CalendarEvent> = emptyList(),
+    val eventsByWeek: Map<LocalDate, List<CalendarEvent>> = emptyMap(),
     val calendars: List<UserCalendar> = emptyList(),
     val isLoading: Boolean = false,
 )
@@ -69,16 +70,33 @@ class WeeklyCalendarViewModel(application: Application) : AndroidViewModel(appli
         )
         repository.syncCalendars()
         _weekStart.flatMapLatest { weekStart ->
-            val startMs = weekStart.atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli()
-            val endMs = weekStart.plusDays(7).atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli()
+            val previousWeekStart = weekStart.minusWeeks(1)
+            val nextWeekStart = weekStart.plusWeeks(1)
             combine(
-                repository.eventsForWeek(startMs, endMs),
+                repository.eventsForWeek(previousWeekStart.startMs(), previousWeekStart.endMs()),
+                repository.eventsForWeek(weekStart.startMs(), weekStart.endMs()),
+                repository.eventsForWeek(nextWeekStart.startMs(), nextWeekStart.endMs()),
                 repository.calendars,
-            ) { events, calendars ->
-                WeeklyCalendarUiState(weekStart, events, calendars)
+            ) { previousWeekEvents, currentWeekEvents, nextWeekEvents, calendars ->
+                WeeklyCalendarUiState(
+                    weekStart = weekStart,
+                    events = currentWeekEvents,
+                    eventsByWeek = mapOf(
+                        previousWeekStart to previousWeekEvents,
+                        weekStart to currentWeekEvents,
+                        nextWeekStart to nextWeekEvents,
+                    ),
+                    calendars = calendars,
+                )
             }
         }
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), WeeklyCalendarUiState())
 
     fun setWeek(week: LocalDate) = _weekStart.update { week }
+
+    private fun LocalDate.startMs(): Long =
+        atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli()
+
+    private fun LocalDate.endMs(): Long =
+        plusDays(7).atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli()
 }
