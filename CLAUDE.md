@@ -60,9 +60,24 @@ All dependency versions are centralized in `gradle/libs.versions.toml`.
 Types: `feat` / `fix` / `refactor` / `test` / `chore` / `docs` / `style`
 
 ### Issue 管理
-- issue に紐づく作業が完了したら、必ず該当 issue をクローズする
-- PR マージ時は `Closes #<issue番号>` をコミットメッセージまたは PR 本文に記載し、自動クローズを活用する
-- 作業途中で issue が不要になった場合も、理由をコメントしてからクローズする
+
+#### Issue 作成ルール
+- タイトルは「何をするか」を動詞から始める日本語で記述する（例: `カレンダー画面にスワイプ操作を追加する`）
+- ラベルは以下を使い分ける:
+  - `feat` — 新機能
+  - `fix` — バグ修正
+  - `chore` — ビルド・依存関係・設定
+  - `docs` — ドキュメント
+- 作業量が大きい場合はサブタスクを箇条書きで本文に記載する
+
+#### ブランチと Issue の紐づけ
+- ブランチ名に Issue 番号を含める: `feature/<番号>-<topic>`（例: `feature/11-issue-convention`）
+- これにより PR から Issue を追跡しやすくする
+
+#### 作業フロー
+1. 作業開始時に自分を assignee にセットする
+2. 作業完了後、PR マージ時に `Closes #<issue番号>` を PR 本文に記載して自動クローズする
+3. 作業途中で issue が不要になった場合も、理由をコメントしてからクローズする
 
 ### 変更前チェックリスト
 1. `./gradlew lint` — 警告ゼロを目標にする
