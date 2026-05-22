@@ -1,11 +1,6 @@
 package net.kigawa.kalender.ui.screen
 
-import androidx.compose.animation.AnimatedContent
-import androidx.compose.animation.slideInHorizontally
-import androidx.compose.animation.slideOutHorizontally
-import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.background
-import androidx.compose.foundation.gestures.detectHorizontalDragGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -19,6 +14,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -36,29 +33,31 @@ import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
+import kotlinx.coroutines.launch
 import net.kigawa.kalender.model.CalendarEvent
 import net.kigawa.kalender.ui.theme.KalenderTheme
-import net.kigawa.kalender.viewmodel.WeeklyCalendarUiState
 import net.kigawa.kalender.viewmodel.WeeklyCalendarViewModel
+import java.time.DayOfWeek
 import java.time.Instant
 import java.time.LocalDate
 import java.time.LocalTime
 import java.time.ZoneId
+import java.time.temporal.TemporalAdjusters
 
 private val HourHeight = 64.dp
 private val TimeColumnWidth = 48.dp
+private const val PAGER_TOTAL_PAGES = 20_000
+private const val PAGER_INITIAL_PAGE = PAGER_TOTAL_PAGES / 2
 
 @Composable
 fun WeeklyCalendarScreen(
@@ -67,46 +66,49 @@ fun WeeklyCalendarScreen(
     modifier: Modifier = Modifier,
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val coroutineScope = rememberCoroutineScope()
+
+    val baseWeek = remember {
+        LocalDate.now().with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY))
+    }
+
+    fun pageToWeek(page: Int): LocalDate = baseWeek.plusWeeks((page - PAGER_INITIAL_PAGE).toLong())
+
+    val pagerState = rememberPagerState(initialPage = PAGER_INITIAL_PAGE) { PAGER_TOTAL_PAGES }
+
+    LaunchedEffect(pagerState.settledPage) {
+        viewModel.setWeek(pageToWeek(pagerState.settledPage))
+    }
 
     Column(modifier = modifier.fillMaxSize().statusBarsPadding()) {
         WeekNavigationHeader(
-            weekStart = uiState.weekStart,
-            onPrevious = viewModel::previousWeek,
-            onNext = viewModel::nextWeek,
-            onToday = viewModel::goToToday,
+            weekStart = pageToWeek(pagerState.currentPage),
+            onPrevious = { coroutineScope.launch { pagerState.animateScrollToPage(pagerState.currentPage - 1) } },
+            onNext = { coroutineScope.launch { pagerState.animateScrollToPage(pagerState.currentPage + 1) } },
+            onToday = { coroutineScope.launch { pagerState.animateScrollToPage(PAGER_INITIAL_PAGE) } },
         )
         HorizontalDivider()
 
-        AnimatedContent(
-            targetState = uiState.weekStart,
+        HorizontalPager(
+            state = pagerState,
             modifier = Modifier.weight(1f).fillMaxWidth(),
-            transitionSpec = {
-                if (targetState > initialState) {
-                    slideInHorizontally { it } togetherWith slideOutHorizontally { -it }
-                } else {
-                    slideInHorizontally { -it } togetherWith slideOutHorizontally { it }
-                }
-            },
-            label = "week_slide",
-        ) { weekStart ->
+            beyondViewportPageCount = 1,
+        ) { page ->
+            val weekStart = pageToWeek(page)
+            val events = uiState.eventsByWeek[weekStart].orEmpty()
+
             Column(modifier = Modifier.fillMaxSize()) {
-                WeekDayHeaders(
-                    weekStart = weekStart,
-                    onSwipeLeft = viewModel::nextWeek,
-                    onSwipeRight = viewModel::previousWeek,
-                )
+                WeekDayHeaders(weekStart = weekStart)
                 HorizontalDivider()
-                val allDayEvents = uiState.events.filter { it.allDay }
+                val allDayEvents = events.filter { it.allDay }
                 if (allDayEvents.isNotEmpty()) {
                     AllDayEventsRow(weekStart = weekStart, events = allDayEvents, onEventClick = onEventClick)
                     HorizontalDivider()
                 }
                 WeekTimeGrid(
                     weekStart = weekStart,
-                    events = uiState.events.filter { !it.allDay },
+                    events = events.filter { !it.allDay },
                     onEventClick = onEventClick,
-                    onSwipeLeft = viewModel::nextWeek,
-                    onSwipeRight = viewModel::previousWeek,
                     modifier = Modifier.weight(1f),
                 )
             }
@@ -144,29 +146,14 @@ private fun WeekNavigationHeader(
 @Composable
 private fun WeekDayHeaders(
     weekStart: LocalDate,
-    onSwipeLeft: () -> Unit,
-    onSwipeRight: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val today = LocalDate.now()
     val dayNames = listOf("月", "火", "水", "木", "金", "土", "日")
-    var dragAccumulation by remember { mutableFloatStateOf(0f) }
 
     Row(
         modifier = modifier
             .fillMaxWidth()
-            .pointerInput(onSwipeLeft, onSwipeRight) {
-                detectHorizontalDragGestures(
-                    onDragStart = { dragAccumulation = 0f },
-                    onDragEnd = {
-                        if (dragAccumulation > 80f) onSwipeRight()
-                        else if (dragAccumulation < -80f) onSwipeLeft()
-                        dragAccumulation = 0f
-                    },
-                    onDragCancel = { dragAccumulation = 0f },
-                    onHorizontalDrag = { _, delta -> dragAccumulation += delta },
-                )
-            }
             .padding(vertical = 4.dp),
     ) {
         Spacer(modifier = Modifier.width(TimeColumnWidth))
@@ -246,14 +233,11 @@ private fun WeekTimeGrid(
     weekStart: LocalDate,
     events: List<CalendarEvent>,
     onEventClick: (Long) -> Unit,
-    onSwipeLeft: () -> Unit,
-    onSwipeRight: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val scrollState = rememberScrollState()
     val today = LocalDate.now()
     val now = LocalTime.now()
-    var dragAccumulation by remember { mutableFloatStateOf(0f) }
 
     LaunchedEffect(Unit) {
         val scrollPx = (HourHeight.value * now.hour * 4 - 300).coerceAtLeast(0f).toInt()
@@ -263,18 +247,6 @@ private fun WeekTimeGrid(
     Row(
         modifier = modifier
             .fillMaxSize()
-            .pointerInput(onSwipeLeft, onSwipeRight) {
-                detectHorizontalDragGestures(
-                    onDragStart = { dragAccumulation = 0f },
-                    onDragEnd = {
-                        if (dragAccumulation > 80f) onSwipeRight()
-                        else if (dragAccumulation < -80f) onSwipeLeft()
-                        dragAccumulation = 0f
-                    },
-                    onDragCancel = { dragAccumulation = 0f },
-                    onHorizontalDrag = { _, delta -> dragAccumulation += delta },
-                )
-            }
             .verticalScroll(scrollState),
     ) {
         Column(modifier = Modifier.width(TimeColumnWidth)) {
@@ -358,12 +330,8 @@ private fun WeekTimeGrid(
 
 @Preview(showBackground = true)
 @Composable
-private fun WeeklyCalendarScreenPreview() {
+private fun WeekDayHeadersPreview() {
     KalenderTheme {
-        WeekDayHeaders(
-            weekStart = LocalDate.now(),
-            onSwipeLeft = {},
-            onSwipeRight = {},
-        )
+        WeekDayHeaders(weekStart = LocalDate.now())
     }
 }
