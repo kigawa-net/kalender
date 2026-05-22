@@ -90,7 +90,7 @@ class WeeklyCalendarViewModel(application: Application) : AndroidViewModel(appli
                 )
             }
         }
-    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), WeeklyCalendarUiState())
+    }.stateIn(viewModelScope, SharingStarted.Eagerly, WeeklyCalendarUiState())
 
     fun setWeek(week: LocalDate) = _weekStart.update { week }
 

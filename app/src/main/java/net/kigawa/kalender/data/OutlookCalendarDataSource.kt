@@ -23,10 +23,10 @@ class OutlookCalendarDataSource(private val accessToken: String) : CalendarDataS
             extraHeaders.forEach { (k, v) -> conn.setRequestProperty(k, v) }
             conn.connect()
             if (conn.responseCode !in 200..299) {
-                val error = conn.errorStream?.bufferedReader()?.readText()
+                val error = conn.errorStream?.bufferedReader()?.use { it.readText() }
                 throw Exception("Graph API Error ${conn.responseCode}: $error")
             }
-            return JSONObject(conn.inputStream.bufferedReader().readText())
+            return JSONObject(conn.inputStream.bufferedReader().use { it.readText() })
         } finally {
             conn.disconnect()
         }
@@ -34,23 +34,19 @@ class OutlookCalendarDataSource(private val accessToken: String) : CalendarDataS
 
     override suspend fun fetchCalendars(): List<UserCalendar> = withContext(Dispatchers.IO) {
         cachedCalendars?.let { return@withContext it }
-        try {
-            val items = get("https://graph.microsoft.com/v1.0/me/calendars")
-                .optJSONArray("value") ?: return@withContext emptyList()
-            val result = (0 until items.length()).map { i ->
-                val item = items.getJSONObject(i)
-                UserCalendar(
-                    id = item.getString("id").toLongId(),
-                    name = item.optString("name", ""),
-                    color = item.optString("color").toOutlookColor(),
-                    accountName = item.getString("id"),
-                )
-            }
-            cachedCalendars = result
-            result
-        } catch (e: Exception) {
-            emptyList()
+        val items = get("https://graph.microsoft.com/v1.0/me/calendars")
+            .optJSONArray("value") ?: return@withContext emptyList()
+        val result = (0 until items.length()).map { i ->
+            val item = items.getJSONObject(i)
+            UserCalendar(
+                id = item.getString("id").toLongId(),
+                name = item.optString("name", ""),
+                color = item.optString("color").toOutlookColor(),
+                accountName = item.getString("id"),
+            )
         }
+        cachedCalendars = result
+        result
     }
 
     override suspend fun fetchEvents(startMs: Long, endMs: Long): List<CalendarEvent> = withContext(Dispatchers.IO) {
@@ -66,30 +62,26 @@ class OutlookCalendarDataSource(private val accessToken: String) : CalendarDataS
         val url = "https://graph.microsoft.com/v1.0/me/calendars/$calId/calendarView" +
                 "?startDateTime=$start&endDateTime=$end&\$select=id,subject,start,end,isAllDay,bodyPreview,location"
 
-        return try {
-            val items = get(url, mapOf("Prefer" to "outlook.timezone=\"UTC\""))
-                .optJSONArray("value") ?: return emptyList()
-            (0 until items.length()).map { i ->
-                val item = items.getJSONObject(i)
-                val startObj = item.getJSONObject("start")
-                val endObj = item.getJSONObject("end")
-                val isAllDay = item.optBoolean("isAllDay", false)
+        val items = get(url, mapOf("Prefer" to "outlook.timezone=\"UTC\""))
+            .optJSONArray("value") ?: return emptyList()
+        return (0 until items.length()).map { i ->
+            val item = items.getJSONObject(i)
+            val startObj = item.getJSONObject("start")
+            val endObj = item.getJSONObject("end")
+            val isAllDay = item.optBoolean("isAllDay", false)
 
-                CalendarEvent(
-                    id = item.getString("id").toLongId(),
-                    calendarId = calendar.id,
-                    title = item.optString("subject", "(タイトルなし)"),
-                    startMs = OffsetDateTime.parse(startObj.getString("dateTime") + "Z").toInstant().toEpochMilli(),
-                    endMs = OffsetDateTime.parse(endObj.getString("dateTime") + "Z").toInstant().toEpochMilli(),
-                    allDay = isAllDay,
-                    color = calendar.color,
-                    timeZone = "UTC",
-                    description = item.optString("bodyPreview", ""),
-                    location = item.optJSONObject("location")?.optString("displayName", "") ?: "",
-                )
-            }
-        } catch (e: Exception) {
-            emptyList()
+            CalendarEvent(
+                id = item.getString("id").toLongId(),
+                calendarId = calendar.id,
+                title = item.optString("subject", "(タイトルなし)"),
+                startMs = OffsetDateTime.parse(startObj.getString("dateTime") + "Z").toInstant().toEpochMilli(),
+                endMs = OffsetDateTime.parse(endObj.getString("dateTime") + "Z").toInstant().toEpochMilli(),
+                allDay = isAllDay,
+                color = calendar.color,
+                timeZone = "UTC",
+                description = item.optString("bodyPreview", ""),
+                location = item.optJSONObject("location")?.optString("displayName", "") ?: "",
+            )
         }
     }
 
