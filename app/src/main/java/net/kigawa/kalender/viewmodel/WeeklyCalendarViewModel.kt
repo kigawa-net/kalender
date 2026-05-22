@@ -80,9 +80,5 @@ class WeeklyCalendarViewModel(application: Application) : AndroidViewModel(appli
         }
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), WeeklyCalendarUiState())
 
-    fun previousWeek() = _weekStart.update { it.minusWeeks(1) }
-    fun nextWeek() = _weekStart.update { it.plusWeeks(1) }
-    fun goToToday() {
-        _weekStart.value = LocalDate.now().with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY))
-    }
+    fun setWeek(week: LocalDate) = _weekStart.update { week }
 }
