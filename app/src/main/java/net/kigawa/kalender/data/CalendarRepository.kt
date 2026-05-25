@@ -23,13 +23,13 @@ class CalendarRepository(
             val meta = cacheMetaDao.getByWeekStart(startMs)
             val cacheAge = System.currentTimeMillis() - (meta?.lastFetchedMs ?: 0L)
             if (cacheAge >= CACHE_TTL_MS) {
-                dataSources.forEach { dataSource ->
-                    runCatching {
-                        val events = dataSource.fetchEvents(startMs, endMs)
-                        localSource.upsertEvents(events, startMs, endMs)
-                    }.onSuccess {
-                        cacheMetaDao.upsert(CacheMetaEntity(startMs, System.currentTimeMillis()))
-                    }
+                val fetchResults = dataSources.map { dataSource ->
+                    runCatching { dataSource.fetchEvents(startMs, endMs) }
+                }
+                if (fetchResults.all { it.isSuccess }) {
+                    val events = fetchResults.flatMap { it.getOrThrow() }
+                    localSource.upsertEvents(events, startMs, endMs)
+                    cacheMetaDao.upsert(CacheMetaEntity(startMs, System.currentTimeMillis()))
                 }
             }
         }

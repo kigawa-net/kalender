@@ -32,7 +32,11 @@ class GoogleCalendarDataSource(private val accessToken: String) : CalendarDataSo
         try {
             conn.setRequestProperty("Authorization", "Bearer $accessToken")
             conn.connect()
-            return JSONObject(conn.inputStream.bufferedReader().readText())
+            if (conn.responseCode !in 200..299) {
+                val error = conn.errorStream?.bufferedReader()?.use { it.readText() }
+                throw Exception("Google Calendar API Error ${conn.responseCode}: $error")
+            }
+            return JSONObject(conn.inputStream.bufferedReader().use { it.readText() })
         } finally {
             conn.disconnect()
         }
@@ -68,30 +72,26 @@ class GoogleCalendarDataSource(private val accessToken: String) : CalendarDataSo
         val timeMax = URLEncoder.encode(Instant.ofEpochMilli(endMs).toString(), "UTF-8")
         val url = "https://www.googleapis.com/calendar/v3/calendars/$calId/events" +
             "?timeMin=$timeMin&timeMax=$timeMax&singleEvents=true&orderBy=startTime&maxResults=250"
-        return try {
-            val items = get(url).optJSONArray("items") ?: return emptyList()
-            (0 until items.length()).map { i ->
-                val item = items.getJSONObject(i)
-                val startObj = item.optJSONObject("start")
-                val endObj = item.optJSONObject("end")
-                val (startEpoch, allDay) = parseDateTime(startObj)
-                val (endEpoch, _) = parseDateTime(endObj)
-                val colorId = item.optString("colorId")
-                CalendarEvent(
-                    id = item.getString("id").toLongId(),
-                    calendarId = calendar.id,
-                    title = item.optString("summary", ""),
-                    startMs = startEpoch,
-                    endMs = endEpoch,
-                    allDay = allDay,
-                    color = eventColors[colorId] ?: calendar.color,
-                    timeZone = startObj?.optString("timeZone") ?: "",
-                    description = item.optString("description", ""),
-                    location = item.optString("location", ""),
-                )
-            }
-        } catch (e: Exception) {
-            emptyList()
+        val items = get(url).optJSONArray("items") ?: return emptyList()
+        return (0 until items.length()).map { i ->
+            val item = items.getJSONObject(i)
+            val startObj = item.optJSONObject("start")
+            val endObj = item.optJSONObject("end")
+            val (startEpoch, allDay) = parseDateTime(startObj)
+            val (endEpoch, _) = parseDateTime(endObj)
+            val colorId = item.optString("colorId")
+            CalendarEvent(
+                id = item.getString("id").toLongId(),
+                calendarId = calendar.id,
+                title = item.optString("summary", ""),
+                startMs = startEpoch,
+                endMs = endEpoch,
+                allDay = allDay,
+                color = eventColors[colorId] ?: calendar.color,
+                timeZone = startObj?.optString("timeZone") ?: "",
+                description = item.optString("description", ""),
+                location = item.optString("location", ""),
+            )
         }
     }
 
