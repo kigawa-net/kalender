@@ -47,7 +47,7 @@ class AuthViewModel(application: Application) : AndroidViewModel(application) {
     ) { google, ms ->
         when {
             google is GoogleAuthManager.AuthState.SignedIn || ms is MsAuthState.SignedIn -> true
-            ms is MsAuthState.Initializing -> null
+            ms is MsAuthState.Initializing || google is GoogleAuthManager.AuthState.Loading -> null
             else -> false
         }
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), null)
@@ -71,6 +71,12 @@ class AuthViewModel(application: Application) : AndroidViewModel(application) {
                     }
                 }
                 .onFailure { _msAuthState.value = MsAuthState.SignedOut }
+        }
+
+        viewModelScope.launch {
+            val context = getApplication<Application>()
+            val webClientId = context.getString(R.string.google_web_client_id)
+            googleAuthManager.trySignInSilently(context, webClientId)
         }
     }
 

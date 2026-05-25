@@ -156,6 +156,52 @@ class GoogleAuthManager {
         }
     }
 
+    suspend fun trySignInSilently(context: Context, webClientId: String) {
+        _authState.value = AuthState.Loading
+        try {
+            val manager = CredentialManager.create(context)
+            val credential = tryGetCredential(manager, context, webClientId, authorized = true)
+            if (credential == null ||
+                credential !is CustomCredential ||
+                credential.type != GoogleIdTokenCredential.TYPE_GOOGLE_ID_TOKEN_CREDENTIAL
+            ) {
+                _authState.value = AuthState.SignedOut
+                return
+            }
+            val googleCred = GoogleIdTokenCredential.createFrom(credential.data)
+            val email = googleCred.id
+            val displayName = googleCred.displayName
+            val authRequest = AuthorizationRequest.builder()
+                .setRequestedScopes(listOf(Scope(CALENDAR_SCOPE), Scope(CALENDAR_EVENTS_SCOPE)))
+                .setAccount(Account(email, "com.google"))
+                .build()
+            val result = try {
+                suspendCancellableCoroutine<AuthorizationResult> { cont ->
+                    Identity.getAuthorizationClient(context)
+                        .authorize(authRequest)
+                        .addOnSuccessListener { cont.resume(it) }
+                        .addOnFailureListener { cont.resumeWithException(it) }
+                }
+            } catch (e: Exception) {
+                Log.e("GoogleAuthManager", "Silent authorization failed", e)
+                _authState.value = AuthState.SignedOut
+                return
+            }
+            if (!result.hasResolution() && result.accessToken != null) {
+                _authState.value = AuthState.SignedIn(
+                    email = email,
+                    displayName = displayName,
+                    accessToken = result.accessToken!!,
+                )
+            } else {
+                _authState.value = AuthState.SignedOut
+            }
+        } catch (e: Exception) {
+            Log.e("GoogleAuthManager", "Silent sign-in failed", e)
+            _authState.value = AuthState.SignedOut
+        }
+    }
+
     fun signOut() {
         pendingEmail = null
         pendingDisplayName = null
