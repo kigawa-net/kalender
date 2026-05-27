@@ -70,22 +70,23 @@ class WeeklyCalendarViewModel(application: Application) : AndroidViewModel(appli
         )
         repository.syncCalendars()
         _weekStart.flatMapLatest { weekStart ->
-            val previousWeekStart = weekStart.minusWeeks(1)
-            val nextWeekStart = weekStart.plusWeeks(1)
+            // ±2週分を取得: HorizontalPager の beyondViewportPageCount=1 により
+            // スワイプ中に現在週±2週目まで描画されるため
+            val weeks = (-2..2).map { weekStart.plusWeeks(it.toLong()) }
             combine(
-                repository.eventsForWeek(previousWeekStart.startMs(), previousWeekStart.endMs()),
-                repository.eventsForWeek(weekStart.startMs(), weekStart.endMs()),
-                repository.eventsForWeek(nextWeekStart.startMs(), nextWeekStart.endMs()),
+                combine(
+                    repository.eventsForWeek(weeks[0].startMs(), weeks[0].endMs()),
+                    repository.eventsForWeek(weeks[1].startMs(), weeks[1].endMs()),
+                    repository.eventsForWeek(weeks[2].startMs(), weeks[2].endMs()),
+                    repository.eventsForWeek(weeks[3].startMs(), weeks[3].endMs()),
+                    repository.eventsForWeek(weeks[4].startMs(), weeks[4].endMs()),
+                ) { w0, w1, w2, w3, w4 -> listOf(w0, w1, w2, w3, w4) },
                 repository.calendars,
-            ) { previousWeekEvents, currentWeekEvents, nextWeekEvents, calendars ->
+            ) { weekEvents, calendars ->
                 WeeklyCalendarUiState(
                     weekStart = weekStart,
-                    events = currentWeekEvents,
-                    eventsByWeek = mapOf(
-                        previousWeekStart to previousWeekEvents,
-                        weekStart to currentWeekEvents,
-                        nextWeekStart to nextWeekEvents,
-                    ),
+                    events = weekEvents[2],
+                    eventsByWeek = weeks.zip(weekEvents).toMap(),
                     calendars = calendars,
                 )
             }
