@@ -7,7 +7,7 @@ import androidx.room.RoomDatabase
 import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
 
-@Database(entities = [CalendarEntity::class, EventEntity::class, CacheMetaEntity::class], version = 2)
+@Database(entities = [CalendarEntity::class, EventEntity::class, CacheMetaEntity::class], version = 3)
 abstract class KalenderDatabase : RoomDatabase() {
     abstract fun calendarDao(): CalendarDao
     abstract fun eventDao(): EventDao
@@ -26,13 +26,19 @@ abstract class KalenderDatabase : RoomDatabase() {
             }
         }
 
+        private val MIGRATION_2_3 = object : Migration(2, 3) {
+            override fun migrate(db: SupportSQLiteDatabase) {
+                db.execSQL("ALTER TABLE events ADD COLUMN remoteId TEXT NOT NULL DEFAULT ''")
+            }
+        }
+
         fun getInstance(context: Context): KalenderDatabase =
             instance ?: synchronized(this) {
                 instance ?: Room.databaseBuilder(
                     context.applicationContext,
                     KalenderDatabase::class.java,
                     "kalender.db",
-                ).addMigrations(MIGRATION_1_2).build().also { instance = it }
+                ).addMigrations(MIGRATION_1_2, MIGRATION_2_3).build().also { instance = it }
             }
     }
 }

@@ -30,8 +30,16 @@ class CalendarLocalSource(
         eventDao.replaceByRange(startMs, endMs, events.map { it.toEntity() })
     }
 
+    suspend fun upsertEvent(event: CalendarEvent) {
+        eventDao.upsertOne(event.toEntity())
+    }
+
+    suspend fun deleteEventById(id: Long) {
+        eventDao.deleteById(id)
+    }
+
     private fun CalendarEntity.toModel() = UserCalendar(id, name, color, accountName)
-    private fun EventEntity.toModel() = CalendarEvent(id, calendarId, title, startMs, endMs, allDay, color, timeZone, description, location)
+    private fun EventEntity.toModel() = CalendarEvent(id, calendarId, title, startMs, endMs, allDay, color, timeZone, description, location, remoteId)
     private fun UserCalendar.toEntity() = CalendarEntity(id, name, color, accountName)
-    private fun CalendarEvent.toEntity() = EventEntity(id, calendarId, title, startMs, endMs, allDay, color, timeZone, description, location)
+    private fun CalendarEvent.toEntity() = EventEntity(id, calendarId, title, startMs, endMs, allDay, color, timeZone, description, location, remoteId)
 }

@@ -163,7 +163,7 @@ class GoogleAuthManager {
     }
 
     companion object {
-        const val CALENDAR_SCOPE = "https://www.googleapis.com/auth/calendar.readonly"
-        const val CALENDAR_EVENTS_SCOPE = "https://www.googleapis.com/auth/calendar.events.readonly"
+        const val CALENDAR_SCOPE = "https://www.googleapis.com/auth/calendar"
+        const val CALENDAR_EVENTS_SCOPE = "https://www.googleapis.com/auth/calendar.events"
     }
 }

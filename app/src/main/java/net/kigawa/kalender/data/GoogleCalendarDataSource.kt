@@ -13,6 +13,7 @@ import java.time.Instant
 import java.time.LocalDate
 import java.time.OffsetDateTime
 import java.time.ZoneId
+import java.time.format.DateTimeFormatter
 
 class GoogleCalendarDataSource(private val accessToken: String) : CalendarDataSource {
 
@@ -42,6 +43,57 @@ class GoogleCalendarDataSource(private val accessToken: String) : CalendarDataSo
         }
     }
 
+    private fun post(url: String, body: JSONObject): JSONObject {
+        val conn = URL(url).openConnection() as HttpURLConnection
+        try {
+            conn.requestMethod = "POST"
+            conn.doOutput = true
+            conn.setRequestProperty("Authorization", "Bearer $accessToken")
+            conn.setRequestProperty("Content-Type", "application/json")
+            conn.outputStream.use { it.write(body.toString().toByteArray()) }
+            if (conn.responseCode !in 200..299) {
+                val error = conn.errorStream?.bufferedReader()?.use { it.readText() }
+                throw Exception("Google Calendar API Error ${conn.responseCode}: $error")
+            }
+            return JSONObject(conn.inputStream.bufferedReader().use { it.readText() })
+        } finally {
+            conn.disconnect()
+        }
+    }
+
+    private fun put(url: String, body: JSONObject): JSONObject {
+        val conn = URL(url).openConnection() as HttpURLConnection
+        try {
+            conn.requestMethod = "PUT"
+            conn.doOutput = true
+            conn.setRequestProperty("Authorization", "Bearer $accessToken")
+            conn.setRequestProperty("Content-Type", "application/json")
+            conn.outputStream.use { it.write(body.toString().toByteArray()) }
+            if (conn.responseCode !in 200..299) {
+                val error = conn.errorStream?.bufferedReader()?.use { it.readText() }
+                throw Exception("Google Calendar API Error ${conn.responseCode}: $error")
+            }
+            return JSONObject(conn.inputStream.bufferedReader().use { it.readText() })
+        } finally {
+            conn.disconnect()
+        }
+    }
+
+    private fun httpDelete(url: String) {
+        val conn = URL(url).openConnection() as HttpURLConnection
+        try {
+            conn.requestMethod = "DELETE"
+            conn.setRequestProperty("Authorization", "Bearer $accessToken")
+            conn.connect()
+            if (conn.responseCode !in 200..299 && conn.responseCode != 204) {
+                val error = conn.errorStream?.bufferedReader()?.use { it.readText() }
+                throw Exception("Google Calendar API Error ${conn.responseCode}: $error")
+            }
+        } finally {
+            conn.disconnect()
+        }
+    }
+
     override suspend fun fetchCalendars(): List<UserCalendar> = withContext(Dispatchers.IO) {
         cachedCalendars?.let { return@withContext it }
         val items = get("https://www.googleapis.com/calendar/v3/users/me/calendarList")
@@ -66,6 +118,62 @@ class GoogleCalendarDataSource(private val accessToken: String) : CalendarDataSo
         }
     }
 
+    suspend fun createEvent(calendarAccountName: String, event: CalendarEvent): CalendarEvent = withContext(Dispatchers.IO) {
+        val calId = URLEncoder.encode(calendarAccountName, "UTF-8")
+        val url = "https://www.googleapis.com/calendar/v3/calendars/$calId/events"
+        val response = post(url, buildEventJson(event))
+        val remoteId = response.getString("id")
+        val calendarId = cachedCalendars?.find { it.accountName == calendarAccountName }?.id ?: event.calendarId
+        event.copy(id = remoteId.toLongId(), remoteId = remoteId, calendarId = calendarId)
+    }
+
+    suspend fun updateEvent(calendarAccountName: String, event: CalendarEvent): CalendarEvent = withContext(Dispatchers.IO) {
+        require(event.remoteId.isNotEmpty()) { "remoteId が空です" }
+        val calId = URLEncoder.encode(calendarAccountName, "UTF-8")
+        val eventId = URLEncoder.encode(event.remoteId, "UTF-8")
+        val url = "https://www.googleapis.com/calendar/v3/calendars/$calId/events/$eventId"
+        put(url, buildEventJson(event))
+        event
+    }
+
+    suspend fun deleteEvent(calendarAccountName: String, remoteId: String) = withContext(Dispatchers.IO) {
+        require(remoteId.isNotEmpty()) { "remoteId が空です" }
+        val calId = URLEncoder.encode(calendarAccountName, "UTF-8")
+        val eventId = URLEncoder.encode(remoteId, "UTF-8")
+        val url = "https://www.googleapis.com/calendar/v3/calendars/$calId/events/$eventId"
+        httpDelete(url)
+    }
+
+    private fun buildEventJson(event: CalendarEvent): JSONObject {
+        val tz = event.timeZone.ifEmpty { ZoneId.systemDefault().id }
+        return JSONObject().apply {
+            put("summary", event.title)
+            if (event.description.isNotEmpty()) put("description", event.description)
+            if (event.location.isNotEmpty()) put("location", event.location)
+            if (event.allDay) {
+                put("start", JSONObject().put("date", formatDate(event.startMs)))
+                put("end", JSONObject().put("date", formatDate(event.endMs)))
+            } else {
+                put("start", JSONObject().apply {
+                    put("dateTime", formatDateTime(event.startMs, tz))
+                    put("timeZone", tz)
+                })
+                put("end", JSONObject().apply {
+                    put("dateTime", formatDateTime(event.endMs, tz))
+                    put("timeZone", tz)
+                })
+            }
+        }
+    }
+
+    private fun formatDateTime(ms: Long, timeZone: String): String {
+        val zone = runCatching { ZoneId.of(timeZone) }.getOrDefault(ZoneId.systemDefault())
+        return Instant.ofEpochMilli(ms).atZone(zone).format(DateTimeFormatter.ISO_OFFSET_DATE_TIME)
+    }
+
+    private fun formatDate(ms: Long): String =
+        Instant.ofEpochMilli(ms).atZone(ZoneId.systemDefault()).toLocalDate().toString()
+
     private fun fetchCalendarEvents(calendar: UserCalendar, startMs: Long, endMs: Long): List<CalendarEvent> {
         val calId = URLEncoder.encode(calendar.accountName, "UTF-8")
         val timeMin = URLEncoder.encode(Instant.ofEpochMilli(startMs).toString(), "UTF-8")
@@ -80,8 +188,9 @@ class GoogleCalendarDataSource(private val accessToken: String) : CalendarDataSo
             val (startEpoch, allDay) = parseDateTime(startObj)
             val (endEpoch, _) = parseDateTime(endObj)
             val colorId = item.optString("colorId")
+            val remoteId = item.getString("id")
             CalendarEvent(
-                id = item.getString("id").toLongId(),
+                id = remoteId.toLongId(),
                 calendarId = calendar.id,
                 title = item.optString("summary", ""),
                 startMs = startEpoch,
@@ -91,6 +200,7 @@ class GoogleCalendarDataSource(private val accessToken: String) : CalendarDataSo
                 timeZone = startObj?.optString("timeZone") ?: "",
                 description = item.optString("description", ""),
                 location = item.optString("location", ""),
+                remoteId = remoteId,
             )
         }
     }

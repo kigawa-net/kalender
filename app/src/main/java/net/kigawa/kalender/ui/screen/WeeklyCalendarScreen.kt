@@ -23,6 +23,8 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowLeft
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -35,6 +37,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -62,6 +65,7 @@ private const val PAGER_INITIAL_PAGE = PAGER_TOTAL_PAGES / 2
 @Composable
 fun WeeklyCalendarScreen(
     onEventClick: (Long) -> Unit,
+    onNewEvent: () -> Unit,
     viewModel: WeeklyCalendarViewModel = viewModel(),
     modifier: Modifier = Modifier,
 ) {
@@ -80,7 +84,8 @@ fun WeeklyCalendarScreen(
         viewModel.setWeek(pageToWeek(pagerState.settledPage))
     }
 
-    Column(modifier = modifier.fillMaxSize().statusBarsPadding()) {
+    Box(modifier = modifier.fillMaxSize()) {
+        Column(modifier = Modifier.fillMaxSize().statusBarsPadding()) {
         WeekNavigationHeader(
             weekStart = pageToWeek(pagerState.currentPage),
             onPrevious = { coroutineScope.launch { pagerState.animateScrollToPage(pagerState.currentPage - 1) } },
@@ -112,6 +117,16 @@ fun WeeklyCalendarScreen(
                     modifier = Modifier.weight(1f),
                 )
             }
+        }
+        }
+        FloatingActionButton(
+            onClick = onNewEvent,
+            modifier = Modifier
+                .align(Alignment.BottomEnd)
+                .padding(16.dp)
+                .navigationBarsPadding(),
+        ) {
+            Icon(Icons.Default.Add, contentDescription = "新しい予定")
         }
     }
 }

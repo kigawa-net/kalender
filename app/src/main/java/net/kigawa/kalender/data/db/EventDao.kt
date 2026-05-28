@@ -18,8 +18,14 @@ interface EventDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun upsertAll(events: List<EventEntity>)
 
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun upsertOne(event: EventEntity)
+
     @Query("DELETE FROM events WHERE startMs < :endMs AND endMs > :startMs")
     suspend fun deleteByRange(startMs: Long, endMs: Long)
+
+    @Query("DELETE FROM events WHERE id = :id")
+    suspend fun deleteById(id: Long)
 
     @Transaction
     suspend fun replaceByRange(startMs: Long, endMs: Long, events: List<EventEntity>) {
