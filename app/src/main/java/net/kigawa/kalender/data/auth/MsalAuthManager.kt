@@ -20,7 +20,7 @@ import kotlin.coroutines.resumeWithException
 
 class SignInCancelledException : Exception("サインインがキャンセルされました")
 
-class MsalAuthManager private constructor(
+class MsalAuthManager internal constructor(
     private val app: IMultipleAccountPublicClientApplication,
 ) {
     companion object {
