@@ -20,7 +20,7 @@ import kotlin.coroutines.resumeWithException
 
 class SignInCancelledException : Exception("サインインがキャンセルされました")
 
-class MsalAuthManager private constructor(
+class MsalAuthManager internal constructor(
     private val app: IMultipleAccountPublicClientApplication,
 ) {
     companion object {
@@ -70,7 +70,7 @@ class MsalAuthManager private constructor(
         suspendCancellableCoroutine { cont ->
             val params = AcquireTokenSilentParameters.Builder()
                 .forAccount(account)
-                .fromAuthority(app.configuration.defaultAuthority.authorityURL.toString())
+                .fromAuthority(account.authority)
                 .withScopes(listOf("Calendars.Read"))
                 .withCallback(object : SilentAuthenticationCallback {
                     override fun onSuccess(result: IAuthenticationResult) {
