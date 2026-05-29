@@ -23,6 +23,7 @@ import net.kigawa.kalender.model.CalendarEvent
 import net.kigawa.kalender.model.UserCalendar
 import java.time.Instant
 import java.time.ZoneId
+import java.time.ZoneOffset
 
 data class EventEditUiState(
     val isNew: Boolean = true,
@@ -103,8 +104,10 @@ class EventEditViewModel(
             val startDate = Instant.ofEpochMilli(state.startMs).atZone(ZoneId.systemDefault()).toLocalDate()
             val endDate = Instant.ofEpochMilli(state.endMs).atZone(ZoneId.systemDefault()).toLocalDate()
             val startMs = startDate.atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli()
-            val endMs = endDate.atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli()
-            _uiState.update { it.copy(allDay = true, startMs = startMs, endMs = if (endMs <= startMs) startMs else endMs) }
+            // Google Calendar の end.date は exclusive なので、同日の場合は翌日を設定する
+            val exclusiveEndDate = if (!endDate.isAfter(startDate)) startDate.plusDays(1) else endDate
+            val endMs = exclusiveEndDate.atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli()
+            _uiState.update { it.copy(allDay = true, startMs = startMs, endMs = endMs) }
         } else {
             val startDate = Instant.ofEpochMilli(state.startMs).atZone(ZoneId.systemDefault()).toLocalDate()
             val startMs = startDate.atTime(10, 0).atZone(ZoneId.systemDefault()).toInstant().toEpochMilli()
@@ -115,7 +118,8 @@ class EventEditViewModel(
     fun setStartDate(dateMs: Long) {
         val state = _uiState.value
         val currentStart = Instant.ofEpochMilli(state.startMs).atZone(ZoneId.systemDefault())
-        val newDate = Instant.ofEpochMilli(dateMs).atZone(ZoneId.systemDefault()).toLocalDate()
+        // DatePickerは選択日をUTC真夜中のエポック値で返す。UTCオフセットで解釈しないと負の地域で1日ずれる
+        val newDate = Instant.ofEpochMilli(dateMs).atOffset(ZoneOffset.UTC).toLocalDate()
         val newStart = newDate.atTime(currentStart.toLocalTime()).atZone(ZoneId.systemDefault()).toInstant().toEpochMilli()
         val durationMs = state.endMs - state.startMs
         _uiState.update { it.copy(startMs = newStart, endMs = newStart + durationMs) }
@@ -132,7 +136,8 @@ class EventEditViewModel(
     fun setEndDate(dateMs: Long) {
         val state = _uiState.value
         val currentEnd = Instant.ofEpochMilli(state.endMs).atZone(ZoneId.systemDefault())
-        val newDate = Instant.ofEpochMilli(dateMs).atZone(ZoneId.systemDefault()).toLocalDate()
+        // DatePickerは選択日をUTC真夜中のエポック値で返す。UTCオフセットで解釈しないと負の地域で1日ずれる
+        val newDate = Instant.ofEpochMilli(dateMs).atOffset(ZoneOffset.UTC).toLocalDate()
         val newEnd = newDate.atTime(currentEnd.toLocalTime()).atZone(ZoneId.systemDefault()).toInstant().toEpochMilli()
         _uiState.update { it.copy(endMs = newEnd) }
     }
@@ -225,12 +230,13 @@ class EventEditViewModel(
         }
     }
 
-    private fun roundToNextHour(ms: Long): Long {
-        val zdt = Instant.ofEpochMilli(ms).atZone(ZoneId.systemDefault())
-        return zdt.toLocalDate()
-            .atTime(zdt.hour + 1, 0)
+    private fun roundToNextHour(ms: Long): Long =
+        Instant.ofEpochMilli(ms)
             .atZone(ZoneId.systemDefault())
+            .plusHours(1)
+            .withMinute(0)
+            .withSecond(0)
+            .withNano(0)
             .toInstant()
             .toEpochMilli()
-    }
 }
