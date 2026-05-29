@@ -16,6 +16,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -47,6 +48,7 @@ import java.util.Locale
 @Composable
 fun EventDetailScreen(
     onBack: () -> Unit,
+    onEdit: (Long) -> Unit,
     viewModel: EventDetailViewModel = viewModel(),
     modifier: Modifier = Modifier,
 ) {
@@ -60,6 +62,13 @@ fun EventDetailScreen(
                 navigationIcon = {
                     IconButton(onClick = onBack) {
                         Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "戻る")
+                    }
+                },
+                actions = {
+                    uiState.event?.let { event ->
+                        IconButton(onClick = { onEdit(event.id) }) {
+                            Icon(Icons.Default.Edit, contentDescription = "編集")
+                        }
                     }
                 },
             )

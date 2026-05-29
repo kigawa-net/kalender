@@ -39,6 +39,7 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import net.kigawa.kalender.ui.screen.EventDetailScreen
+import net.kigawa.kalender.ui.screen.EventEditScreen
 import net.kigawa.kalender.ui.screen.LoginScreen
 import net.kigawa.kalender.ui.screen.ProfileScreen
 import net.kigawa.kalender.ui.screen.WeeklyCalendarScreen
@@ -142,14 +143,29 @@ fun KalenderApp() {
                 WeeklyCalendarScreen(
                     onEventClick = { eventId ->
                         navController.navigate("event_detail/$eventId")
-                    }
+                    },
+                    onNewEvent = {
+                        navController.navigate("event_new")
+                    },
                 )
             }
             composable(
                 route = "event_detail/{eventId}",
                 arguments = listOf(navArgument("eventId") { type = NavType.LongType }),
             ) {
-                EventDetailScreen(onBack = { navController.popBackStack() })
+                EventDetailScreen(
+                    onBack = { navController.popBackStack() },
+                    onEdit = { eventId -> navController.navigate("event_edit/$eventId") },
+                )
+            }
+            composable(
+                route = "event_edit/{eventId}",
+                arguments = listOf(navArgument("eventId") { type = NavType.LongType }),
+            ) {
+                EventEditScreen(onBack = { navController.popBackStack() })
+            }
+            composable(route = "event_new") {
+                EventEditScreen(onBack = { navController.popBackStack() })
             }
             composable(AppDestinations.FAVORITES.route) {
                 Text("Favorites")

@@ -11,4 +11,5 @@ data class CalendarEvent(
     val timeZone: String,
     val description: String,
     val location: String,
+    val remoteId: String = "",
 )
