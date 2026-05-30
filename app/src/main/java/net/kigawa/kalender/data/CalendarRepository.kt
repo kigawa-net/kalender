@@ -32,10 +32,13 @@ class CalendarRepository(
                         val fetchResults = dataSources.map { dataSource ->
                             runCatching { dataSource.fetchEvents(startMs, endMs) }
                         }
-                        if (fetchResults.all { it.isSuccess }) {
-                            val events = fetchResults.flatMap { it.getOrThrow() }
+                        val successResults = fetchResults.filter { it.isSuccess }
+                        if (successResults.isNotEmpty()) {
+                            val events = successResults.flatMap { it.getOrThrow() }
                             localSource.upsertEvents(events, startMs, endMs)
-                            cacheMetaDao.upsert(CacheMetaEntity(startMs, System.currentTimeMillis()))
+                            if (fetchResults.all { it.isSuccess }) {
+                                cacheMetaDao.upsert(CacheMetaEntity(startMs, System.currentTimeMillis()))
+                            }
                         }
                     }
                 } finally {

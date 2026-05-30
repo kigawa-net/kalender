@@ -205,7 +205,7 @@ class OutlookCalendarDataSource(private val accessToken: String) : CalendarDataS
             "lightgreen" -> 0xFF99FF99.toInt()
             "lightorange" -> 0xFFFFCC99.toInt()
             "lightred" -> 0xFFFF9999.toInt()
-            "lightyellow" -> 0xFFFFCC.toInt()
+            "lightyellow" -> 0xFFFFFFCC.toInt()
             else -> 0xFF0078D4.toInt() // Default Outlook Blue
         }
     }
