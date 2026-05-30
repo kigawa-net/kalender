@@ -1,5 +1,6 @@
 package net.kigawa.kalender.data.db
 
+import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
@@ -9,5 +10,5 @@ data class CalendarEntity(
     val name: String,
     val color: Int,
     val accountName: String,
-    val isVisible: Boolean = true,
+    @ColumnInfo(defaultValue = "1") val isVisible: Boolean = true,
 )
