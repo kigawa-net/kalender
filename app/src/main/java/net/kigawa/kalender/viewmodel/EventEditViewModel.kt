@@ -17,6 +17,7 @@ import kotlinx.coroutines.launch
 import net.kigawa.kalender.KalenderApplication
 import net.kigawa.kalender.data.CalendarLocalSource
 import net.kigawa.kalender.data.GoogleCalendarDataSource
+import net.kigawa.kalender.data.OutlookCalendarDataSource
 import net.kigawa.kalender.data.auth.GoogleAuthManager
 import net.kigawa.kalender.data.db.KalenderDatabase
 import net.kigawa.kalender.model.CalendarEvent
@@ -198,7 +199,7 @@ class EventEditViewModel(
                         _uiState.update { it.copy(isSaving = false, error = "Microsoft認証が必要です") }
                         return@launch
                     }
-                    val dataSource = net.kigawa.kalender.data.OutlookCalendarDataSource(msToken)
+                    val dataSource = OutlookCalendarDataSource(msToken)
                     if (state.isNew) dataSource.createEvent(calendar.accountName, event)
                     else dataSource.updateEvent(calendar.accountName, event)
                 }
@@ -239,7 +240,7 @@ class EventEditViewModel(
                         _uiState.update { it.copy(isDeleting = false, error = "Microsoft認証が必要です") }
                         return@launch
                     }
-                    net.kigawa.kalender.data.OutlookCalendarDataSource(msToken).deleteEvent(calendar.accountName, state.remoteId)
+                    OutlookCalendarDataSource(msToken).deleteEvent(calendar.accountName, state.remoteId)
                 }
                 localSource.deleteEventById(id)
                 _navigateBack.emit(Unit)
