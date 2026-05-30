@@ -84,10 +84,11 @@ class WeeklyCalendarViewModel(application: Application) : AndroidViewModel(appli
                 ) { w0, w1, w2, w3, w4 -> listOf(w0, w1, w2, w3, w4) },
                 repository.calendars,
             ) { weekEvents, calendars ->
+                val visibleIds = calendars.filter { it.isVisible }.map { it.id }.toSet()
                 WeeklyCalendarUiState(
                     weekStart = weekStart,
-                    events = weekEvents[2],
-                    eventsByWeek = weeks.zip(weekEvents).toMap(),
+                    events = weekEvents[2].filter { it.calendarId in visibleIds },
+                    eventsByWeek = weeks.zip(weekEvents.map { w -> w.filter { it.calendarId in visibleIds } }).toMap(),
                     calendars = calendars,
                 )
             }

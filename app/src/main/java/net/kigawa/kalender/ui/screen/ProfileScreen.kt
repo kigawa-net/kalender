@@ -1,5 +1,6 @@
 package net.kigawa.kalender.ui.screen
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -8,6 +9,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
@@ -20,9 +22,11 @@ import androidx.compose.material3.ListItem
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
+import androidx.compose.ui.graphics.Color
 import android.app.Activity
 import android.content.Context
 import android.content.ContextWrapper
@@ -35,6 +39,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
+import net.kigawa.kalender.model.UserCalendar
 import net.kigawa.kalender.ui.theme.KalenderTheme
 import net.kigawa.kalender.viewmodel.GoogleAccount
 import net.kigawa.kalender.viewmodel.OutlookAccount
@@ -67,6 +72,7 @@ fun ProfileScreen(
         onAddGoogleAccount = { viewModel.addGoogleAccount(context) },
         onRemoveGoogleAccount = viewModel::removeGoogleAccount,
         onRetryAddGoogleAccount = { viewModel.addGoogleAccount(context) },
+        onCalendarVisibilityChanged = viewModel::updateCalendarVisibility,
         modifier = modifier,
     )
 }
@@ -81,6 +87,7 @@ private fun ProfileContent(
     onAddGoogleAccount: () -> Unit,
     onRemoveGoogleAccount: () -> Unit,
     onRetryAddGoogleAccount: () -> Unit,
+    onCalendarVisibilityChanged: (Long, Boolean) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Scaffold(
@@ -152,8 +159,54 @@ private fun ProfileContent(
                 )
                 else -> AddAccountItem(label = "Outlookアカウントを追加", onAdd = onAddAccount)
             }
+
+            if (uiState.calendars.isNotEmpty()) {
+                Spacer(modifier = Modifier.height(16.dp))
+                Text(
+                    text = "カレンダー",
+                    style = MaterialTheme.typography.labelMedium,
+                    color = MaterialTheme.colorScheme.primary,
+                    modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
+                )
+                HorizontalDivider()
+                uiState.calendars.forEach { calendar ->
+                    CalendarItem(
+                        calendar = calendar,
+                        onVisibilityChanged = { isVisible ->
+                            onCalendarVisibilityChanged(calendar.id, isVisible)
+                        },
+                    )
+                    HorizontalDivider()
+                }
+            }
         }
     }
+}
+
+@Composable
+private fun CalendarItem(
+    calendar: UserCalendar,
+    onVisibilityChanged: (Boolean) -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    ListItem(
+        modifier = modifier,
+        leadingContent = {
+            Box(
+                modifier = Modifier
+                    .size(24.dp)
+                    .background(Color(calendar.color), CircleShape),
+            )
+        },
+        headlineContent = { Text(calendar.name) },
+        supportingContent = { Text(calendar.accountName) },
+        trailingContent = {
+            Switch(
+                checked = calendar.isVisible,
+                onCheckedChange = onVisibilityChanged,
+            )
+        },
+    )
 }
 
 @Composable
@@ -281,6 +334,7 @@ private fun ProfileScreenEmptyPreview() {
             onAddGoogleAccount = {},
             onRemoveGoogleAccount = {},
             onRetryAddGoogleAccount = {},
+            onCalendarVisibilityChanged = { _, _ -> },
         )
     }
 }
@@ -303,6 +357,7 @@ private fun ProfileScreenWithAccountsPreview() {
             onAddGoogleAccount = {},
             onRemoveGoogleAccount = {},
             onRetryAddGoogleAccount = {},
+            onCalendarVisibilityChanged = { _, _ -> },
         )
     }
 }
@@ -323,6 +378,7 @@ private fun ProfileScreenAddingPreview() {
             onAddGoogleAccount = {},
             onRemoveGoogleAccount = {},
             onRetryAddGoogleAccount = {},
+            onCalendarVisibilityChanged = { _, _ -> },
         )
     }
 }
@@ -339,6 +395,7 @@ private fun ProfileScreenErrorPreview() {
             onAddGoogleAccount = {},
             onRemoveGoogleAccount = {},
             onRetryAddGoogleAccount = {},
+            onCalendarVisibilityChanged = { _, _ -> },
         )
     }
 }

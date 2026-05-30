@@ -42,8 +42,12 @@ class CalendarLocalSource(
         eventDao.deleteById(id)
     }
 
-    private fun CalendarEntity.toModel() = UserCalendar(id, name, color, accountName)
+    suspend fun updateCalendarVisibility(id: Long, isVisible: Boolean) {
+        calendarDao.updateVisibility(id, isVisible)
+    }
+
+    private fun CalendarEntity.toModel() = UserCalendar(id, name, color, accountName, isVisible)
     private fun EventEntity.toModel() = CalendarEvent(id, calendarId, title, startMs, endMs, allDay, color, timeZone, description, location, remoteId)
-    private fun UserCalendar.toEntity() = CalendarEntity(id, name, color, accountName)
+    private fun UserCalendar.toEntity() = CalendarEntity(id, name, color, accountName, isVisible)
     private fun CalendarEvent.toEntity() = EventEntity(id, calendarId, title, startMs, endMs, allDay, color, timeZone, description, location, remoteId)
 }
