@@ -42,6 +42,7 @@ class WeeklyCalendarViewModel(application: Application) : AndroidViewModel(appli
     private val _weekStart = MutableStateFlow(
         LocalDate.now().with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY))
     )
+    private val _refreshTrigger = MutableStateFlow(0)
 
     @OptIn(ExperimentalCoroutinesApi::class)
     val uiState: StateFlow<WeeklyCalendarUiState> = combine(
@@ -69,7 +70,7 @@ class WeeklyCalendarViewModel(application: Application) : AndroidViewModel(appli
             scope = viewModelScope,
         )
         repository.syncCalendars()
-        _weekStart.flatMapLatest { weekStart ->
+        combine(_weekStart, _refreshTrigger) { week, _ -> week }.flatMapLatest { weekStart ->
             // ±2週分を取得: HorizontalPager の beyondViewportPageCount=1 により
             // スワイプ中に現在週±2週目まで描画されるため
             val weeks = (-2..2).map { weekStart.plusWeeks(it.toLong()) }
@@ -94,6 +95,8 @@ class WeeklyCalendarViewModel(application: Application) : AndroidViewModel(appli
     }.stateIn(viewModelScope, SharingStarted.Eagerly, WeeklyCalendarUiState())
 
     fun setWeek(week: LocalDate) = _weekStart.update { week }
+
+    fun refresh() = _refreshTrigger.update { it + 1 }
 
     private fun LocalDate.startMs(): Long =
         atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli()
