@@ -107,9 +107,10 @@ Closes #<issue番号>
 - マージ前にセルフレビューを行い、差分が意図通りであることを確認する
 
 ### 変更前チェックリスト
-1. `./gradlew lint` — 警告ゼロを目標にする
-2. `./gradlew test` — ユニットテスト全通過
-3. Composable には `@Preview` を付け Android Studio で目視確認
+1. ビジネスロジック・データ層の変更にはユニットテストを作成・更新する
+2. `./gradlew lint` — 警告ゼロを目標にする
+3. `./gradlew test` — ユニットテスト全通過
+4. Composable には `@Preview` を付け Android Studio で目視確認
 
 ### 依存関係の追加
 - バージョンは必ず `gradle/libs.versions.toml` に集約する
@@ -147,3 +148,8 @@ Closes #<issue番号>
 - ビジネスロジックはユニットテストで網羅（`app/src/test/`）
 - UI の回帰はプレビューで目視 + 重要フローのみ instrumented テスト
 - テストクラス名は `<TargetClass>Test`、テスト関数名は `when_<condition>_then_<expected>` 形式
+
+### テスト作成規約
+- ビジネスロジック・データ層の変更・追加は、同じ PR でユニットテストを作成・更新する
+- 既存のテストが壊れる変更をする場合は、テストも同時に修正する
+- テストのないビジネスロジックの変更は原則マージしない
