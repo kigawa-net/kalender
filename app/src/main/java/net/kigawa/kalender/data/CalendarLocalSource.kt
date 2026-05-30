@@ -30,6 +30,10 @@ class CalendarLocalSource(
         eventDao.replaceByRange(startMs, endMs, events.map { it.toEntity() })
     }
 
+    suspend fun upsertEventsForCalendars(events: List<CalendarEvent>, startMs: Long, endMs: Long, calendarIds: List<Long>) {
+        eventDao.replaceByRangeAndCalendars(startMs, endMs, events.map { it.toEntity() }, calendarIds)
+    }
+
     suspend fun upsertEvent(event: CalendarEvent) {
         eventDao.upsertOne(event.toEntity())
     }

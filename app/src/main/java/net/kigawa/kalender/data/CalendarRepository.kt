@@ -29,16 +29,18 @@ class CalendarRepository(
                     val meta = cacheMetaDao.getByWeekStart(startMs)
                     val cacheAge = System.currentTimeMillis() - (meta?.lastFetchedMs ?: 0L)
                     if (cacheAge >= CACHE_TTL_MS) {
-                        val fetchResults = dataSources.map { dataSource ->
-                            runCatching { dataSource.fetchEvents(startMs, endMs) }
-                        }
-                        val successResults = fetchResults.filter { it.isSuccess }
-                        if (successResults.isNotEmpty()) {
-                            val events = successResults.flatMap { it.getOrThrow() }
-                            localSource.upsertEvents(events, startMs, endMs)
-                            if (fetchResults.all { it.isSuccess }) {
-                                cacheMetaDao.upsert(CacheMetaEntity(startMs, System.currentTimeMillis()))
+                        var allSucceeded = true
+                        dataSources.forEach { dataSource ->
+                            runCatching {
+                                val events = dataSource.fetchEvents(startMs, endMs)
+                                val calendarIds = dataSource.fetchCalendars().map { it.id }
+                                localSource.upsertEventsForCalendars(events, startMs, endMs, calendarIds)
+                            }.onFailure {
+                                allSucceeded = false
                             }
+                        }
+                        if (allSucceeded) {
+                            cacheMetaDao.upsert(CacheMetaEntity(startMs, System.currentTimeMillis()))
                         }
                     }
                 } finally {
