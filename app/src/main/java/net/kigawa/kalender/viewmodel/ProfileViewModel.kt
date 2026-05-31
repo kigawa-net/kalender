@@ -14,9 +14,12 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import net.kigawa.kalender.KalenderApplication
 import net.kigawa.kalender.R
+import net.kigawa.kalender.data.CalendarLocalSource
 import net.kigawa.kalender.data.auth.GoogleAuthManager
 import net.kigawa.kalender.data.auth.MsalAuthManager
 import net.kigawa.kalender.data.auth.SignInCancelledException
+import net.kigawa.kalender.data.db.KalenderDatabase
+import net.kigawa.kalender.model.UserCalendar
 
 data class OutlookAccount(
     val email: String,
@@ -34,6 +37,7 @@ data class ProfileUiState(
     val isAddingGoogleAccount: Boolean = false,
     val addAccountError: String? = null,
     val addGoogleAccountError: String? = null,
+    val calendars: List<UserCalendar> = emptyList(),
 )
 
 class ProfileViewModel(application: Application) : AndroidViewModel(application) {
@@ -45,6 +49,8 @@ class ProfileViewModel(application: Application) : AndroidViewModel(application)
         runCatching { MsalAuthManager.create(getApplication()) }
     }
     private val iAccountByEmail = mutableMapOf<String, IAccount>()
+    private val db = KalenderDatabase.getInstance(application)
+    private val localSource = CalendarLocalSource(db.calendarDao(), db.eventDao())
 
     init {
         // Outlook
@@ -82,6 +88,12 @@ class ProfileViewModel(application: Application) : AndroidViewModel(application)
                         )
                     }
                 }
+            }
+        }
+        // Calendars
+        viewModelScope.launch {
+            localSource.observeCalendars().collect { calendars ->
+                _uiState.update { it.copy(calendars = calendars) }
             }
         }
     }
@@ -146,5 +158,11 @@ class ProfileViewModel(application: Application) : AndroidViewModel(application)
 
     fun dismissAddAccountError() {
         _uiState.update { it.copy(addAccountError = null) }
+    }
+
+    fun updateCalendarVisibility(id: Long, isVisible: Boolean) {
+        viewModelScope.launch {
+            localSource.updateCalendarVisibility(id, isVisible)
+        }
     }
 }
