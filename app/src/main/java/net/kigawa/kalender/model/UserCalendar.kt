@@ -6,4 +6,5 @@ data class UserCalendar(
     val color: Int,
     val accountName: String,
     val isVisible: Boolean = true,
+    val ownerEmail: String = "",
 )

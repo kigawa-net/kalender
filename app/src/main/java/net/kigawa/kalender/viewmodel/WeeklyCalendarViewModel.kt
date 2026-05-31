@@ -47,16 +47,17 @@ class WeeklyCalendarViewModel(application: Application) : AndroidViewModel(appli
     @OptIn(ExperimentalCoroutinesApi::class)
     val uiState: StateFlow<WeeklyCalendarUiState> = combine(
         authManager.authState,
-        (application as KalenderApplication).msAccessToken
-    ) { googleState, msToken ->
-        googleState to msToken
-    }.flatMapLatest { (googleState, msToken) ->
+        (application as KalenderApplication).msAccessToken,
+        (application as KalenderApplication).msAccountEmail,
+    ) { googleState, msToken, msEmail ->
+        Triple(googleState, msToken, msEmail)
+    }.flatMapLatest { (googleState, msToken, msEmail) ->
         val dataSources = mutableListOf<net.kigawa.kalender.data.CalendarDataSource>()
         if (googleState is GoogleAuthManager.AuthState.SignedIn) {
-            dataSources.add(GoogleCalendarDataSource(googleState.accessToken))
+            dataSources.add(GoogleCalendarDataSource(googleState.accessToken, googleState.email))
         }
-        if (!msToken.isNullOrEmpty()) {
-            dataSources.add(OutlookCalendarDataSource(msToken))
+        if (!msToken.isNullOrEmpty() && !msEmail.isNullOrEmpty()) {
+            dataSources.add(OutlookCalendarDataSource(msToken, msEmail))
         }
 
         if (dataSources.isEmpty()) {

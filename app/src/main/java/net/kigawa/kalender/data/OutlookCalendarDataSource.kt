@@ -13,7 +13,7 @@ import java.time.OffsetDateTime
 import java.time.ZoneOffset
 import java.time.format.DateTimeFormatter
 
-class OutlookCalendarDataSource(private val accessToken: String) : CalendarDataSource {
+class OutlookCalendarDataSource(private val accessToken: String, private val ownerEmail: String) : CalendarDataSource {
 
     private var cachedCalendars: List<UserCalendar>? = null
 
@@ -153,6 +153,7 @@ class OutlookCalendarDataSource(private val accessToken: String) : CalendarDataS
                 name = item.optString("name", ""),
                 color = item.optString("color").toOutlookColor(),
                 accountName = item.getString("id"),
+                ownerEmail = ownerEmail,
             )
         }
         cachedCalendars = result

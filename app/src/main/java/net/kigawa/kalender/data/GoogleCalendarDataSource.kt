@@ -15,7 +15,7 @@ import java.time.OffsetDateTime
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 
-class GoogleCalendarDataSource(private val accessToken: String) : CalendarDataSource {
+class GoogleCalendarDataSource(private val accessToken: String, private val ownerEmail: String) : CalendarDataSource {
 
     private val eventColors = mapOf(
         "1" to 0xFFD50000.toInt(), "2" to 0xFFE67C73.toInt(),
@@ -106,6 +106,7 @@ class GoogleCalendarDataSource(private val accessToken: String) : CalendarDataSo
                 name = item.optString("summary", ""),
                 color = item.optString("backgroundColor").toArgbOrNull() ?: 0xFF808080.toInt(),
                 accountName = item.getString("id"),
+                ownerEmail = ownerEmail,
             )
         }
         cachedCalendars = result
