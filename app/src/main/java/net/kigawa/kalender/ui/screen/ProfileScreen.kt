@@ -118,6 +118,17 @@ private fun ProfileContent(
                     onRemove = onRemoveGoogleAccount,
                 )
                 HorizontalDivider()
+                uiState.calendars
+                    .filter { it.accountName == googleAccount.email }
+                    .forEach { calendar ->
+                        CalendarItem(
+                            calendar = calendar,
+                            onVisibilityChanged = { isVisible ->
+                                onCalendarVisibilityChanged(calendar.id, isVisible)
+                            },
+                        )
+                        HorizontalDivider()
+                    }
             } else {
                 when {
                     uiState.isAddingGoogleAccount -> AddingAccountItem(label = "Googleアカウントを追加")
@@ -148,6 +159,17 @@ private fun ProfileContent(
                     onRemove = { onRemoveAccount(account.email) },
                 )
                 HorizontalDivider()
+                uiState.calendars
+                    .filter { it.accountName == account.email }
+                    .forEach { calendar ->
+                        CalendarItem(
+                            calendar = calendar,
+                            onVisibilityChanged = { isVisible ->
+                                onCalendarVisibilityChanged(calendar.id, isVisible)
+                            },
+                        )
+                        HorizontalDivider()
+                    }
             }
 
             when {
@@ -158,26 +180,6 @@ private fun ProfileContent(
                     onRetry = onRetryAddAccount,
                 )
                 else -> AddAccountItem(label = "Outlookアカウントを追加", onAdd = onAddAccount)
-            }
-
-            if (uiState.calendars.isNotEmpty()) {
-                Spacer(modifier = Modifier.height(16.dp))
-                Text(
-                    text = "カレンダー",
-                    style = MaterialTheme.typography.labelMedium,
-                    color = MaterialTheme.colorScheme.primary,
-                    modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
-                )
-                HorizontalDivider()
-                uiState.calendars.forEach { calendar ->
-                    CalendarItem(
-                        calendar = calendar,
-                        onVisibilityChanged = { isVisible ->
-                            onCalendarVisibilityChanged(calendar.id, isVisible)
-                        },
-                    )
-                    HorizontalDivider()
-                }
             }
         }
     }
@@ -199,7 +201,6 @@ private fun CalendarItem(
             )
         },
         headlineContent = { Text(calendar.name) },
-        supportingContent = { Text(calendar.accountName) },
         trailingContent = {
             Switch(
                 checked = calendar.isVisible,
@@ -348,7 +349,11 @@ private fun ProfileScreenWithAccountsPreview() {
                 googleAccount = GoogleAccount("user@gmail.com", "Google User"),
                 accounts = listOf(
                     OutlookAccount("work@example.com"),
-                    OutlookAccount("personal@outlook.com"),
+                ),
+                calendars = listOf(
+                    UserCalendar(1L, "仕事", 0xFF4285F4.toInt(), "user@gmail.com"),
+                    UserCalendar(2L, "個人", 0xFF34A853.toInt(), "user@gmail.com", isVisible = false),
+                    UserCalendar(3L, "会議", 0xFFEA4335.toInt(), "work@example.com"),
                 ),
             ),
             onAddAccount = {},
