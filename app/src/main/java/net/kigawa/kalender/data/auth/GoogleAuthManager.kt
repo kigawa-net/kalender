@@ -72,7 +72,13 @@ class GoogleAuthManager {
             }
         } catch (e: Exception) {
             Log.e("GoogleAuthManager", "SignIn failed", e)
-            _authState.value = AuthState.Error(e.message ?: "サインインに失敗しました")
+            val message = when {
+                e.message?.contains("Developer console is not set up correctly") == true ->
+                    "Google Cloud Console に Android OAuth クライアントが登録されていません。" +
+                    "パッケージ名と SHA-1 フィンガープリントを確認してください。"
+                else -> e.message ?: "サインインに失敗しました"
+            }
+            _authState.value = AuthState.Error(message)
         }
     }
 
