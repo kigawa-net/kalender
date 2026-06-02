@@ -12,6 +12,9 @@ interface CalendarDao {
     @Query("SELECT * FROM calendars")
     fun observeAll(): Flow<List<CalendarEntity>>
 
+    @Query("SELECT * FROM calendars WHERE isVisible = 1")
+    fun observeVisible(): Flow<List<CalendarEntity>>
+
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insertIgnoreAll(calendars: List<CalendarEntity>)
 
