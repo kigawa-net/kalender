@@ -64,6 +64,9 @@ class WeeklyCalendarViewModel(application: Application) : AndroidViewModel(appli
             return@flatMapLatest flowOf(WeeklyCalendarUiState())
         }
 
+        // データソース構成が変わった（アカウント追加/削除）ので全週のキャッシュを破棄して再取得する
+        db.cacheMetaDao().deleteAll()
+
         val repository = CalendarRepository(
             dataSources = dataSources,
             localSource = localSource,
