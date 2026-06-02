@@ -14,9 +14,8 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.AccountBox
-import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
@@ -102,9 +101,8 @@ enum class AppDestinations(
     val icon: ImageVector,
     val route: String,
 ) {
-    HOME("Home", Icons.Default.Home, "weekly_calendar"),
-    FAVORITES("Favorites", Icons.Default.Favorite, "favorites"),
-    PROFILE("Profile", Icons.Default.AccountBox, "profile"),
+    HOME("カレンダー", Icons.Default.Home, "weekly_calendar"),
+    PROFILE("設定", Icons.Default.Settings, "profile"),
 }
 
 @PreviewScreenSizes
@@ -166,9 +164,6 @@ fun KalenderApp() {
             }
             composable(route = "event_new") {
                 EventEditScreen(onBack = { navController.popBackStack() })
-            }
-            composable(AppDestinations.FAVORITES.route) {
-                Text("Favorites")
             }
             composable(AppDestinations.PROFILE.route) {
                 ProfileScreen()
