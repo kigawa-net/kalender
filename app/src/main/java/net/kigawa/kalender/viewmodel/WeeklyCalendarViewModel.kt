@@ -64,7 +64,9 @@ class WeeklyCalendarViewModel(application: Application) : AndroidViewModel(appli
             return@flatMapLatest flowOf(WeeklyCalendarUiState())
         }
 
-        // データソース構成が変わった（アカウント追加/削除）ので全週のキャッシュを破棄して再取得する
+        // 認証状態の変化（アカウント追加/削除/起動時の再認証）のたびにキャッシュを破棄する。
+        // 新しいデータソースが追加された場合にキャッシュが有効だとそのソースのイベントが取得されないため、
+        // 意図的に全週を再フェッチする。TTL による節約はバックグラウンド復帰時の _refreshTrigger で行う。
         db.cacheMetaDao().deleteAll()
 
         val repository = CalendarRepository(

@@ -196,11 +196,12 @@ class EventEditViewModel(
                     else dataSource.updateEvent(calendar.accountName, event)
                 } else {
                     val msToken = msAccessToken.value
-                    if (msToken == null) {
+                    val msEmail = msAccountEmail.value
+                    if (msToken == null || msEmail == null) {
                         _uiState.update { it.copy(isSaving = false, error = "Microsoft認証が必要です") }
                         return@launch
                     }
-                    val dataSource = OutlookCalendarDataSource(msToken, msAccountEmail.value.orEmpty())
+                    val dataSource = OutlookCalendarDataSource(msToken, msEmail)
                     if (state.isNew) dataSource.createEvent(calendar.accountName, event)
                     else dataSource.updateEvent(calendar.accountName, event)
                 }
@@ -237,11 +238,12 @@ class EventEditViewModel(
                     GoogleCalendarDataSource(googleState.accessToken, googleState.email).deleteEvent(calendar.accountName, state.remoteId)
                 } else {
                     val msToken = msAccessToken.value
-                    if (msToken == null) {
+                    val msEmail = msAccountEmail.value
+                    if (msToken == null || msEmail == null) {
                         _uiState.update { it.copy(isDeleting = false, error = "Microsoft認証が必要です") }
                         return@launch
                     }
-                    OutlookCalendarDataSource(msToken, msAccountEmail.value.orEmpty()).deleteEvent(calendar.accountName, state.remoteId)
+                    OutlookCalendarDataSource(msToken, msEmail).deleteEvent(calendar.accountName, state.remoteId)
                 }
                 localSource.deleteEventById(id)
                 _navigateBack.emit(Unit)
