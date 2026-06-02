@@ -188,7 +188,7 @@ private fun CalendarItem(
     modifier: Modifier = Modifier,
 ) {
     ListItem(
-        modifier = modifier,
+        modifier = modifier.padding(start = 56.dp),
         leadingContent = {
             Box(
                 modifier = Modifier
