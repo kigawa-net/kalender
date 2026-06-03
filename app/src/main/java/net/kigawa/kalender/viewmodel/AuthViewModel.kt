@@ -62,8 +62,16 @@ class AuthViewModel(application: Application) : AndroidViewModel(application) {
         when {
             loggedIn -> true
             ms is MsAuthState.Initializing || google is GoogleAuthManager.AuthState.Loading ->
+                // 認証チェック中はアプリを即表示してスピナーを省く
                 if (hadPreviousSession) true else null
-            else -> if (hadPreviousSession) true else false
+            else -> {
+                // 両方の認証チェックが SignedOut で完了 → 資格情報失効の可能性があるためログイン画面へ
+                if (hadPreviousSession) {
+                    hadPreviousSession = false
+                    prefs.edit().putBoolean("had_auth", false).apply()
+                }
+                false
+            }
         }
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), if (hadPreviousSession) true else null)
 
