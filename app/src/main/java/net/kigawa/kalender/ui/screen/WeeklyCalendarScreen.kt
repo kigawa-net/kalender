@@ -192,6 +192,16 @@ private fun WeekDayHeaders(
         for (i in 0..6) {
             val date = weekStart.plusDays(i.toLong())
             val isToday = date == today
+            val isSaturday = i == 5
+            val isSunday = i == 6
+            val labelColor = when {
+                isToday -> MaterialTheme.colorScheme.primary
+                isSunday -> MaterialTheme.colorScheme.error
+                isSaturday -> MaterialTheme.colorScheme.primary
+                else -> MaterialTheme.colorScheme.onSurfaceVariant
+            }
+            // 月初は "M/D" 形式で月を明示する
+            val dateLabel = if (date.dayOfMonth == 1) "${date.monthValue}/${date.dayOfMonth}" else date.dayOfMonth.toString()
             Column(
                 modifier = Modifier.weight(1f),
                 horizontalAlignment = Alignment.CenterHorizontally,
@@ -199,7 +209,7 @@ private fun WeekDayHeaders(
                 Text(
                     text = dayNames[i],
                     style = MaterialTheme.typography.labelSmall,
-                    color = if (isToday) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant,
+                    color = labelColor,
                 )
                 Box(
                     modifier = Modifier
@@ -211,9 +221,14 @@ private fun WeekDayHeaders(
                     contentAlignment = Alignment.Center,
                 ) {
                     Text(
-                        text = date.dayOfMonth.toString(),
+                        text = dateLabel,
                         style = MaterialTheme.typography.labelMedium,
-                        color = if (isToday) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSurface,
+                        color = when {
+                            isToday -> MaterialTheme.colorScheme.onPrimary
+                            isSunday -> MaterialTheme.colorScheme.error
+                            isSaturday -> MaterialTheme.colorScheme.primary
+                            else -> MaterialTheme.colorScheme.onSurface
+                        },
                     )
                 }
             }
@@ -307,7 +322,11 @@ private fun WeekTimeGrid(
             BoxWithConstraints(
                 modifier = Modifier
                     .weight(1f)
-                    .height(HourHeight * 24),
+                    .height(HourHeight * 24)
+                    .then(
+                        if (isToday) Modifier.background(MaterialTheme.colorScheme.primary.copy(alpha = 0.04f))
+                        else Modifier
+                    ),
             ) {
                 for (hour in 0..23) {
                     HorizontalDivider(
