@@ -47,21 +47,27 @@ class WeeklyCalendarViewModel(application: Application) : AndroidViewModel(appli
     @OptIn(ExperimentalCoroutinesApi::class)
     val uiState: StateFlow<WeeklyCalendarUiState> = combine(
         authManager.authState,
-        (application as KalenderApplication).msAccessToken
-    ) { googleState, msToken ->
-        googleState to msToken
-    }.flatMapLatest { (googleState, msToken) ->
+        (application as KalenderApplication).msAccessToken,
+        (application as KalenderApplication).msAccountEmail,
+    ) { googleState, msToken, msEmail ->
+        Triple(googleState, msToken, msEmail)
+    }.flatMapLatest { (googleState, msToken, msEmail) ->
         val dataSources = mutableListOf<net.kigawa.kalender.data.CalendarDataSource>()
         if (googleState is GoogleAuthManager.AuthState.SignedIn) {
-            dataSources.add(GoogleCalendarDataSource(googleState.accessToken))
+            dataSources.add(GoogleCalendarDataSource(googleState.accessToken, googleState.email))
         }
-        if (!msToken.isNullOrEmpty()) {
-            dataSources.add(OutlookCalendarDataSource(msToken))
+        if (!msToken.isNullOrEmpty() && !msEmail.isNullOrEmpty()) {
+            dataSources.add(OutlookCalendarDataSource(msToken, msEmail))
         }
 
         if (dataSources.isEmpty()) {
             return@flatMapLatest flowOf(WeeklyCalendarUiState())
         }
+
+        // 認証状態の変化（アカウント追加/削除/起動時の再認証）のたびにキャッシュを破棄する。
+        // 新しいデータソースが追加された場合にキャッシュが有効だとそのソースのイベントが取得されないため、
+        // 意図的に全週を再フェッチする。TTL による節約はバックグラウンド復帰時の _refreshTrigger で行う。
+        db.cacheMetaDao().deleteAll()
 
         val repository = CalendarRepository(
             dataSources = dataSources,

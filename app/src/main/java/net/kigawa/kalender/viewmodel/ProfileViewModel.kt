@@ -37,7 +37,7 @@ data class ProfileUiState(
     val isAddingGoogleAccount: Boolean = false,
     val addAccountError: String? = null,
     val addGoogleAccountError: String? = null,
-    val calendars: List<UserCalendar> = emptyList(),
+    val calendarsByOwnerEmail: Map<String, List<UserCalendar>> = emptyMap(),
 )
 
 class ProfileViewModel(application: Application) : AndroidViewModel(application) {
@@ -93,7 +93,7 @@ class ProfileViewModel(application: Application) : AndroidViewModel(application)
         // Calendars
         viewModelScope.launch {
             localSource.observeCalendars().collect { calendars ->
-                _uiState.update { it.copy(calendars = calendars) }
+                _uiState.update { it.copy(calendarsByOwnerEmail = calendars.groupBy { c -> c.ownerEmail }) }
             }
         }
     }
@@ -116,6 +116,7 @@ class ProfileViewModel(application: Application) : AndroidViewModel(application)
                     if (account != null) {
                         iAccountByEmail[account.username] = account
                         (getApplication() as KalenderApplication).msAccessToken.value = token
+                        (getApplication() as KalenderApplication).msAccountEmail.value = account.username
                         _uiState.update { state ->
                             val newList =
                                 if (state.accounts.any { it.email == account.username }) state.accounts
@@ -141,7 +142,10 @@ class ProfileViewModel(application: Application) : AndroidViewModel(application)
                 msalDeferred.await().getOrThrow().removeAccount(account)
             }
             iAccountByEmail.remove(email)
+            (getApplication() as KalenderApplication).msAccessToken.value = null
+            (getApplication() as KalenderApplication).msAccountEmail.value = null
             _uiState.update { it.copy(accounts = it.accounts.filter { a -> a.email != email }) }
+            localSource.deleteCalendarsByOwnerEmail(email)
         }
     }
 
@@ -153,7 +157,13 @@ class ProfileViewModel(application: Application) : AndroidViewModel(application)
     }
 
     fun removeGoogleAccount() {
+        val email = (googleAuthManager.authState.value as? GoogleAuthManager.AuthState.SignedIn)?.email
         googleAuthManager.signOut()
+        if (email != null) {
+            viewModelScope.launch {
+                localSource.deleteCalendarsByOwnerEmail(email)
+            }
+        }
     }
 
     fun dismissAddAccountError() {

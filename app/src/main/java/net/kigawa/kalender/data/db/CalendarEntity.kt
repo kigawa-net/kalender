@@ -11,4 +11,5 @@ data class CalendarEntity(
     val color: Int,
     val accountName: String,
     @ColumnInfo(defaultValue = "1") val isVisible: Boolean = true,
+    @ColumnInfo(defaultValue = "") val ownerEmail: String = "",
 )

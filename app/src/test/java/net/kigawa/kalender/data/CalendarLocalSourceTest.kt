@@ -37,7 +37,7 @@ class CalendarLocalSourceTest {
     @Test
     fun `when_observeCalendars_emits_then_isVisible_is_preserved`() = runTest {
         val calendarDao = mockk<CalendarDao>()
-        val entity = CalendarEntity(id = calendarId, name = "Test", color = 0xFF0000FF.toInt(), accountName = "test@example.com", isVisible = false)
+        val entity = CalendarEntity(id = calendarId, name = "Test", color = 0xFF0000FF.toInt(), accountName = "primary", isVisible = false, ownerEmail = "test@example.com")
         every { calendarDao.observeAll() } returns flowOf(listOf(entity))
 
         val localSource = makeSource(calendarDao)
@@ -46,5 +46,18 @@ class CalendarLocalSourceTest {
 
         assert(calendars.size == 1)
         assert(!calendars[0].isVisible)
+        assert(calendars[0].ownerEmail == "test@example.com")
+    }
+
+    @Test
+    fun `when_deleteCalendarsByOwnerEmail_called_then_delegates_to_dao`() = runTest {
+        val calendarDao = mockk<CalendarDao>()
+        every { calendarDao.observeAll() } returns flowOf(emptyList())
+        coEvery { calendarDao.deleteByOwnerEmail(any()) } just Runs
+
+        val localSource = makeSource(calendarDao)
+        localSource.deleteCalendarsByOwnerEmail("removed@example.com")
+
+        coVerify { calendarDao.deleteByOwnerEmail("removed@example.com") }
     }
 }

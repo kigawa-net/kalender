@@ -62,6 +62,7 @@ class AuthViewModel(application: Application) : AndroidViewModel(application) {
                         val token = runCatching { manager.acquireTokenSilent(account) }.getOrNull()
                         if (token != null) {
                             (getApplication() as KalenderApplication).msAccessToken.value = token
+                            (getApplication() as KalenderApplication).msAccountEmail.value = account.username
                             _msAuthState.value = MsAuthState.SignedIn(account.username, token)
                         } else {
                             _msAuthState.value = MsAuthState.SignedOut
@@ -101,6 +102,7 @@ class AuthViewModel(application: Application) : AndroidViewModel(application) {
                             val accounts = manager.getAccounts()
                             val email = accounts.firstOrNull()?.username ?: "Unknown"
                             (getApplication() as KalenderApplication).msAccessToken.value = token
+                            (getApplication() as KalenderApplication).msAccountEmail.value = email
                             _msAuthState.value = MsAuthState.SignedIn(email, token)
                         }
                         .onFailure { e ->
@@ -118,6 +120,7 @@ class AuthViewModel(application: Application) : AndroidViewModel(application) {
     fun signOut() {
         googleAuthManager.signOut()
         (getApplication() as KalenderApplication).msAccessToken.value = null
+        (getApplication() as KalenderApplication).msAccountEmail.value = null
         _msAuthState.value = MsAuthState.SignedOut
     }
 }

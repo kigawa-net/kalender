@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">kalender</string>
     <!-- Google Cloud Console の OAuth 2.0 ウェブクライアント ID に置き換えてください -->
-    <string name="google_web_client_id">441586545378-t6slkkr45asc1frt9gsjl4vaq20cjin8.apps.googleusercontent.com</string>
+    <string name="google_web_client_id">441586545378-e7leqo6rc4clr6as5hla5jg408icqpdb.apps.googleusercontent.com</string>
     <!-- Microsoft Entra のアプリケーション (クライアント) ID に置き換えてください -->
     <string name="microsoft_client_id">3b5392c1-34fe-447b-a09f-ae8144d7564a</string>
 </resources>

@@ -51,6 +51,7 @@ class EventEditViewModel(
     private val eventId: Long? = savedStateHandle["eventId"]
     private val authManager = (application as KalenderApplication).googleAuthManager
     private val msAccessToken = (application as KalenderApplication).msAccessToken
+    private val msAccountEmail = (application as KalenderApplication).msAccountEmail
     private val db = KalenderDatabase.getInstance(application)
     private val localSource = CalendarLocalSource(db.calendarDao(), db.eventDao())
 
@@ -190,16 +191,17 @@ class EventEditViewModel(
                         _uiState.update { it.copy(isSaving = false, error = "Google認証が必要です") }
                         return@launch
                     }
-                    val dataSource = GoogleCalendarDataSource(googleState.accessToken)
+                    val dataSource = GoogleCalendarDataSource(googleState.accessToken, googleState.email)
                     if (state.isNew) dataSource.createEvent(calendar.accountName, event)
                     else dataSource.updateEvent(calendar.accountName, event)
                 } else {
                     val msToken = msAccessToken.value
-                    if (msToken == null) {
+                    val msEmail = msAccountEmail.value
+                    if (msToken == null || msEmail == null) {
                         _uiState.update { it.copy(isSaving = false, error = "Microsoft認証が必要です") }
                         return@launch
                     }
-                    val dataSource = OutlookCalendarDataSource(msToken)
+                    val dataSource = OutlookCalendarDataSource(msToken, msEmail)
                     if (state.isNew) dataSource.createEvent(calendar.accountName, event)
                     else dataSource.updateEvent(calendar.accountName, event)
                 }
@@ -233,14 +235,15 @@ class EventEditViewModel(
                         _uiState.update { it.copy(isDeleting = false, error = "Google認証が必要です") }
                         return@launch
                     }
-                    GoogleCalendarDataSource(googleState.accessToken).deleteEvent(calendar.accountName, state.remoteId)
+                    GoogleCalendarDataSource(googleState.accessToken, googleState.email).deleteEvent(calendar.accountName, state.remoteId)
                 } else {
                     val msToken = msAccessToken.value
-                    if (msToken == null) {
+                    val msEmail = msAccountEmail.value
+                    if (msToken == null || msEmail == null) {
                         _uiState.update { it.copy(isDeleting = false, error = "Microsoft認証が必要です") }
                         return@launch
                     }
-                    OutlookCalendarDataSource(msToken).deleteEvent(calendar.accountName, state.remoteId)
+                    OutlookCalendarDataSource(msToken, msEmail).deleteEvent(calendar.accountName, state.remoteId)
                 }
                 localSource.deleteEventById(id)
                 _navigateBack.emit(Unit)

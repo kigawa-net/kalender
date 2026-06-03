@@ -52,6 +52,36 @@ class CalendarRepositoryTest {
     }
 
     @Test
+    fun `when_eventsForWeek_called_with_multiple_data_sources_and_no_cache_then_all_sources_are_fetched`() = runTest {
+        val dataSource1 = mockk<CalendarDataSource>()
+        val dataSource2 = mockk<CalendarDataSource>()
+        val localSource = mockLocalSource()
+        val cacheMetaDao = mockk<CacheMetaDao>()
+        val calendar = UserCalendar(1L, "Test", 0xFF0000FF.toInt(), "test@example.com")
+
+        coEvery { cacheMetaDao.getByWeekStart(startMs) } returns null
+        coEvery { dataSource1.fetchCalendars() } returns listOf(calendar)
+        coEvery { dataSource1.fetchEvents(startMs, endMs) } returns emptyList()
+        coEvery { dataSource2.fetchCalendars() } returns listOf(calendar)
+        coEvery { dataSource2.fetchEvents(startMs, endMs) } returns emptyList()
+        coEvery { localSource.upsertEventsForCalendars(any(), any(), any(), any()) } just Runs
+        coEvery { cacheMetaDao.upsert(any()) } just Runs
+        every { localSource.observeEvents(startMs, endMs) } returns flowOf(emptyList())
+
+        val repository = CalendarRepository(
+            dataSources = listOf(dataSource1, dataSource2),
+            localSource = localSource,
+            cacheMetaDao = cacheMetaDao,
+            scope = this,
+        )
+        repository.eventsForWeek(startMs, endMs)
+        advanceUntilIdle()
+
+        coVerify { dataSource1.fetchEvents(startMs, endMs) }
+        coVerify { dataSource2.fetchEvents(startMs, endMs) }
+    }
+
+    @Test
     fun `when_eventsForWeek_called_and_cache_is_valid_then_does_not_fetch_from_data_source`() = runTest {
         val dataSource = mockk<CalendarDataSource>()
         val localSource = mockLocalSource()

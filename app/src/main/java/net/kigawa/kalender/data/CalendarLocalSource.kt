@@ -46,8 +46,12 @@ class CalendarLocalSource(
         calendarDao.updateVisibility(id, isVisible)
     }
 
-    private fun CalendarEntity.toModel() = UserCalendar(id, name, color, accountName, isVisible)
+    suspend fun deleteCalendarsByOwnerEmail(ownerEmail: String) {
+        calendarDao.deleteByOwnerEmail(ownerEmail)
+    }
+
+    private fun CalendarEntity.toModel() = UserCalendar(id, name, color, accountName, isVisible, ownerEmail)
     private fun EventEntity.toModel() = CalendarEvent(id, calendarId, title, startMs, endMs, allDay, color, timeZone, description, location, remoteId)
-    private fun UserCalendar.toEntity() = CalendarEntity(id, name, color, accountName, isVisible)
+    private fun UserCalendar.toEntity() = CalendarEntity(id, name, color, accountName, isVisible, ownerEmail)
     private fun CalendarEvent.toEntity() = EventEntity(id, calendarId, title, startMs, endMs, allDay, color, timeZone, description, location, remoteId)
 }

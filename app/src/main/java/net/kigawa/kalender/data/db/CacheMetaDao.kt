@@ -12,4 +12,7 @@ interface CacheMetaDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun upsert(meta: CacheMetaEntity)
+
+    @Query("DELETE FROM cache_meta")
+    suspend fun deleteAll()
 }
