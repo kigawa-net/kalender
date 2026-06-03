@@ -142,6 +142,8 @@ class ProfileViewModel(application: Application) : AndroidViewModel(application)
                 msalDeferred.await().getOrThrow().removeAccount(account)
             }
             iAccountByEmail.remove(email)
+            (getApplication() as KalenderApplication).msAccessToken.value = null
+            (getApplication() as KalenderApplication).msAccountEmail.value = null
             _uiState.update { it.copy(accounts = it.accounts.filter { a -> a.email != email }) }
             localSource.deleteCalendarsByOwnerEmail(email)
         }
