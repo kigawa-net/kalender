@@ -60,4 +60,21 @@ class CalendarLocalSourceTest {
 
         coVerify { calendarDao.deleteByOwnerEmail("removed@example.com") }
     }
+
+    @Test
+    fun `when_observeVisibleCalendars_called_then_only_returns_visible_calendars`() = runTest {
+        val calendarDao = mockk<CalendarDao>()
+        val visible = CalendarEntity(1L, "表示", 0xFF4285F4.toInt(), "cal1@example.com", isVisible = true)
+        val hidden = CalendarEntity(2L, "非表示", 0xFFEA4335.toInt(), "cal2@example.com", isVisible = false)
+        every { calendarDao.observeAll() } returns flowOf(listOf(visible, hidden))
+        every { calendarDao.observeVisible() } returns flowOf(listOf(visible))
+
+        val localSource = makeSource(calendarDao)
+        val calendars = mutableListOf<net.kigawa.kalender.model.UserCalendar>()
+        localSource.observeVisibleCalendars().collect { calendars.addAll(it) }
+
+        assert(calendars.size == 1)
+        assert(calendars[0].name == "表示")
+        assert(calendars[0].isVisible)
+    }
 }

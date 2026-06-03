@@ -63,7 +63,7 @@ class EventEditViewModel(
 
     init {
         viewModelScope.launch {
-            localSource.observeCalendars().collect { calendars ->
+            localSource.observeVisibleCalendars().collect { calendars ->
                 _uiState.update { state ->
                     val calId = if (state.calendarId == 0L) calendars.firstOrNull()?.id ?: 0L else state.calendarId
                     state.copy(calendars = calendars, calendarId = calId)

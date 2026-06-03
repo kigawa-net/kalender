@@ -16,6 +16,9 @@ class CalendarLocalSource(
     fun observeCalendars(): Flow<List<UserCalendar>> =
         calendarDao.observeAll().map { list -> list.map { it.toModel() } }
 
+    fun observeVisibleCalendars(): Flow<List<UserCalendar>> =
+        calendarDao.observeVisible().map { list -> list.map { it.toModel() } }
+
     fun observeEvents(startMs: Long, endMs: Long): Flow<List<CalendarEvent>> =
         eventDao.observeByRange(startMs, endMs).map { list -> list.map { it.toModel() } }
 
