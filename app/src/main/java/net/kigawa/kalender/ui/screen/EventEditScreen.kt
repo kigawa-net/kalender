@@ -350,6 +350,9 @@ private fun CalendarSelector(
                     )
                 }
             },
+            supportingText = selected?.ownerEmail?.takeIf { it.isNotEmpty() }?.let { email ->
+                { Text(email, style = MaterialTheme.typography.labelSmall) }
+            },
             trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
             modifier = Modifier
                 .fillMaxWidth()
@@ -369,7 +372,18 @@ private fun CalendarSelector(
                                 .background(Color(calendar.color), CircleShape),
                         )
                     },
-                    text = { Text(calendar.name) },
+                    text = {
+                        Column {
+                            Text(calendar.name)
+                            if (calendar.ownerEmail.isNotEmpty()) {
+                                Text(
+                                    text = calendar.ownerEmail,
+                                    style = MaterialTheme.typography.labelSmall,
+                                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                )
+                            }
+                        }
+                    },
                     onClick = {
                         onSelect(calendar.id)
                         expanded = false
