@@ -80,4 +80,33 @@ class EventOverlapLayoutTest {
         assertEquals(0, e3Layout.columnIndex)
         assertEquals(1, e3Layout.totalColumns)
     }
+
+    @Test
+    fun `when_chain_overlap_then_totalColumns_is_consistent_within_group`() {
+        // A(9-10)とB(9-12)が重なり、B(9-12)とC(10-12)・D(10-12)も重なる連鎖
+        // → A-B-C-D は同一グループ。totalColumns はグループ全体で統一される
+        val a = makeEvent(1, 9, 10)
+        val b = makeEvent(2, 9, 12)
+        val c = makeEvent(3, 10, 12)
+        val d = makeEvent(4, 10, 12)
+        val result = layoutDayEvents(listOf(a, b, c, d), zone)
+
+        // 全員が同じ totalColumns を持つ
+        val totalCols = result.first().totalColumns
+        result.forEach { assertEquals(totalCols, it.totalColumns) }
+
+        // 同時間帯の予定どうしで columnIndex が重複しない
+        fun overlaps(x: EventColumnLayout, y: EventColumnLayout) =
+            x.startMinutes < y.startMinutes + y.durationMinutes &&
+            y.startMinutes < x.startMinutes + x.durationMinutes
+        for (i in result.indices) {
+            for (j in i + 1 until result.size) {
+                if (overlaps(result[i], result[j])) {
+                    assert(result[i].columnIndex != result[j].columnIndex) {
+                        "events ${result[i].event.id} and ${result[j].event.id} overlap but share column ${result[i].columnIndex}"
+                    }
+                }
+            }
+        }
+    }
 }

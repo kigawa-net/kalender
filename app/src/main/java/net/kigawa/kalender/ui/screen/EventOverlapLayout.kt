@@ -22,27 +22,45 @@ internal fun layoutDayEvents(events: List<CalendarEvent>, zoneId: ZoneId): List<
         val start = startZdt.hour * 60 + startZdt.minute
         val duration = maxOf(30, ((event.endMs - event.startMs) / 60_000L).toInt())
         Timed(event, start, start + duration)
-    }.sortedBy { it.start }
+    }
 
-    // 貪欲法でカラムを割り当てる（各カラムの末尾時刻を追跡）
-    val columnEnds = mutableListOf<Int>()
-    val assigned = mutableListOf<Pair<Timed, Int>>()
-    for (t in timed) {
-        val col = columnEnds.indexOfFirst { it <= t.start }
-        if (col == -1) {
-            assigned.add(t to columnEnds.size)
-            columnEnds.add(t.end)
-        } else {
-            assigned.add(t to col)
-            columnEnds[col] = t.end
+    // Union-Find でオーバーラップの連結成分を求める
+    val parent = IntArray(timed.size) { it }
+    fun find(x: Int): Int {
+        if (parent[x] != x) parent[x] = find(parent[x])
+        return parent[x]
+    }
+    for (i in timed.indices) {
+        for (j in i + 1 until timed.size) {
+            if (timed[i].start < timed[j].end && timed[j].start < timed[i].end) {
+                parent[find(i)] = find(j)
+            }
         }
     }
 
-    // 各予定の totalColumns = 同時間帯の予定が使う最大カラム番号 + 1
-    return assigned.map { (t, col) ->
-        val maxCol = assigned
-            .filter { (other, _) -> other.start < t.end && other.end > t.start }
-            .maxOf { (_, c) -> c }
-        EventColumnLayout(t.event, col, maxCol + 1, t.start, t.end - t.start)
+    // 連結成分ごとにカラムを割り当て、totalColumns を統一する
+    val result = mutableListOf<EventColumnLayout>()
+    timed.indices.groupBy { find(it) }.values.forEach { indices ->
+        val group = indices.map { timed[it] }.sortedBy { it.start }
+
+        val columnEnds = mutableListOf<Int>()
+        val colAssigned = mutableListOf<Int>()
+        for (t in group) {
+            val col = columnEnds.indexOfFirst { it <= t.start }
+            if (col == -1) {
+                colAssigned.add(columnEnds.size)
+                columnEnds.add(t.end)
+            } else {
+                colAssigned.add(col)
+                columnEnds[col] = t.end
+            }
+        }
+
+        val totalCols = columnEnds.size
+        group.zip(colAssigned).forEach { (t, col) ->
+            result.add(EventColumnLayout(t.event, col, totalCols, t.start, t.end - t.start))
+        }
     }
+
+    return result
 }
