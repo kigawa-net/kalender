@@ -3,6 +3,7 @@ package net.kigawa.kalender.ui.screen
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -60,6 +61,7 @@ import java.time.LocalDate
 import java.time.LocalTime
 import java.time.ZoneId
 import java.time.temporal.TemporalAdjusters
+
 
 private val HourHeight = 64.dp
 private val TimeColumnWidth = 48.dp
@@ -302,7 +304,7 @@ private fun WeekTimeGrid(
                 Instant.ofEpochMilli(event.startMs).atZone(ZoneId.systemDefault()).toLocalDate() == date
             }
 
-            Box(
+            BoxWithConstraints(
                 modifier = Modifier
                     .weight(1f)
                     .height(HourHeight * 24),
@@ -325,26 +327,25 @@ private fun WeekTimeGrid(
                     )
                 }
 
-                dayEvents.forEach { event ->
-                    val startZdt = Instant.ofEpochMilli(event.startMs).atZone(ZoneId.systemDefault())
-                    val startMinutes = startZdt.hour * 60 + startZdt.minute
-                    val durationMinutes = maxOf(30, ((event.endMs - event.startMs) / 60_000L).toInt())
-                    val topOffset = HourHeight * startMinutes / 60f
-                    val eventHeight = HourHeight * durationMinutes / 60f
+                val eventLayouts = layoutDayEvents(dayEvents, ZoneId.systemDefault())
+                eventLayouts.forEach { layout ->
+                    val topOffset = HourHeight * layout.startMinutes / 60f
+                    val eventHeight = HourHeight * layout.durationMinutes / 60f
+                    val colWidth = maxWidth / layout.totalColumns
+                    val leftOffset = colWidth * layout.columnIndex
 
                     Surface(
-                        onClick = { onEventClick(event.id) },
+                        onClick = { onEventClick(layout.event.id) },
                         modifier = Modifier
-                            .offset(y = topOffset)
-                            .fillMaxWidth()
-                            .height(maxOf(eventHeight, 28.dp))
-                            .padding(horizontal = 1.dp),
+                            .offset(x = leftOffset, y = topOffset)
+                            .width(colWidth - 2.dp)
+                            .height(maxOf(eventHeight, 28.dp)),
                         shape = RoundedCornerShape(4.dp),
-                        color = Color(event.color).copy(alpha = 0.85f),
+                        color = Color(layout.event.color).copy(alpha = 0.85f),
                         contentColor = Color.White,
                     ) {
                         Text(
-                            text = event.title,
+                            text = layout.event.title,
                             style = MaterialTheme.typography.labelSmall,
                             maxLines = 2,
                             overflow = TextOverflow.Ellipsis,
