@@ -319,14 +319,16 @@ private fun WeekTimeGrid(
                 Instant.ofEpochMilli(event.startMs).atZone(ZoneId.systemDefault()).toLocalDate() == date
             }
 
+            val columnBg = when {
+                isToday -> MaterialTheme.colorScheme.primary.copy(alpha = 0.06f)
+                i % 2 == 1 -> MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.25f)
+                else -> Color.Transparent
+            }
             BoxWithConstraints(
                 modifier = Modifier
                     .weight(1f)
                     .height(HourHeight * 24)
-                    .then(
-                        if (isToday) Modifier.background(MaterialTheme.colorScheme.primary.copy(alpha = 0.04f))
-                        else Modifier
-                    ),
+                    .background(columnBg),
             ) {
                 for (hour in 0..23) {
                     HorizontalDivider(
