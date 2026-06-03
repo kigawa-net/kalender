@@ -40,17 +40,32 @@ class AuthViewModel(application: Application) : AndroidViewModel(application) {
         runCatching { MsalAuthManager.create(getApplication()) }
     }
 
-    /** null = まだ初期状態確認中, true = 認証済み, false = 未ログイン */
+    private val prefs = application.getSharedPreferences("kalender_auth", Context.MODE_PRIVATE)
+
+    // 過去に認証成功した記録。アプリ起動時のスピナー表示を省くために使用する
+    private var hadPreviousSession = prefs.getBoolean("had_auth", false)
+
+    /**
+     * null = 初回起動中（認証状態未確定）
+     * true = 認証済み or 過去に認証したことがある（バックグラウンド再認証中を含む）
+     * false = 未ログイン
+     */
     val isLoggedIn: StateFlow<Boolean?> = combine(
         googleAuthState,
         msAuthState,
     ) { google, ms ->
-        when {
-            google is GoogleAuthManager.AuthState.SignedIn || ms is MsAuthState.SignedIn -> true
-            ms is MsAuthState.Initializing || google is GoogleAuthManager.AuthState.Loading -> null
-            else -> false
+        val loggedIn = google is GoogleAuthManager.AuthState.SignedIn || ms is MsAuthState.SignedIn
+        if (loggedIn && !hadPreviousSession) {
+            hadPreviousSession = true
+            prefs.edit().putBoolean("had_auth", true).apply()
         }
-    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), null)
+        when {
+            loggedIn -> true
+            ms is MsAuthState.Initializing || google is GoogleAuthManager.AuthState.Loading ->
+                if (hadPreviousSession) true else null
+            else -> if (hadPreviousSession) true else false
+        }
+    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), if (hadPreviousSession) true else null)
 
     init {
         viewModelScope.launch {
@@ -118,6 +133,8 @@ class AuthViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     fun signOut() {
+        hadPreviousSession = false
+        prefs.edit().putBoolean("had_auth", false).apply()
         googleAuthManager.signOut()
         (getApplication() as KalenderApplication).msAccessToken.value = null
         (getApplication() as KalenderApplication).msAccountEmail.value = null
