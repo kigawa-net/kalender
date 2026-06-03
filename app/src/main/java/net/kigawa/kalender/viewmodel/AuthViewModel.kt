@@ -12,6 +12,8 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import net.kigawa.kalender.KalenderApplication
@@ -43,6 +45,7 @@ class AuthViewModel(application: Application) : AndroidViewModel(application) {
     private val prefs = application.getSharedPreferences("kalender_auth", Context.MODE_PRIVATE)
 
     // 過去に認証成功した記録。アプリ起動時のスピナー表示を省くために使用する
+    @Volatile
     private var hadPreviousSession = prefs.getBoolean("had_auth", false)
 
     /**
@@ -55,27 +58,35 @@ class AuthViewModel(application: Application) : AndroidViewModel(application) {
         msAuthState,
     ) { google, ms ->
         val loggedIn = google is GoogleAuthManager.AuthState.SignedIn || ms is MsAuthState.SignedIn
-        if (loggedIn && !hadPreviousSession) {
-            hadPreviousSession = true
-            prefs.edit().putBoolean("had_auth", true).apply()
-        }
+        // hadPreviousSession の更新のみ行い、SharedPreferences への I/O は init の collect で行う
         when {
-            loggedIn -> true
+            loggedIn -> {
+                hadPreviousSession = true
+                true
+            }
             ms is MsAuthState.Initializing || google is GoogleAuthManager.AuthState.Loading ->
                 // 認証チェック中はアプリを即表示してスピナーを省く
                 if (hadPreviousSession) true else null
             else -> {
                 // 両方の認証チェックが SignedOut で完了 → 資格情報失効の可能性があるためログイン画面へ
-                if (hadPreviousSession) {
-                    hadPreviousSession = false
-                    prefs.edit().putBoolean("had_auth", false).apply()
-                }
+                hadPreviousSession = false
                 false
             }
         }
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), if (hadPreviousSession) true else null)
 
     init {
+        // isLoggedIn の確定値が変化したときのみ SharedPreferences に永続化する
+        // combine の transform 内では副作用を起こさず、ここで I/O を一元管理する
+        viewModelScope.launch {
+            isLoggedIn
+                .filterNotNull()
+                .distinctUntilChanged()
+                .collect { loggedIn ->
+                    prefs.edit().putBoolean("had_auth", loggedIn).apply()
+                }
+        }
+
         viewModelScope.launch {
             msalDeferred.await()
                 .onSuccess { manager ->
