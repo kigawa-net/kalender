@@ -1,5 +1,6 @@
 package net.kigawa.kalender.ui.screen
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -10,6 +11,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
@@ -46,6 +49,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -337,6 +341,18 @@ private fun CalendarSelector(
             onValueChange = {},
             readOnly = true,
             label = { Text("カレンダー") },
+            leadingIcon = selected?.let { cal ->
+                {
+                    Box(
+                        modifier = Modifier
+                            .size(16.dp)
+                            .background(Color(cal.color), CircleShape),
+                    )
+                }
+            },
+            supportingText = selected?.ownerEmail?.takeIf { it.isNotEmpty() }?.let { email ->
+                { Text(email, style = MaterialTheme.typography.labelSmall) }
+            },
             trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
             modifier = Modifier
                 .fillMaxWidth()
@@ -349,7 +365,25 @@ private fun CalendarSelector(
         ) {
             calendars.forEach { calendar ->
                 DropdownMenuItem(
-                    text = { Text(calendar.name) },
+                    leadingIcon = {
+                        Box(
+                            modifier = Modifier
+                                .size(16.dp)
+                                .background(Color(calendar.color), CircleShape),
+                        )
+                    },
+                    text = {
+                        Column {
+                            Text(calendar.name)
+                            if (calendar.ownerEmail.isNotEmpty()) {
+                                Text(
+                                    text = calendar.ownerEmail,
+                                    style = MaterialTheme.typography.labelSmall,
+                                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                )
+                            }
+                        }
+                    },
                     onClick = {
                         onSelect(calendar.id)
                         expanded = false
