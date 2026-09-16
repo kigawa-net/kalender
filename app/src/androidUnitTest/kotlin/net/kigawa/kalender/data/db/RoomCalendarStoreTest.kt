@@ -1,4 +1,4 @@
-package net.kigawa.kalender.data
+package net.kigawa.kalender.data.db
 
 import io.mockk.coVerify
 import io.mockk.every
@@ -8,18 +8,16 @@ import io.mockk.Runs
 import io.mockk.coEvery
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
-import net.kigawa.kalender.data.db.CalendarDao
-import net.kigawa.kalender.data.db.CalendarEntity
-import net.kigawa.kalender.data.db.EventDao
 import org.junit.Test
 
-class CalendarLocalSourceTest {
+class RoomCalendarStoreTest {
 
     private val calendarId = 1L
 
-    private fun makeSource(calendarDao: CalendarDao): CalendarLocalSource {
+    private fun makeSource(calendarDao: CalendarDao): RoomCalendarStore {
         val eventDao = mockk<EventDao>()
-        return CalendarLocalSource(calendarDao, eventDao)
+        val cacheMetaDao = mockk<CacheMetaDao>()
+        return RoomCalendarStore(calendarDao, eventDao, cacheMetaDao)
     }
 
     @Test

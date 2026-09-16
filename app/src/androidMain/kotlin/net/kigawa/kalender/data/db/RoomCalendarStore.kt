@@ -7,11 +7,18 @@ import net.kigawa.kalender.data.LocalCalendarStore
 import net.kigawa.kalender.model.CalendarEvent
 import net.kigawa.kalender.model.UserCalendar
 
-class RoomCalendarStore(context: Context) : LocalCalendarStore {
-    private val db = KalenderDatabase.getInstance(context)
-    private val calendarDao = db.calendarDao()
-    private val eventDao = db.eventDao()
-    private val cacheMetaDao = db.cacheMetaDao()
+class RoomCalendarStore(
+    private val calendarDao: CalendarDao,
+    private val eventDao: EventDao,
+    private val cacheMetaDao: CacheMetaDao,
+) : LocalCalendarStore {
+
+    companion object {
+        fun fromContext(context: Context): RoomCalendarStore {
+            val db = KalenderDatabase.getInstance(context)
+            return RoomCalendarStore(db.calendarDao(), db.eventDao(), db.cacheMetaDao())
+        }
+    }
 
     override fun observeCalendars(): Flow<List<UserCalendar>> =
         calendarDao.observeAll().map { list -> list.map { it.toModel() } }

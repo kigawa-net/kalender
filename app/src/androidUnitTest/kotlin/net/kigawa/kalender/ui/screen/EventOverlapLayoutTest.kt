@@ -1,17 +1,22 @@
+@file:OptIn(kotlin.time.ExperimentalTime::class)
+
 package net.kigawa.kalender.ui.screen
 
+import kotlinx.datetime.LocalDate
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.atTime
+import kotlinx.datetime.toInstant
 import net.kigawa.kalender.model.CalendarEvent
 import org.junit.Assert.assertEquals
 import org.junit.Test
-import java.time.ZoneOffset
 
 class EventOverlapLayoutTest {
 
-    private val zone = ZoneOffset.UTC
-    private val base = java.time.LocalDate.of(2024, 1, 1)
+    private val zone = TimeZone.UTC
+    private val base = LocalDate(2024, 1, 1)
 
     private fun minutesToMs(hour: Int, minute: Int = 0): Long =
-        base.atTime(hour, minute).toInstant(zone).toEpochMilli()
+        base.atTime(hour, minute).toInstant(zone).toEpochMilliseconds()
 
     private fun makeEvent(id: Long, startHour: Int, endHour: Int, startMin: Int = 0, endMin: Int = 0) =
         CalendarEvent(

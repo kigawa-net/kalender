@@ -24,7 +24,7 @@ class KalenderApplication : Application() {
 
     val container = AppContainer(
         httpClient = HttpClient(OkHttp),
-        localStore = RoomCalendarStore(this),
+        localStore = RoomCalendarStore.fromContext(this),
         settings = KeyValueStoreAndroid(this),
         googleAuthController = googleAuthController,
         microsoftAuthController = microsoftAuthController,
