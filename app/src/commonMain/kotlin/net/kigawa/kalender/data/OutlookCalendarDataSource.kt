@@ -23,6 +23,7 @@ import kotlinx.serialization.json.jsonPrimitive
 import kotlinx.serialization.json.put
 import net.kigawa.kalender.model.CalendarEvent
 import net.kigawa.kalender.model.UserCalendar
+import net.kigawa.kalender.util.formatIsoDateAtMidnight
 import net.kigawa.kalender.util.formatLocalDateTimeNoOffset
 import net.kigawa.kalender.util.parseIsoInstantMs
 
@@ -90,11 +91,19 @@ class OutlookCalendarDataSource(
             put("subject", event.title)
             put("isAllDay", event.allDay)
             put("start", buildJsonObject {
-                put("dateTime", formatLocalDateTimeNoOffset(event.startMs, TimeZone.UTC))
+                put(
+                    "dateTime",
+                    if (event.allDay) formatIsoDateAtMidnight(event.startMs)
+                    else formatLocalDateTimeNoOffset(event.startMs, TimeZone.UTC)
+                )
                 put("timeZone", "UTC")
             })
             put("end", buildJsonObject {
-                put("dateTime", formatLocalDateTimeNoOffset(event.endMs, TimeZone.UTC))
+                put(
+                    "dateTime",
+                    if (event.allDay) formatIsoDateAtMidnight(event.endMs)
+                    else formatLocalDateTimeNoOffset(event.endMs, TimeZone.UTC)
+                )
                 put("timeZone", "UTC")
             })
             if (event.description.isNotEmpty()) {

@@ -74,6 +74,14 @@ fun formatIsoOffsetDateTime(ms: Long, zone: TimeZone): String {
 /** "yyyy-MM-dd" 形式 (終日イベントの日付) */
 fun formatIsoDate(ms: Long, zone: TimeZone = systemZone()): String = ms.toLocalDate(zone).toString()
 
+/**
+ * 終日イベント向けのローカル日付0時の日時文字列 ("yyyy-MM-ddT00:00:00.0000000")。
+ * 終日イベントはタイムゾーンを持たない概念のため、実時刻をUTC変換せずローカル日付のみを使う
+ * (Microsoft Graph APIはisAllDay=trueの場合、日時が厳密に00:00:00であることを要求する)。
+ */
+fun formatIsoDateAtMidnight(ms: Long, zone: TimeZone = systemZone()): String =
+    "${formatIsoDate(ms, zone)}T00:00:00.0000000"
+
 /** オフセットなしのローカル日時文字列 (Outlook Graph API向け) */
 fun formatLocalDateTimeNoOffset(ms: Long, zone: TimeZone): String {
     val ldt = Instant.fromEpochMilliseconds(ms).toLocalDateTime(zone)
