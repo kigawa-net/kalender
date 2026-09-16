@@ -34,7 +34,7 @@ fun KalenderTheme(
 
     MaterialTheme(
         colorScheme = colorScheme,
-        typography = Typography,
+        typography = kalenderTypography(),
         content = content
     )
 }
