@@ -1,0 +1,17 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: kalender-api
+spec:
+  ingressClassName: haproxy
+  rules:
+    - host: kalender-api.kigawa.net
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: kalender-api
+                port:
+                  number: 8080

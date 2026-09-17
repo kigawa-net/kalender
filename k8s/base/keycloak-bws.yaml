@@ -1,0 +1,16 @@
+# Bitwardenに保存されたkalender-org-serviceクライアントシークレットをこのnamespaceに同期する。
+# 前提: このnamespaceに認証用Secret `bitwarden-sec` (キー: token) が別途用意されていること、
+# および下記 bwSecretId をBitwarden上の実際のシークレットUUIDに置き換えること。
+apiVersion: k8s.bitwarden.com/v1
+kind: BitwardenSecret
+metadata:
+  name: kalender-org-service-keycloak-bws
+spec:
+  organizationId: "a2b57f3d-6e2b-4467-b499-b31e00bfd804"
+  secretName: kalender-org-service-keycloak
+  authToken:
+    secretName: bitwarden-sec
+    secretKey: token
+  map:
+    - bwSecretId: "REPLACE_WITH_ORG_SERVICE_CLIENT_SECRET_UUID"
+      secretKeyName: client-secret
