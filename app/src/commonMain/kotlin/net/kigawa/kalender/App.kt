@@ -50,11 +50,10 @@ fun KalenderRoot(container: AppContainer) {
         KalenderTheme {
             val authViewModel: AuthViewModel = viewModel(factory = viewModelFactory {
                 initializer {
-                    AuthViewModel(container.googleAuthController, container.microsoftAuthController, container.settings)
+                    AuthViewModel(container.authController, container.settings)
                 }
             })
-            val googleState by authViewModel.googleAuthState.collectAsStateWithLifecycle()
-            val msState by authViewModel.msAuthState.collectAsStateWithLifecycle()
+            val authState by authViewModel.authState.collectAsStateWithLifecycle()
             val isLoggedIn by authViewModel.isLoggedIn.collectAsStateWithLifecycle()
 
             when (isLoggedIn) {
@@ -63,10 +62,8 @@ fun KalenderRoot(container: AppContainer) {
                 }
                 true -> KalenderApp(container)
                 false -> LoginScreen(
-                    googleState = googleState,
-                    msState = msState,
-                    onGoogleSignIn = { authViewModel.signInWithGoogle() },
-                    onMsSignIn = { authViewModel.signInWithMicrosoft() },
+                    authState = authState,
+                    onSignIn = { authViewModel.signIn() },
                 )
             }
         }
@@ -123,8 +120,8 @@ private fun KalenderApp(container: AppContainer) {
                 val vm: WeeklyCalendarViewModel = viewModel(factory = viewModelFactory {
                     initializer {
                         WeeklyCalendarViewModel(
-                            container.googleAuthController,
-                            container.microsoftAuthController,
+                            container.authController,
+                            container.apiClient,
                             container.localStore,
                             container.httpClient,
                         )
@@ -158,8 +155,8 @@ private fun KalenderApp(container: AppContainer) {
                 val vm: EventEditViewModel = viewModel(factory = viewModelFactory {
                     initializer {
                         EventEditViewModel(
-                            container.googleAuthController,
-                            container.microsoftAuthController,
+                            container.authController,
+                            container.apiClient,
                             container.localStore,
                             container.httpClient,
                             eventId,
@@ -172,8 +169,8 @@ private fun KalenderApp(container: AppContainer) {
                 val vm: EventEditViewModel = viewModel(factory = viewModelFactory {
                     initializer {
                         EventEditViewModel(
-                            container.googleAuthController,
-                            container.microsoftAuthController,
+                            container.authController,
+                            container.apiClient,
                             container.localStore,
                             container.httpClient,
                             null,
@@ -185,7 +182,12 @@ private fun KalenderApp(container: AppContainer) {
             composable(AppDestinations.PROFILE.route) {
                 val vm: ProfileViewModel = viewModel(factory = viewModelFactory {
                     initializer {
-                        ProfileViewModel(container.googleAuthController, container.microsoftAuthController, container.localStore)
+                        ProfileViewModel(
+                            container.authController,
+                            container.apiClient,
+                            container.localStore,
+                            container.accountLinkRedirectUri,
+                        )
                     }
                 })
                 ProfileScreen(viewModel = vm)

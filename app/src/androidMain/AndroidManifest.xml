@@ -6,11 +6,6 @@
     <uses-permission android:name="android.permission.READ_CALENDAR" />
     <uses-permission android:name="android.permission.WRITE_CALENDAR" />
 
-    <queries>
-        <package android:name="com.azure.authenticator" />
-        <package android:name="com.microsoft.windowsintune.companyportal" />
-    </queries>
-
     <application
             android:name=".KalenderApplication"
             android:allowBackup="true"
@@ -22,32 +17,24 @@
             android:supportsRtl="true"
             android:theme="@style/Theme.Kalender">
         <activity
-                android:name="com.microsoft.identity.client.BrowserTabActivity"
-                android:exported="true">
-            <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-                <data
-                        android:host="net.kigawa.kalender"
-                        android:path="/NzMGGgqiavH14j5mkahAmPCPc9E="
-                        android:scheme="msauth" />
-            </intent-filter>
-        </activity>
-
-        <activity android:name="com.microsoft.identity.common.internal.providers.oauth2.AuthorizationActivity"
-            android:exported="false" />
-        <activity android:name="com.microsoft.identity.common.internal.providers.oauth2.CurrentTaskAuthorizationActivity"
-            android:exported="false" />
-
-        <activity
                 android:name=".MainActivity"
                 android:exported="true"
+                android:launchMode="singleTask"
                 android:theme="@style/Theme.Kalender">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
 
                 <category android:name="android.intent.category.LAUNCHER"/>
+            </intent-filter>
+
+            <!-- KeycloakのAuthorization Code + PKCEフローのリダイレクト受け口 -->
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data
+                        android:scheme="net.kigawa.kalender"
+                        android:host="oauth2redirect" />
             </intent-filter>
         </activity>
     </application>

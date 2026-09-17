@@ -6,59 +6,33 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import net.kigawa.kalender.data.KalenderApiClient
 import net.kigawa.kalender.data.LocalCalendarStore
-import net.kigawa.kalender.data.auth.GoogleAuthController
-import net.kigawa.kalender.data.auth.GoogleAuthState
-import net.kigawa.kalender.data.auth.MicrosoftAuthController
+import net.kigawa.kalender.data.LinkedAccount
+import net.kigawa.kalender.data.auth.AuthController
+import net.kigawa.kalender.data.auth.KeycloakAuthState
 import net.kigawa.kalender.model.UserCalendar
-
-data class OutlookAccount(val email: String)
-
-data class GoogleAccount(val email: String, val displayName: String?)
+import net.kigawa.kalender.util.openUrlInBrowser
 
 data class ProfileUiState(
-    val accounts: List<OutlookAccount> = emptyList(),
-    val googleAccount: GoogleAccount? = null,
-    val isAddingAccount: Boolean = false,
-    val isAddingGoogleAccount: Boolean = false,
-    val addAccountError: String? = null,
-    val addGoogleAccountError: String? = null,
+    val linkedAccounts: List<LinkedAccount> = emptyList(),
+    val isLoadingLinkedAccounts: Boolean = true,
+    val pendingLinkProvider: String? = null,
+    val linkError: String? = null,
     val calendarsByOwnerEmail: Map<String, List<UserCalendar>> = emptyMap(),
 )
 
 class ProfileViewModel(
-    private val googleAuthController: GoogleAuthController,
-    private val microsoftAuthController: MicrosoftAuthController,
+    private val authController: AuthController,
+    private val apiClient: KalenderApiClient,
     private val localStore: LocalCalendarStore,
+    private val accountLinkRedirectUri: String,
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(ProfileUiState())
     val uiState: StateFlow<ProfileUiState> = _uiState
 
     init {
-        viewModelScope.launch {
-            microsoftAuthController.accounts.collect { accounts ->
-                _uiState.update { it.copy(accounts = accounts.map { a -> OutlookAccount(a.email) }) }
-            }
-        }
-        viewModelScope.launch {
-            googleAuthController.authState.collect { state ->
-                _uiState.update {
-                    when (state) {
-                        is GoogleAuthState.SignedIn -> it.copy(
-                            googleAccount = GoogleAccount(state.email, state.displayName),
-                            isAddingGoogleAccount = false,
-                            addGoogleAccountError = null,
-                        )
-                        is GoogleAuthState.SignedOut -> it.copy(googleAccount = null, isAddingGoogleAccount = false)
-                        is GoogleAuthState.Loading -> it.copy(isAddingGoogleAccount = true, addGoogleAccountError = null)
-                        is GoogleAuthState.Error -> it.copy(
-                            isAddingGoogleAccount = false,
-                            addGoogleAccountError = state.message,
-                        )
-                    }
-                }
-            }
-        }
+        refreshLinkedAccounts()
         viewModelScope.launch {
             localStore.observeCalendars().collect { calendars ->
                 _uiState.update { it.copy(calendarsByOwnerEmail = calendars.groupBy { c -> c.ownerEmail }) }
@@ -66,39 +40,45 @@ class ProfileViewModel(
         }
     }
 
-    fun addAccount(platformHandle: Any? = null) {
+    fun refreshLinkedAccounts() {
         viewModelScope.launch {
-            _uiState.update { it.copy(isAddingAccount = true, addAccountError = null) }
-            runCatching { microsoftAuthController.addAccount(platformHandle) }
-                .onFailure { e ->
-                    _uiState.update { it.copy(isAddingAccount = false, addAccountError = e.message ?: "認証に失敗しました") }
-                    return@launch
+            val authState = authController.authState.value
+            if (authState !is KeycloakAuthState.SignedIn) {
+                _uiState.update { it.copy(isLoadingLinkedAccounts = false, linkedAccounts = emptyList()) }
+                return@launch
+            }
+            _uiState.update { it.copy(isLoadingLinkedAccounts = true) }
+            val accounts = apiClient.fetchLinkedAccounts(authState.accessToken)
+            _uiState.update { it.copy(isLoadingLinkedAccounts = false, linkedAccounts = accounts) }
+        }
+    }
+
+    /** provider: "google" または "microsoft"。連携用URLを取得しブラウザで開く */
+    fun linkAccount(provider: String, platformHandle: Any? = null) {
+        viewModelScope.launch {
+            val authState = authController.authState.value
+            if (authState !is KeycloakAuthState.SignedIn) return@launch
+            _uiState.update { it.copy(pendingLinkProvider = provider, linkError = null) }
+            val url = apiClient.fetchAccountLinkUrl(authState.accessToken, provider, accountLinkRedirectUri)
+            if (url == null) {
+                _uiState.update {
+                    it.copy(pendingLinkProvider = null, linkError = "連携用URLの取得に失敗しました")
                 }
-            _uiState.update { it.copy(isAddingAccount = false) }
+                return@launch
+            }
+            openUrlInBrowser(url, platformHandle)
         }
     }
 
-    fun removeAccount(email: String) {
+    fun unlinkAccount(provider: String, ownerEmail: String) {
         viewModelScope.launch {
-            microsoftAuthController.removeAccount(email)
-            localStore.deleteCalendarsByOwnerEmail(email)
+            val authState = authController.authState.value
+            if (authState is KeycloakAuthState.SignedIn) {
+                apiClient.unlinkAccount(authState.accessToken, provider)
+            }
+            localStore.deleteCalendarsByOwnerEmail(ownerEmail)
+            refreshLinkedAccounts()
         }
-    }
-
-    fun addGoogleAccount(platformHandle: Any? = null) {
-        viewModelScope.launch { googleAuthController.signIn(platformHandle) }
-    }
-
-    fun removeGoogleAccount() {
-        val email = (googleAuthController.authState.value as? GoogleAuthState.SignedIn)?.email
-        googleAuthController.signOut()
-        if (email != null) {
-            viewModelScope.launch { localStore.deleteCalendarsByOwnerEmail(email) }
-        }
-    }
-
-    fun dismissAddAccountError() {
-        _uiState.update { it.copy(addAccountError = null) }
     }
 
     fun updateCalendarVisibility(id: Long, isVisible: Boolean) {

@@ -16,12 +16,11 @@ import kotlinx.datetime.LocalDate
 import net.kigawa.kalender.data.CalendarDataSource
 import net.kigawa.kalender.data.CalendarRepository
 import net.kigawa.kalender.data.GoogleCalendarDataSource
+import net.kigawa.kalender.data.KalenderApiClient
 import net.kigawa.kalender.data.LocalCalendarStore
 import net.kigawa.kalender.data.OutlookCalendarDataSource
-import net.kigawa.kalender.data.auth.GoogleAuthController
-import net.kigawa.kalender.data.auth.GoogleAuthState
-import net.kigawa.kalender.data.auth.MicrosoftAuthController
-import net.kigawa.kalender.data.auth.MsAuthState
+import net.kigawa.kalender.data.auth.AuthController
+import net.kigawa.kalender.data.auth.KeycloakAuthState
 import net.kigawa.kalender.model.CalendarEvent
 import net.kigawa.kalender.model.UserCalendar
 import net.kigawa.kalender.util.mondayOfWeek
@@ -38,8 +37,8 @@ data class WeeklyCalendarUiState(
 )
 
 class WeeklyCalendarViewModel(
-    private val googleAuthController: GoogleAuthController,
-    private val microsoftAuthController: MicrosoftAuthController,
+    private val authController: AuthController,
+    private val apiClient: KalenderApiClient,
     private val localStore: LocalCalendarStore,
     private val httpClient: HttpClient,
 ) : ViewModel() {
@@ -48,24 +47,18 @@ class WeeklyCalendarViewModel(
     private val _refreshTrigger = MutableStateFlow(0)
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    val uiState: StateFlow<WeeklyCalendarUiState> = combine(
-        googleAuthController.authState,
-        microsoftAuthController.authState,
-    ) { googleState, msState -> googleState to msState }
-        .flatMapLatest { (googleState, msState) ->
-            val dataSources = mutableListOf<CalendarDataSource>()
-            if (googleState is GoogleAuthState.SignedIn) {
-                dataSources.add(GoogleCalendarDataSource(googleState.accessToken, googleState.email, httpClient))
+    val uiState: StateFlow<WeeklyCalendarUiState> = authController.authState
+        .flatMapLatest { authState ->
+            if (authState !is KeycloakAuthState.SignedIn) {
+                return@flatMapLatest flowOf(WeeklyCalendarUiState())
             }
-            if (msState is MsAuthState.SignedIn) {
-                dataSources.add(OutlookCalendarDataSource(msState.accessToken, msState.email, httpClient))
-            }
+            val dataSources = buildDataSources(authState.accessToken)
 
             if (dataSources.isEmpty()) {
                 return@flatMapLatest flowOf(WeeklyCalendarUiState())
             }
 
-            // 認証状態の変化（アカウント追加/削除/起動時の再認証）のたびにキャッシュを破棄する。
+            // 認証状態の変化（アカウント連携追加/解除/起動時の再認証）のたびにキャッシュを破棄する。
             // 新しいデータソースが追加された場合にキャッシュが有効だとそのソースのイベントが取得されないため、
             // 意図的に全週を再フェッチする。TTL による節約はバックグラウンド復帰時の _refreshTrigger で行う。
             localStore.clearWeekCache()
@@ -100,6 +93,21 @@ class WeeklyCalendarViewModel(
                 }
             }
         }.stateIn(viewModelScope, SharingStarted.Eagerly, WeeklyCalendarUiState())
+
+    /** Keycloakに紐付け済みのGoogle/Microsoftアカウントごとに、実カレンダーAPI用のデータソースを構築する */
+    private suspend fun buildDataSources(keycloakAccessToken: String): List<CalendarDataSource> {
+        val linkedAccounts = apiClient.fetchLinkedAccounts(keycloakAccessToken)
+        val dataSources = mutableListOf<CalendarDataSource>()
+        for (account in linkedAccounts) {
+            val ownerEmail = account.providerUserName ?: continue
+            val providerToken = apiClient.fetchCalendarToken(keycloakAccessToken, account.provider) ?: continue
+            when (account.provider) {
+                "google" -> dataSources.add(GoogleCalendarDataSource(providerToken, ownerEmail, httpClient))
+                "microsoft" -> dataSources.add(OutlookCalendarDataSource(providerToken, ownerEmail, httpClient))
+            }
+        }
+        return dataSources
+    }
 
     fun setWeek(week: LocalDate) = _weekStart.update { week }
 
