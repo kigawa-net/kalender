@@ -8,7 +8,7 @@ namespace: kigawa-net-kalender
 
 images:
   - name: harbor.kigawa.net/library/kalender-api
-    newTag: main-23dee7cc19f7a3c4c3cb66f5e43c27e4c4de0e2c
+    newTag: main-7a23e45c945b92d8931b0090c7239ece8cca9225
 
 patches:
   - path: ingress-tls-patch.yaml
