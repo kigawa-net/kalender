@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: kalender-api
+spec:
+  selector:
+    app: kalender-api
+  ports:
+    - port: 8080
+      targetPort: 8080

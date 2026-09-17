@@ -25,3 +25,4 @@ dependencyResolutionManagement {
 
 rootProject.name = "kalender"
 include(":app")
+include(":server")

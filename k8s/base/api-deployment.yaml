@@ -1,0 +1,53 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kalender-api
+  labels:
+    app: kalender-api
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: kalender-api
+  template:
+    metadata:
+      labels:
+        app: kalender-api
+    spec:
+      containers:
+        - name: kalender-api
+          image: harbor.kigawa.net/library/kalender-api:latest
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8080
+          env:
+            - name: KEYCLOAK_BASE_URL
+              value: "https://user.kigawa.net"
+            - name: KEYCLOAK_REALM
+              value: "kigawa-net"
+            - name: KEYCLOAK_ORG_SERVICE_CLIENT_ID
+              value: "kalender-org-service"
+            - name: KEYCLOAK_ORG_SERVICE_CLIENT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: kalender-org-service-keycloak
+                  key: client-secret
+          resources:
+            requests:
+              cpu: 50m
+              memory: 128Mi
+            limits:
+              cpu: 200m
+              memory: 256Mi
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 8080
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 8080
+            initialDelaySeconds: 10
+            periodSeconds: 30
