@@ -6,8 +6,9 @@ import io.ktor.client.engine.okhttp.OkHttp
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
-import net.kigawa.kalender.data.auth.GoogleAuthControllerAndroid
-import net.kigawa.kalender.data.auth.MicrosoftAuthControllerAndroid
+import net.kigawa.kalender.data.KalenderApiClient
+import net.kigawa.kalender.data.auth.KEYCLOAK_REDIRECT_URI
+import net.kigawa.kalender.data.auth.KeycloakAuthControllerAndroid
 import net.kigawa.kalender.data.db.RoomCalendarStore
 import net.kigawa.kalender.di.AppContainer
 import net.kigawa.kalender.di.KeyValueStoreAndroid
@@ -15,19 +16,23 @@ import net.kigawa.kalender.di.KeyValueStoreAndroid
 class KalenderApplication : Application() {
     val appScope = CoroutineScope(SupervisorJob() + Dispatchers.Main.immediate)
 
-    val googleAuthController = GoogleAuthControllerAndroid(
+    private val httpClient = HttpClient(OkHttp)
+
+    val authController = KeycloakAuthControllerAndroid(
         applicationContext = this,
-        webClientId = getString(R.string.google_web_client_id),
+        appScope = appScope,
+        realmUrl = getString(R.string.keycloak_realm_url),
+        clientId = getString(R.string.keycloak_client_id),
+        httpClient = httpClient,
     )
 
-    private val microsoftAuthController = MicrosoftAuthControllerAndroid(this, appScope)
-
     val container = AppContainer(
-        httpClient = HttpClient(OkHttp),
+        httpClient = httpClient,
         localStore = RoomCalendarStore.fromContext(this),
         settings = KeyValueStoreAndroid(this),
-        googleAuthController = googleAuthController,
-        microsoftAuthController = microsoftAuthController,
+        authController = authController,
+        apiClient = KalenderApiClient(httpClient),
+        accountLinkRedirectUri = KEYCLOAK_REDIRECT_URI,
         appScope = appScope,
     )
 }

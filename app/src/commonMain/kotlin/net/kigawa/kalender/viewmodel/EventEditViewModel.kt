@@ -16,12 +16,11 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import net.kigawa.kalender.data.GoogleCalendarDataSource
+import net.kigawa.kalender.data.KalenderApiClient
 import net.kigawa.kalender.data.LocalCalendarStore
 import net.kigawa.kalender.data.OutlookCalendarDataSource
-import net.kigawa.kalender.data.auth.GoogleAuthController
-import net.kigawa.kalender.data.auth.GoogleAuthState
-import net.kigawa.kalender.data.auth.MicrosoftAuthController
-import net.kigawa.kalender.data.auth.MsAuthState
+import net.kigawa.kalender.data.auth.AuthController
+import net.kigawa.kalender.data.auth.KeycloakAuthState
 import net.kigawa.kalender.model.CalendarEvent
 import net.kigawa.kalender.model.UserCalendar
 import net.kigawa.kalender.util.nowMs
@@ -53,8 +52,8 @@ data class EventEditUiState(
 )
 
 class EventEditViewModel(
-    private val googleAuthController: GoogleAuthController,
-    private val microsoftAuthController: MicrosoftAuthController,
+    private val authController: AuthController,
+    private val apiClient: KalenderApiClient,
     private val localStore: LocalCalendarStore,
     private val httpClient: HttpClient,
     private val eventId: Long?,
@@ -195,21 +194,17 @@ class EventEditViewModel(
                     remoteId = state.remoteId,
                 )
                 val saved = if (isGoogle) {
-                    val googleState = googleAuthController.authState.value
-                    if (googleState !is GoogleAuthState.SignedIn) {
-                        _uiState.update { it.copy(isSaving = false, error = "Google認証が必要です") }
+                    val dataSource = buildGoogleDataSource(calendar.ownerEmail) ?: run {
+                        _uiState.update { it.copy(isSaving = false, error = "Googleアカウントが連携されていません") }
                         return@launch
                     }
-                    val dataSource = GoogleCalendarDataSource(googleState.accessToken, googleState.email, httpClient)
                     if (state.isNew) dataSource.createEvent(calendar.accountName, event)
                     else dataSource.updateEvent(calendar.accountName, event)
                 } else {
-                    val msState = microsoftAuthController.authState.value
-                    if (msState !is MsAuthState.SignedIn) {
-                        _uiState.update { it.copy(isSaving = false, error = "Microsoft認証が必要です") }
+                    val dataSource = buildOutlookDataSource(calendar.ownerEmail) ?: run {
+                        _uiState.update { it.copy(isSaving = false, error = "Microsoftアカウントが連携されていません") }
                         return@launch
                     }
-                    val dataSource = OutlookCalendarDataSource(msState.accessToken, msState.email, httpClient)
                     if (state.isNew) dataSource.createEvent(calendar.accountName, event)
                     else dataSource.updateEvent(calendar.accountName, event)
                 }
@@ -238,21 +233,17 @@ class EventEditViewModel(
                     }
                 val isGoogle = calendar.accountName.contains("@")
                 if (isGoogle) {
-                    val googleState = googleAuthController.authState.value
-                    if (googleState !is GoogleAuthState.SignedIn) {
-                        _uiState.update { it.copy(isDeleting = false, error = "Google認証が必要です") }
+                    val dataSource = buildGoogleDataSource(calendar.ownerEmail) ?: run {
+                        _uiState.update { it.copy(isDeleting = false, error = "Googleアカウントが連携されていません") }
                         return@launch
                     }
-                    GoogleCalendarDataSource(googleState.accessToken, googleState.email, httpClient)
-                        .deleteEvent(calendar.accountName, state.remoteId)
+                    dataSource.deleteEvent(calendar.accountName, state.remoteId)
                 } else {
-                    val msState = microsoftAuthController.authState.value
-                    if (msState !is MsAuthState.SignedIn) {
-                        _uiState.update { it.copy(isDeleting = false, error = "Microsoft認証が必要です") }
+                    val dataSource = buildOutlookDataSource(calendar.ownerEmail) ?: run {
+                        _uiState.update { it.copy(isDeleting = false, error = "Microsoftアカウントが連携されていません") }
                         return@launch
                     }
-                    OutlookCalendarDataSource(msState.accessToken, msState.email, httpClient)
-                        .deleteEvent(calendar.accountName, state.remoteId)
+                    dataSource.deleteEvent(calendar.accountName, state.remoteId)
                 }
                 localStore.deleteEventById(id)
                 _navigateBack.emit(Unit)
@@ -260,6 +251,20 @@ class EventEditViewModel(
                 _uiState.update { it.copy(isDeleting = false, error = e.message ?: "削除に失敗しました") }
             }
         }
+    }
+
+    private suspend fun buildGoogleDataSource(ownerEmail: String): GoogleCalendarDataSource? {
+        val authState = authController.authState.value
+        if (authState !is KeycloakAuthState.SignedIn) return null
+        val token = apiClient.fetchCalendarToken(authState.accessToken, "google") ?: return null
+        return GoogleCalendarDataSource(token, ownerEmail, httpClient)
+    }
+
+    private suspend fun buildOutlookDataSource(ownerEmail: String): OutlookCalendarDataSource? {
+        val authState = authController.authState.value
+        if (authState !is KeycloakAuthState.SignedIn) return null
+        val token = apiClient.fetchCalendarToken(authState.accessToken, "microsoft") ?: return null
+        return OutlookCalendarDataSource(token, ownerEmail, httpClient)
     }
 
     private fun roundToNextHour(ms: Long): Long {
