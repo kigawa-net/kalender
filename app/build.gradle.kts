@@ -93,15 +93,9 @@ dependencies {
 
     coreLibraryDesugaring(libs.android.desugar.jdk.libs)
 
-    "androidMainImplementation"(libs.androidx.credentials)
-    "androidMainImplementation"(libs.androidx.credentials.play.services)
-    "androidMainImplementation"(libs.google.identity.googleid)
-    "androidMainImplementation"(libs.play.services.auth)
+    "androidMainImplementation"(libs.androidx.browser)
     "androidMainImplementation"(libs.androidx.room.runtime)
     "androidMainImplementation"(libs.androidx.room.ktx)
-    "androidMainImplementation"(libs.msal) {
-        exclude(group = "com.microsoft.device.display")
-    }
 
     "androidUnitTestImplementation"(libs.junit)
     "androidUnitTestImplementation"(libs.mockk)

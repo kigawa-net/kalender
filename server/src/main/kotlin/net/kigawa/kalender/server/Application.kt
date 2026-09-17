@@ -3,6 +3,7 @@ package net.kigawa.kalender.server
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.cio.CIO
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation as ClientContentNegotiation
+import io.ktor.client.request.delete
 import io.ktor.client.request.forms.submitForm
 import io.ktor.client.request.get
 import io.ktor.client.request.header
@@ -22,6 +23,7 @@ import io.ktor.server.plugins.cors.routing.CORS
 import io.ktor.server.request.header
 import io.ktor.server.response.respond
 import io.ktor.server.response.respondText
+import io.ktor.server.routing.delete
 import io.ktor.server.routing.get
 import io.ktor.server.routing.post
 import io.ktor.server.routing.routing
@@ -67,7 +69,9 @@ fun Application.module() {
         allowHost(allowedWebOrigin.removePrefix("https://").removePrefix("http://"), schemes = listOf("https"))
         allowHeader(HttpHeaders.Authorization)
         allowHeader(HttpHeaders.ContentType)
+        allowMethod(io.ktor.http.HttpMethod.Get)
         allowMethod(io.ktor.http.HttpMethod.Post)
+        allowMethod(io.ktor.http.HttpMethod.Delete)
     }
 
     val httpClient = HttpClient(CIO) {
@@ -122,6 +126,25 @@ fun Application.module() {
                 return@post
             }
             call.respond(response)
+        }
+
+        delete("/api/linked-accounts/{provider}") {
+            val token = call.bearerToken()
+            if (token == null) {
+                call.respond(HttpStatusCode.Unauthorized, mapOf("error" to "invalid or missing token"))
+                return@delete
+            }
+            val provider = call.parameters["provider"]
+            if (provider.isNullOrBlank()) {
+                call.respond(HttpStatusCode.BadRequest, mapOf("error" to "missing provider"))
+                return@delete
+            }
+            val success = unlinkAccount(httpClient, token, provider)
+            if (!success) {
+                call.respond(HttpStatusCode.BadGateway, mapOf("error" to "failed to unlink account"))
+                return@delete
+            }
+            call.respond(HttpStatusCode.NoContent)
         }
 
         get("/api/calendar-token/{provider}") {
@@ -222,6 +245,16 @@ private suspend fun fetchAccountLinkUrl(
     }
 } catch (e: Exception) {
     null
+}
+
+/** Keycloak Account REST API でアカウント連携を解除する(ユーザー本人のトークンで呼ぶ) */
+private suspend fun unlinkAccount(client: HttpClient, userToken: String, provider: String): Boolean = try {
+    val response = client.delete("$realmUrl/account/linked-accounts/$provider") {
+        header(HttpHeaders.Authorization, "Bearer $userToken")
+    }
+    response.status == HttpStatusCode.OK || response.status == HttpStatusCode.NoContent
+} catch (e: Exception) {
+    false
 }
 
 /**
