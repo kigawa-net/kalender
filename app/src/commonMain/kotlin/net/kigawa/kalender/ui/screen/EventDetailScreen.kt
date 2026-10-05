@@ -104,7 +104,8 @@ private fun EventDetailContent(
     calendarName: String,
     modifier: Modifier = Modifier,
 ) {
-    val zoneId = timeZoneOrNull(event.timeZone) ?: systemZone()
+    // 表示は端末のローカルタイムゾーンで統一（Outlook等のUTC保存によるズレ防止）
+    val zoneId = systemZone()
 
     val startDate = event.startMs.toLocalDate(zoneId)
     val startTime = event.startMs.toLocalTime(zoneId)
