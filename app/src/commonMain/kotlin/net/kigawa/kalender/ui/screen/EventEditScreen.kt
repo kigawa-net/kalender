@@ -52,8 +52,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import net.kigawa.kalender.util.formatHm
-import net.kigawa.kalender.util.formatJp
+import net.kigawa.kalender.ui.component.ErrorMessage
 import net.kigawa.kalender.util.nowMs
 import net.kigawa.kalender.util.systemZone
 import net.kigawa.kalender.util.toLocalDate
@@ -215,7 +214,7 @@ private fun EventEditContent(
             )
 
             uiState.error?.let {
-                Text(it, color = MaterialTheme.colorScheme.error, style = MaterialTheme.typography.bodySmall)
+                ErrorMessage(message = it)
             }
 
             if (!uiState.isNew) {

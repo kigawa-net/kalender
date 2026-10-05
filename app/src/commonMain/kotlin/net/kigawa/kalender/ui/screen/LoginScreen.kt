@@ -17,6 +17,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import net.kigawa.kalender.data.auth.KeycloakAuthState
+import net.kigawa.kalender.ui.component.ErrorMessage
 
 @Composable
 fun LoginScreen(
@@ -37,12 +38,7 @@ fun LoginScreen(
 
         Column(modifier = Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
             if (authState is KeycloakAuthState.Error) {
-                Text(
-                    text = authState.message,
-                    color = MaterialTheme.colorScheme.error,
-                    style = MaterialTheme.typography.bodySmall,
-                    modifier = Modifier.padding(bottom = 8.dp),
-                )
+                ErrorMessage(message = authState.message)
             }
             when (authState) {
                 is KeycloakAuthState.Loading -> CircularProgressIndicator()

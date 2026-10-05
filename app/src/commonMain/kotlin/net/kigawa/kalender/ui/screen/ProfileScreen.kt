@@ -35,6 +35,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import net.kigawa.kalender.data.LinkedAccount
 import net.kigawa.kalender.model.UserCalendar
+import net.kigawa.kalender.ui.component.ErrorMessage
 import net.kigawa.kalender.viewmodel.ProfileUiState
 import net.kigawa.kalender.viewmodel.ProfileViewModel
 
@@ -84,12 +85,7 @@ private fun ProfileContent(
                 .verticalScroll(rememberScrollState()),
         ) {
             if (uiState.linkError != null) {
-                Text(
-                    text = uiState.linkError,
-                    color = MaterialTheme.colorScheme.error,
-                    style = MaterialTheme.typography.bodySmall,
-                    modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
-                )
+                ErrorMessage(message = uiState.linkError!!)
             }
 
             PROVIDERS.forEach { provider ->
