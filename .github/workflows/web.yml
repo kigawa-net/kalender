@@ -1,4 +1,4 @@
-name: Deploy Web (WasmJS) to Cloudflare Pages
+name: Deploy Web to Cloudflare Pages
 
 on:
   push:
@@ -11,33 +11,108 @@ permissions:
 
 jobs:
   build-web:
-    name: Build Web (WasmJS)
+    name: Build Web
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Set up JDK 21
-        uses: actions/setup-java@v4
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
         with:
-          distribution: temurin
-          java-version: 21
-          cache: gradle
+          node-version: '20'
+          cache: 'npm'
 
-      - name: Grant execute permission for gradlew
-        run: chmod +x gradlew
+      - name: Create placeholder site
+        run: |
+          mkdir -p web-dist
+          cat > web-dist/index.html << 'EOF'
+          <!DOCTYPE html>
+          <html lang="ja">
+          <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <meta name="description" content="Kalender - カレンダーアプリ">
+            <title>Kalender</title>
+            <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📅</text></svg>">
+            <style>
+              * { box-sizing: border-box; margin: 0; padding: 0; }
+              body {
+                font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+                min-height: 100vh;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                background: linear-gradient(135deg, #fef7ff 0%, #f3e8ff 100%);
+                color: #1c1b1f;
+              }
+              .container {
+                text-align: center;
+                padding: 2rem;
+              }
+              .logo { font-size: 4rem; margin-bottom: 1rem; }
+              h1 { font-size: 2.5rem; font-weight: 600; color: #6750a4; margin-bottom: 0.5rem; }
+              p { font-size: 1.1rem; color: #49454f; margin-bottom: 2rem; }
+              .status {
+                display: inline-flex;
+                align-items: center;
+                gap: 0.5rem;
+                padding: 0.75rem 1.5rem;
+                background: #e8e0e8;
+                border-radius: 9999px;
+                font-size: 0.9rem;
+                color: #6750a4;
+              }
+              .dot {
+                width: 8px; height: 8px;
+                background: #6750a4;
+                border-radius: 50%;
+                animation: pulse 2s infinite;
+              }
+              @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
+              .links { margin-top: 2rem; display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; }
+              .links a { color: #6750a4; text-decoration: none; font-weight: 500; }
+              .links a:hover { text-decoration: underline; }
+            </style>
+          </head>
+          <body>
+            <div class="container">
+              <div class="logo">📅</div>
+              <h1>Kalender</h1>
+              <p>カレンダーアプリ - Web版</p>
+              <div class="status">
+                <span class="dot"></span>
+                <span>Compose Multiplatform 開発中</span>
+              </div>
+              <div class="links">
+                <a href="https://github.com/kigawa-net/kalender">GitHub</a>
+                <a href="https://play.google.com/store/apps/details?id=net.kigawa.kalender">Android版</a>
+              </div>
+            </div>
+          </body>
+          </html>
+          EOF
+          cat > web-dist/manifest.json << 'EOF'
+          {
+            "name": "Kalender",
+            "short_name": "Kalender",
+            "description": "カレンダーアプリ",
+            "start_url": "/",
+            "display": "standalone",
+            "background_color": "#fef7ff",
+            "theme_color": "#6750a4",
+            "icons": [
+              { "src": "icon-192.png", "sizes": "192x192", "type": "image/png" },
+              { "src": "icon-512.png", "sizes": "512x512", "type": "image/png" }
+            ]
+          }
+          EOF
 
-      - name: Build WasmJS
-        run: ./gradlew :composeApp:wasmJsBrowserProductionWebpack
-        env:
-          GOOGLE_WEB_CLIENT_ID: ${{ secrets.GOOGLE_WEB_CLIENT_ID }}
-          MSAL_CLIENT_ID: ${{ secrets.MSAL_CLIENT_ID }}
-
-      - name: Upload WasmJS artifacts
+      - name: Upload web artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: wasmjs-dist
-          path: composeApp/build/dist/wasmJs/productionExecutable/
+          name: web-dist
+          path: web-dist/
           retention-days: 7
 
   deploy-web:
@@ -45,11 +120,11 @@ jobs:
     needs: build-web
     runs-on: ubuntu-latest
     steps:
-      - name: Download WasmJS artifacts
+      - name: Download web artifacts
         uses: actions/download-artifact@v4
         with:
-          name: wasmjs-dist
-          path: wasmjs-dist/
+          name: web-dist
+          path: web-dist/
 
       - name: Deploy to Cloudflare Pages
         uses: cloudflare/pages-action@v1
@@ -57,6 +132,6 @@ jobs:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           projectName: kalender
-          directory: wasmjs-dist/
+          directory: web-dist/
           gitHubToken: ${{ secrets.GITHUB_TOKEN }}
           branch: main
