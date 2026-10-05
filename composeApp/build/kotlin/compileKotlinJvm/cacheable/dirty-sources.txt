@@ -1,0 +1,17 @@
+/home/kigawa/dev/kigawa-net/kalender/composeApp/build/generated/compose/resourceGenerator/kotlin/jvmMainResourceCollectors/kalender/composeapp/generated/resources/ActualResourceCollectors.kt
+/home/kigawa/dev/kigawa-net/kalender/composeApp/build/generated/compose/resourceGenerator/kotlin/commonResClass/kalender/composeapp/generated/resources/Res.kt
+/home/kigawa/dev/kigawa-net/kalender/composeApp/src/commonMain/kotlin/net/kigawa/kalender/viewmodel/MsAuthState.kt
+/home/kigawa/dev/kigawa-net/kalender/composeApp/src/commonMain/kotlin/net/kigawa/kalender/model/CalendarEvent.kt
+/home/kigawa/dev/kigawa-net/kalender/composeApp/src/commonMain/kotlin/net/kigawa/kalender/ui/theme/Type.kt
+/home/kigawa/dev/kigawa-net/kalender/composeApp/src/commonMain/kotlin/net/kigawa/kalender/model/UserCalendar.kt
+/home/kigawa/dev/kigawa-net/kalender/composeApp/src/commonMain/kotlin/net/kigawa/kalender/data/CalendarRepository.kt
+/home/kigawa/dev/kigawa-net/kalender/composeApp/src/commonMain/kotlin/net/kigawa/kalender/ui/theme/Color.kt
+/home/kigawa/dev/kigawa-net/kalender/composeApp/src/commonMain/kotlin/net/kigawa/kalender/data/CalendarLocalSource.kt
+/home/kigawa/dev/kigawa-net/kalender/composeApp/src/commonMain/kotlin/net/kigawa/kalender/data/CalendarDataSource.kt
+/home/kigawa/dev/kigawa-net/kalender/composeApp/src/commonMain/kotlin/net/kigawa/kalender/viewmodel/AuthViewModel.kt
+/home/kigawa/dev/kigawa-net/kalender/composeApp/src/commonMain/kotlin/net/kigawa/kalender/viewmodel/EventEditViewModel.kt
+/home/kigawa/dev/kigawa-net/kalender/composeApp/src/commonMain/kotlin/net/kigawa/kalender/viewmodel/ProfileViewModel.kt
+/home/kigawa/dev/kigawa-net/kalender/composeApp/src/commonMain/kotlin/net/kigawa/kalender/data/auth/AuthManager.kt
+/home/kigawa/dev/kigawa-net/kalender/composeApp/src/commonMain/kotlin/net/kigawa/kalender/viewmodel/EventDetailViewModel.kt
+/home/kigawa/dev/kigawa-net/kalender/composeApp/build/generated/compose/resourceGenerator/kotlin/commonMainResourceCollectors/kalender/composeapp/generated/resources/ExpectResourceCollectors.kt
+/home/kigawa/dev/kigawa-net/kalender/composeApp/src/commonMain/kotlin/net/kigawa/kalender/viewmodel/WeeklyCalendarViewModel.kt

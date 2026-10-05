@@ -1,0 +1,456 @@
+1<?xml version="1.0" encoding="utf-8"?>
+2<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+3    package="net.kigawa.kalender"
+4    android:versionCode="1"
+5    android:versionName="1.0" >
+6
+7    <uses-sdk
+8        android:minSdkVersion="24"
+9        android:targetSdkVersion="36" />
+10
+11    <uses-permission android:name="android.permission.INTERNET" />
+11-->/home/kigawa/dev/kigawa-net/kalender/composeApp/src/androidMain/AndroidManifest.xml:5:5-67
+11-->/home/kigawa/dev/kigawa-net/kalender/composeApp/src/androidMain/AndroidManifest.xml:5:22-64
+12    <uses-permission android:name="android.permission.READ_CALENDAR" />
+12-->/home/kigawa/dev/kigawa-net/kalender/composeApp/src/androidMain/AndroidManifest.xml:6:5-72
+12-->/home/kigawa/dev/kigawa-net/kalender/composeApp/src/androidMain/AndroidManifest.xml:6:22-69
+13    <uses-permission android:name="android.permission.WRITE_CALENDAR" />
+13-->/home/kigawa/dev/kigawa-net/kalender/composeApp/src/androidMain/AndroidManifest.xml:7:5-73
+13-->/home/kigawa/dev/kigawa-net/kalender/composeApp/src/androidMain/AndroidManifest.xml:7:22-70
+14
+15    <queries>
+15-->/home/kigawa/dev/kigawa-net/kalender/composeApp/src/androidMain/AndroidManifest.xml:9:5-12:15
+16        <package android:name="com.azure.authenticator" />
+16-->/home/kigawa/dev/kigawa-net/kalender/composeApp/src/androidMain/AndroidManifest.xml:10:9-59
+16-->/home/kigawa/dev/kigawa-net/kalender/composeApp/src/androidMain/AndroidManifest.xml:10:18-56
+17        <package android:name="com.microsoft.windowsintune.companyportal" />
+17-->/home/kigawa/dev/kigawa-net/kalender/composeApp/src/androidMain/AndroidManifest.xml:11:9-77
+17-->/home/kigawa/dev/kigawa-net/kalender/composeApp/src/androidMain/AndroidManifest.xml:11:18-74
+18        <package android:name="com.microsoft.identity.testuserapp" />
+18-->[com.microsoft.identity:common:17.3.0] /home/kigawa/.gradle/caches/9.2.1/transforms/5a134e551200707bbe22646fe000c298/transformed/common-17.3.0/AndroidManifest.xml:19:9-70
+18-->[com.microsoft.identity:common:17.3.0] /home/kigawa/.gradle/caches/9.2.1/transforms/5a134e551200707bbe22646fe000c298/transformed/common-17.3.0/AndroidManifest.xml:19:18-67
+19        <package android:name="com.microsoft.mockauthapp" />
+19-->[com.microsoft.identity:common:17.3.0] /home/kigawa/.gradle/caches/9.2.1/transforms/5a134e551200707bbe22646fe000c298/transformed/common-17.3.0/AndroidManifest.xml:21:9-61
+19-->[com.microsoft.identity:common:17.3.0] /home/kigawa/.gradle/caches/9.2.1/transforms/5a134e551200707bbe22646fe000c298/transformed/common-17.3.0/AndroidManifest.xml:21:18-58
+20        <package android:name="com.microsoft.mockcp" />
+20-->[com.microsoft.identity:common:17.3.0] /home/kigawa/.gradle/caches/9.2.1/transforms/5a134e551200707bbe22646fe000c298/transformed/common-17.3.0/AndroidManifest.xml:22:9-56
+20-->[com.microsoft.identity:common:17.3.0] /home/kigawa/.gradle/caches/9.2.1/transforms/5a134e551200707bbe22646fe000c298/transformed/common-17.3.0/AndroidManifest.xml:22:18-53
+21        <package android:name="com.microsoft.mockltw" />
+21-->[com.microsoft.identity:common:17.3.0] /home/kigawa/.gradle/caches/9.2.1/transforms/5a134e551200707bbe22646fe000c298/transformed/common-17.3.0/AndroidManifest.xml:23:9-57
+21-->[com.microsoft.identity:common:17.3.0] /home/kigawa/.gradle/caches/9.2.1/transforms/5a134e551200707bbe22646fe000c298/transformed/common-17.3.0/AndroidManifest.xml:23:18-54
+22        <package android:name="com.microsoft.appmanager" />
+22-->[com.microsoft.identity:common:17.3.0] /home/kigawa/.gradle/caches/9.2.1/transforms/5a134e551200707bbe22646fe000c298/transformed/common-17.3.0/AndroidManifest.xml:24:9-60
+22-->[com.microsoft.identity:common:17.3.0] /home/kigawa/.gradle/caches/9.2.1/transforms/5a134e551200707bbe22646fe000c298/transformed/common-17.3.0/AndroidManifest.xml:24:18-57
+23        <!--
+24        Required for API Level 30 to make sure we can detect browsers
+25        (that don't support custom tabs)
+26        -->
+27        <intent>
+27-->[com.microsoft.identity:common:17.3.0] /home/kigawa/.gradle/caches/9.2.1/transforms/5a134e551200707bbe22646fe000c298/transformed/common-17.3.0/AndroidManifest.xml:29:9-35:18
+28            <action android:name="android.intent.action.VIEW" />
+28-->/home/kigawa/dev/kigawa-net/kalender/composeApp/src/androidMain/AndroidManifest.xml:28:17-69
+28-->/home/kigawa/dev/kigawa-net/kalender/composeApp/src/androidMain/AndroidManifest.xml:28:25-66
+29
+30            <category android:name="android.intent.category.BROWSABLE" />
+30-->/home/kigawa/dev/kigawa-net/kalender/composeApp/src/androidMain/AndroidManifest.xml:30:17-78
+30-->/home/kigawa/dev/kigawa-net/kalender/composeApp/src/androidMain/AndroidManifest.xml:30:27-75
+31
+32            <data android:scheme="https" />
+32-->/home/kigawa/dev/kigawa-net/kalender/composeApp/src/androidMain/AndroidManifest.xml:31:17-34:51
+32-->/home/kigawa/dev/kigawa-net/kalender/composeApp/src/androidMain/AndroidManifest.xml:34:25-48
+33        </intent> <!-- Required for API Level 30 to make sure we can detect browsers that support custom tabs -->
+34        <!-- https://developers.google.com/web/updates/2020/07/custom-tabs-android-11#detecting_browsers_that_support_custom_tabs -->
+35        <intent>
+35-->[com.microsoft.identity:common:17.3.0] /home/kigawa/.gradle/caches/9.2.1/transforms/5a134e551200707bbe22646fe000c298/transformed/common-17.3.0/AndroidManifest.xml:38:9-40:18
+36            <action android:name="android.support.customtabs.action.CustomTabsService" />
+36-->[com.microsoft.identity:common:17.3.0] /home/kigawa/.gradle/caches/9.2.1/transforms/5a134e551200707bbe22646fe000c298/transformed/common-17.3.0/AndroidManifest.xml:39:13-90
+36-->[com.microsoft.identity:common:17.3.0] /home/kigawa/.gradle/caches/9.2.1/transforms/5a134e551200707bbe22646fe000c298/transformed/common-17.3.0/AndroidManifest.xml:39:21-87
+37        </intent>
+38    </queries>
+39
+40    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+40-->[com.microsoft.identity.client:msal:5.3.0] /home/kigawa/.gradle/caches/9.2.1/transforms/c1b8591157a393205c3a79b592ce29f5/transformed/msal-5.3.0/AndroidManifest.xml:8:5-79
+40-->[com.microsoft.identity.client:msal:5.3.0] /home/kigawa/.gradle/caches/9.2.1/transforms/c1b8591157a393205c3a79b592ce29f5/transformed/msal-5.3.0/AndroidManifest.xml:8:22-76
+41    <uses-permission android:name="android.permission.USE_BIOMETRIC" /> <!-- suppress DeprecatedClassUsageInspection -->
+41-->[androidx.biometric:biometric:1.1.0] /home/kigawa/.gradle/caches/9.2.1/transforms/66a59b6dcd10409e02b4b28d26397a1c/transformed/biometric-1.1.0/AndroidManifest.xml:24:5-72
+41-->[androidx.biometric:biometric:1.1.0] /home/kigawa/.gradle/caches/9.2.1/transforms/66a59b6dcd10409e02b4b28d26397a1c/transformed/biometric-1.1.0/AndroidManifest.xml:24:22-69
+42    <uses-permission android:name="android.permission.USE_FINGERPRINT" />
+42-->[androidx.biometric:biometric:1.1.0] /home/kigawa/.gradle/caches/9.2.1/transforms/66a59b6dcd10409e02b4b28d26397a1c/transformed/biometric-1.1.0/AndroidManifest.xml:27:5-74
+42-->[androidx.biometric:biometric:1.1.0] /home/kigawa/.gradle/caches/9.2.1/transforms/66a59b6dcd10409e02b4b28d26397a1c/transformed/biometric-1.1.0/AndroidManifest.xml:27:22-71
+43
+44    <permission
+44-->[androidx.core:core:1.18.0] /home/kigawa/.gradle/caches/9.2.1/transforms/7f8eb18d12c23a198eafa24675657cfa/transformed/core-1.18.0/AndroidManifest.xml:22:5-24:47
+45        android:name="net.kigawa.kalender.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION"
+45-->[androidx.core:core:1.18.0] /home/kigawa/.gradle/caches/9.2.1/transforms/7f8eb18d12c23a198eafa24675657cfa/transformed/core-1.18.0/AndroidManifest.xml:23:9-81
+46        android:protectionLevel="signature" />
+46-->[androidx.core:core:1.18.0] /home/kigawa/.gradle/caches/9.2.1/transforms/7f8eb18d12c23a198eafa24675657cfa/transformed/core-1.18.0/AndroidManifest.xml:24:9-44
+47
+48    <uses-permission android:name="net.kigawa.kalender.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION" />
+48-->[androidx.core:core:1.18.0] /home/kigawa/.gradle/caches/9.2.1/transforms/7f8eb18d12c23a198eafa24675657cfa/transformed/core-1.18.0/AndroidManifest.xml:26:5-97
+48-->[androidx.core:core:1.18.0] /home/kigawa/.gradle/caches/9.2.1/transforms/7f8eb18d12c23a198eafa24675657cfa/transformed/core-1.18.0/AndroidManifest.xml:26:22-94
+49    <uses-permission android:name="android.permission.NFC" />
+49-->[com.yubico.yubikit:android:2.3.0] /home/kigawa/.gradle/caches/9.2.1/transforms/2aed814f03a05d6d373842d9c9eb965b/transformed/android-2.3.0/AndroidManifest.xml:7:5-62
+49-->[com.yubico.yubikit:android:2.3.0] /home/kigawa/.gradle/caches/9.2.1/transforms/2aed814f03a05d6d373842d9c9eb965b/transformed/android-2.3.0/AndroidManifest.xml:7:22-59
+50
+51    <uses-feature
+51-->[com.yubico.yubikit:android:2.3.0] /home/kigawa/.gradle/caches/9.2.1/transforms/2aed814f03a05d6d373842d9c9eb965b/transformed/android-2.3.0/AndroidManifest.xml:9:5-11:36
+52        android:name="android.hardware.usb.host"
+52-->[com.yubico.yubikit:android:2.3.0] /home/kigawa/.gradle/caches/9.2.1/transforms/2aed814f03a05d6d373842d9c9eb965b/transformed/android-2.3.0/AndroidManifest.xml:10:9-49
+53        android:required="false" />
+53-->[com.yubico.yubikit:android:2.3.0] /home/kigawa/.gradle/caches/9.2.1/transforms/2aed814f03a05d6d373842d9c9eb965b/transformed/android-2.3.0/AndroidManifest.xml:11:9-33
+54    <uses-feature
+54-->[com.yubico.yubikit:android:2.3.0] /home/kigawa/.gradle/caches/9.2.1/transforms/2aed814f03a05d6d373842d9c9eb965b/transformed/android-2.3.0/AndroidManifest.xml:12:5-14:36
+55        android:name="android.hardware.nfc"
+55-->[com.yubico.yubikit:android:2.3.0] /home/kigawa/.gradle/caches/9.2.1/transforms/2aed814f03a05d6d373842d9c9eb965b/transformed/android-2.3.0/AndroidManifest.xml:13:9-44
+56        android:required="false" />
+56-->[com.yubico.yubikit:android:2.3.0] /home/kigawa/.gradle/caches/9.2.1/transforms/2aed814f03a05d6d373842d9c9eb965b/transformed/android-2.3.0/AndroidManifest.xml:14:9-33
+57
+58    <application
+58-->/home/kigawa/dev/kigawa-net/kalender/composeApp/src/androidMain/AndroidManifest.xml:14:5-53:19
+59        android:name="net.kigawa.kalender.KalenderApplication"
+59-->/home/kigawa/dev/kigawa-net/kalender/composeApp/src/androidMain/AndroidManifest.xml:15:13-48
+60        android:allowBackup="true"
+60-->/home/kigawa/dev/kigawa-net/kalender/composeApp/src/androidMain/AndroidManifest.xml:16:13-39
+61        android:appComponentFactory="androidx.core.app.CoreComponentFactory"
+61-->[androidx.core:core:1.18.0] /home/kigawa/.gradle/caches/9.2.1/transforms/7f8eb18d12c23a198eafa24675657cfa/transformed/core-1.18.0/AndroidManifest.xml:28:18-86
+62        android:dataExtractionRules="@xml/data_extraction_rules"
+62-->/home/kigawa/dev/kigawa-net/kalender/composeApp/src/androidMain/AndroidManifest.xml:17:13-69
+63        android:debuggable="true"
+64        android:extractNativeLibs="false"
+65        android:fullBackupContent="@xml/backup_rules"
+65-->/home/kigawa/dev/kigawa-net/kalender/composeApp/src/androidMain/AndroidManifest.xml:18:13-58
+66        android:icon="@mipmap/ic_launcher"
+66-->/home/kigawa/dev/kigawa-net/kalender/composeApp/src/androidMain/AndroidManifest.xml:19:13-47
+67        android:label="@string/app_name"
+67-->/home/kigawa/dev/kigawa-net/kalender/composeApp/src/androidMain/AndroidManifest.xml:20:13-45
+68        android:roundIcon="@mipmap/ic_launcher_round"
+68-->/home/kigawa/dev/kigawa-net/kalender/composeApp/src/androidMain/AndroidManifest.xml:21:13-58
+69        android:supportsRtl="true"
+69-->/home/kigawa/dev/kigawa-net/kalender/composeApp/src/androidMain/AndroidManifest.xml:22:13-39
+70        android:theme="@style/Theme.Kalender" >
+70-->/home/kigawa/dev/kigawa-net/kalender/composeApp/src/androidMain/AndroidManifest.xml:23:13-50
+71        <activity
+71-->/home/kigawa/dev/kigawa-net/kalender/composeApp/src/androidMain/AndroidManifest.xml:24:9-36:20
+72            android:name="com.microsoft.identity.client.BrowserTabActivity"
+72-->/home/kigawa/dev/kigawa-net/kalender/composeApp/src/androidMain/AndroidManifest.xml:25:17-80
+73            android:configChanges="orientation|keyboardHidden|screenSize|smallestScreenSize|screenLayout"
+73-->[com.microsoft.identity.client:msal:5.3.0] /home/kigawa/.gradle/caches/9.2.1/transforms/c1b8591157a393205c3a79b592ce29f5/transformed/msal-5.3.0/AndroidManifest.xml:33:13-106
+74            android:exported="true" >
+74-->/home/kigawa/dev/kigawa-net/kalender/composeApp/src/androidMain/AndroidManifest.xml:26:17-40
+75            <intent-filter>
+75-->/home/kigawa/dev/kigawa-net/kalender/composeApp/src/androidMain/AndroidManifest.xml:27:13-35:29
+76                <action android:name="android.intent.action.VIEW" />
+76-->/home/kigawa/dev/kigawa-net/kalender/composeApp/src/androidMain/AndroidManifest.xml:28:17-69
+76-->/home/kigawa/dev/kigawa-net/kalender/composeApp/src/androidMain/AndroidManifest.xml:28:25-66
+77
+78                <category android:name="android.intent.category.DEFAULT" />
+78-->/home/kigawa/dev/kigawa-net/kalender/composeApp/src/androidMain/AndroidManifest.xml:29:17-76
+78-->/home/kigawa/dev/kigawa-net/kalender/composeApp/src/androidMain/AndroidManifest.xml:29:27-73
+79                <category android:name="android.intent.category.BROWSABLE" />
+79-->/home/kigawa/dev/kigawa-net/kalender/composeApp/src/androidMain/AndroidManifest.xml:30:17-78
+79-->/home/kigawa/dev/kigawa-net/kalender/composeApp/src/androidMain/AndroidManifest.xml:30:27-75
+80
+81                <data
+81-->/home/kigawa/dev/kigawa-net/kalender/composeApp/src/androidMain/AndroidManifest.xml:31:17-34:51
+82                    android:host="net.kigawa.kalender"
+82-->/home/kigawa/dev/kigawa-net/kalender/composeApp/src/androidMain/AndroidManifest.xml:32:25-59
+83                    android:path="/NzMGGgqiavH14j5mkahAmPCPc9E="
+83-->/home/kigawa/dev/kigawa-net/kalender/composeApp/src/androidMain/AndroidManifest.xml:33:25-69
+84                    android:scheme="msauth" />
+84-->/home/kigawa/dev/kigawa-net/kalender/composeApp/src/androidMain/AndroidManifest.xml:34:25-48
+85            </intent-filter>
+86        </activity>
+87        <activity
+87-->/home/kigawa/dev/kigawa-net/kalender/composeApp/src/androidMain/AndroidManifest.xml:38:9-39:40
+88            android:name="com.microsoft.identity.common.internal.providers.oauth2.AuthorizationActivity"
+88-->/home/kigawa/dev/kigawa-net/kalender/composeApp/src/androidMain/AndroidManifest.xml:38:19-111
+89            android:configChanges="orientation|keyboardHidden|screenSize|smallestScreenSize|screenLayout|keyboard"
+89-->[com.microsoft.identity.client:msal:5.3.0] /home/kigawa/.gradle/caches/9.2.1/transforms/c1b8591157a393205c3a79b592ce29f5/transformed/msal-5.3.0/AndroidManifest.xml:15:13-115
+90            android:exported="false"
+90-->/home/kigawa/dev/kigawa-net/kalender/composeApp/src/androidMain/AndroidManifest.xml:39:13-37
+91            android:launchMode="singleTask" />
+91-->[com.microsoft.identity.client:msal:5.3.0] /home/kigawa/.gradle/caches/9.2.1/transforms/c1b8591157a393205c3a79b592ce29f5/transformed/msal-5.3.0/AndroidManifest.xml:17:13-44
+92        <activity
+92-->/home/kigawa/dev/kigawa-net/kalender/composeApp/src/androidMain/AndroidManifest.xml:40:9-41:40
+93            android:name="com.microsoft.identity.common.internal.providers.oauth2.CurrentTaskAuthorizationActivity"
+93-->/home/kigawa/dev/kigawa-net/kalender/composeApp/src/androidMain/AndroidManifest.xml:40:19-122
+94            android:configChanges="orientation|keyboardHidden|screenSize|smallestScreenSize|screenLayout|keyboard"
+94-->[com.microsoft.identity.client:msal:5.3.0] /home/kigawa/.gradle/caches/9.2.1/transforms/c1b8591157a393205c3a79b592ce29f5/transformed/msal-5.3.0/AndroidManifest.xml:20:13-115
+95            android:exported="false"
+95-->/home/kigawa/dev/kigawa-net/kalender/composeApp/src/androidMain/AndroidManifest.xml:41:13-37
+96            android:launchMode="standard" />
+96-->[com.microsoft.identity.client:msal:5.3.0] /home/kigawa/.gradle/caches/9.2.1/transforms/c1b8591157a393205c3a79b592ce29f5/transformed/msal-5.3.0/AndroidManifest.xml:22:13-42
+97        <activity
+97-->/home/kigawa/dev/kigawa-net/kalender/composeApp/src/androidMain/AndroidManifest.xml:43:9-52:20
+98            android:name="net.kigawa.kalender.MainActivity"
+98-->/home/kigawa/dev/kigawa-net/kalender/composeApp/src/androidMain/AndroidManifest.xml:44:17-45
+99            android:exported="true"
+99-->/home/kigawa/dev/kigawa-net/kalender/composeApp/src/androidMain/AndroidManifest.xml:45:17-40
+100            android:theme="@style/Theme.Kalender" >
+100-->/home/kigawa/dev/kigawa-net/kalender/composeApp/src/androidMain/AndroidManifest.xml:46:17-54
+101            <intent-filter>
+101-->/home/kigawa/dev/kigawa-net/kalender/composeApp/src/androidMain/AndroidManifest.xml:47:13-51:29
+102                <action android:name="android.intent.action.MAIN" />
+102-->/home/kigawa/dev/kigawa-net/kalender/composeApp/src/androidMain/AndroidManifest.xml:48:17-68
+102-->/home/kigawa/dev/kigawa-net/kalender/composeApp/src/androidMain/AndroidManifest.xml:48:25-66
+103
+104                <category android:name="android.intent.category.LAUNCHER" />
+104-->/home/kigawa/dev/kigawa-net/kalender/composeApp/src/androidMain/AndroidManifest.xml:50:17-76
+104-->/home/kigawa/dev/kigawa-net/kalender/composeApp/src/androidMain/AndroidManifest.xml:50:27-74
+105            </intent-filter>
+106        </activity>
+107        <!-- Helper activity for displaying current broker redirect URI configuration -->
+108        <activity
+108-->[com.microsoft.identity.client:msal:5.3.0] /home/kigawa/.gradle/caches/9.2.1/transforms/c1b8591157a393205c3a79b592ce29f5/transformed/msal-5.3.0/AndroidManifest.xml:25:9-28:45
+109            android:name="com.microsoft.identity.client.helper.BrokerHelperActivity"
+109-->[com.microsoft.identity.client:msal:5.3.0] /home/kigawa/.gradle/caches/9.2.1/transforms/c1b8591157a393205c3a79b592ce29f5/transformed/msal-5.3.0/AndroidManifest.xml:26:13-85
+110            android:exported="false"
+110-->[com.microsoft.identity.client:msal:5.3.0] /home/kigawa/.gradle/caches/9.2.1/transforms/c1b8591157a393205c3a79b592ce29f5/transformed/msal-5.3.0/AndroidManifest.xml:27:13-37
+111            android:launchMode="standard" />
+111-->[com.microsoft.identity.client:msal:5.3.0] /home/kigawa/.gradle/caches/9.2.1/transforms/c1b8591157a393205c3a79b592ce29f5/transformed/msal-5.3.0/AndroidManifest.xml:28:13-42
+112        <activity
+112-->[com.microsoft.identity.client:msal:5.3.0] /home/kigawa/.gradle/caches/9.2.1/transforms/c1b8591157a393205c3a79b592ce29f5/transformed/msal-5.3.0/AndroidManifest.xml:35:9-37:39
+113            android:name="com.microsoft.identity.client.CurrentTaskBrowserTabActivity"
+113-->[com.microsoft.identity.client:msal:5.3.0] /home/kigawa/.gradle/caches/9.2.1/transforms/c1b8591157a393205c3a79b592ce29f5/transformed/msal-5.3.0/AndroidManifest.xml:36:13-87
+114            android:exported="true" /> <!-- Activity to invoke an interactive request to the intent passed by ad-accounts(Broker) -->
+114-->[com.microsoft.identity.client:msal:5.3.0] /home/kigawa/.gradle/caches/9.2.1/transforms/c1b8591157a393205c3a79b592ce29f5/transformed/msal-5.3.0/AndroidManifest.xml:37:13-36
+115        <activity
+115-->[com.microsoft.identity:common:17.3.0] /home/kigawa/.gradle/caches/9.2.1/transforms/5a134e551200707bbe22646fe000c298/transformed/common-17.3.0/AndroidManifest.xml:54:9-56:99
+116            android:name="com.microsoft.identity.common.internal.broker.BrokerActivity"
+116-->[com.microsoft.identity:common:17.3.0] /home/kigawa/.gradle/caches/9.2.1/transforms/5a134e551200707bbe22646fe000c298/transformed/common-17.3.0/AndroidManifest.xml:55:13-88
+117            android:configChanges="orientation|keyboardHidden|screenSize|screenLayout|keyboard" /> <!-- Activity to launch a install WPJ certificate activity and get the result -->
+117-->[com.microsoft.identity:common:17.3.0] /home/kigawa/.gradle/caches/9.2.1/transforms/5a134e551200707bbe22646fe000c298/transformed/common-17.3.0/AndroidManifest.xml:56:13-96
+118        <activity
+118-->[com.microsoft.identity:common:17.3.0] /home/kigawa/.gradle/caches/9.2.1/transforms/5a134e551200707bbe22646fe000c298/transformed/common-17.3.0/AndroidManifest.xml:58:9-61:60
+119            android:name="com.microsoft.identity.common.internal.broker.InstallCertActivityLauncher"
+119-->[com.microsoft.identity:common:17.3.0] /home/kigawa/.gradle/caches/9.2.1/transforms/5a134e551200707bbe22646fe000c298/transformed/common-17.3.0/AndroidManifest.xml:59:13-101
+120            android:configChanges="orientation|keyboardHidden|screenSize|screenLayout|keyboard"
+120-->[com.microsoft.identity:common:17.3.0] /home/kigawa/.gradle/caches/9.2.1/transforms/5a134e551200707bbe22646fe000c298/transformed/common-17.3.0/AndroidManifest.xml:60:13-96
+121            android:theme="@style/Theme.AppCompat.Light" />
+121-->[com.microsoft.identity:common:17.3.0] /home/kigawa/.gradle/caches/9.2.1/transforms/5a134e551200707bbe22646fe000c298/transformed/common-17.3.0/AndroidManifest.xml:61:13-57
+122
+123        <service
+123-->[androidx.credentials:credentials-play-services-auth:1.5.0] /home/kigawa/.gradle/caches/9.2.1/transforms/ee0395d74e96cd1441d54abc31231c0a/transformed/credentials-play-services-auth-1.5.0/AndroidManifest.xml:24:9-32:19
+124            android:name="androidx.credentials.playservices.CredentialProviderMetadataHolder"
+124-->[androidx.credentials:credentials-play-services-auth:1.5.0] /home/kigawa/.gradle/caches/9.2.1/transforms/ee0395d74e96cd1441d54abc31231c0a/transformed/credentials-play-services-auth-1.5.0/AndroidManifest.xml:25:13-94
+125            android:enabled="true"
+125-->[androidx.credentials:credentials-play-services-auth:1.5.0] /home/kigawa/.gradle/caches/9.2.1/transforms/ee0395d74e96cd1441d54abc31231c0a/transformed/credentials-play-services-auth-1.5.0/AndroidManifest.xml:26:13-35
+126            android:exported="false" >
+126-->[androidx.credentials:credentials-play-services-auth:1.5.0] /home/kigawa/.gradle/caches/9.2.1/transforms/ee0395d74e96cd1441d54abc31231c0a/transformed/credentials-play-services-auth-1.5.0/AndroidManifest.xml:27:13-37
+127            <meta-data
+127-->[androidx.credentials:credentials-play-services-auth:1.5.0] /home/kigawa/.gradle/caches/9.2.1/transforms/ee0395d74e96cd1441d54abc31231c0a/transformed/credentials-play-services-auth-1.5.0/AndroidManifest.xml:29:13-31:104
+128                android:name="androidx.credentials.CREDENTIAL_PROVIDER_KEY"
+128-->[androidx.credentials:credentials-play-services-auth:1.5.0] /home/kigawa/.gradle/caches/9.2.1/transforms/ee0395d74e96cd1441d54abc31231c0a/transformed/credentials-play-services-auth-1.5.0/AndroidManifest.xml:30:17-76
+129                android:value="androidx.credentials.playservices.CredentialProviderPlayServicesImpl" />
+129-->[androidx.credentials:credentials-play-services-auth:1.5.0] /home/kigawa/.gradle/caches/9.2.1/transforms/ee0395d74e96cd1441d54abc31231c0a/transformed/credentials-play-services-auth-1.5.0/AndroidManifest.xml:31:17-101
+130        </service>
+131
+132        <activity
+132-->[androidx.credentials:credentials-play-services-auth:1.5.0] /home/kigawa/.gradle/caches/9.2.1/transforms/ee0395d74e96cd1441d54abc31231c0a/transformed/credentials-play-services-auth-1.5.0/AndroidManifest.xml:34:9-41:20
+133            android:name="androidx.credentials.playservices.HiddenActivity"
+133-->[androidx.credentials:credentials-play-services-auth:1.5.0] /home/kigawa/.gradle/caches/9.2.1/transforms/ee0395d74e96cd1441d54abc31231c0a/transformed/credentials-play-services-auth-1.5.0/AndroidManifest.xml:35:13-76
+134            android:configChanges="orientation|screenSize|screenLayout|keyboardHidden"
+134-->[androidx.credentials:credentials-play-services-auth:1.5.0] /home/kigawa/.gradle/caches/9.2.1/transforms/ee0395d74e96cd1441d54abc31231c0a/transformed/credentials-play-services-auth-1.5.0/AndroidManifest.xml:36:13-87
+135            android:enabled="true"
+135-->[androidx.credentials:credentials-play-services-auth:1.5.0] /home/kigawa/.gradle/caches/9.2.1/transforms/ee0395d74e96cd1441d54abc31231c0a/transformed/credentials-play-services-auth-1.5.0/AndroidManifest.xml:37:13-35
+136            android:exported="false"
+136-->[androidx.credentials:credentials-play-services-auth:1.5.0] /home/kigawa/.gradle/caches/9.2.1/transforms/ee0395d74e96cd1441d54abc31231c0a/transformed/credentials-play-services-auth-1.5.0/AndroidManifest.xml:38:13-37
+137            android:fitsSystemWindows="true"
+137-->[androidx.credentials:credentials-play-services-auth:1.5.0] /home/kigawa/.gradle/caches/9.2.1/transforms/ee0395d74e96cd1441d54abc31231c0a/transformed/credentials-play-services-auth-1.5.0/AndroidManifest.xml:39:13-45
+138            android:theme="@style/Theme.Hidden" >
+138-->[androidx.credentials:credentials-play-services-auth:1.5.0] /home/kigawa/.gradle/caches/9.2.1/transforms/ee0395d74e96cd1441d54abc31231c0a/transformed/credentials-play-services-auth-1.5.0/AndroidManifest.xml:40:13-48
+139        </activity>
+140        <activity
+140-->[androidx.credentials:credentials-play-services-auth:1.5.0] /home/kigawa/.gradle/caches/9.2.1/transforms/ee0395d74e96cd1441d54abc31231c0a/transformed/credentials-play-services-auth-1.5.0/AndroidManifest.xml:42:9-49:20
+141            android:name="androidx.credentials.playservices.IdentityCredentialApiHiddenActivity"
+141-->[androidx.credentials:credentials-play-services-auth:1.5.0] /home/kigawa/.gradle/caches/9.2.1/transforms/ee0395d74e96cd1441d54abc31231c0a/transformed/credentials-play-services-auth-1.5.0/AndroidManifest.xml:43:13-97
+142            android:configChanges="orientation|screenSize|screenLayout|keyboardHidden"
+142-->[androidx.credentials:credentials-play-services-auth:1.5.0] /home/kigawa/.gradle/caches/9.2.1/transforms/ee0395d74e96cd1441d54abc31231c0a/transformed/credentials-play-services-auth-1.5.0/AndroidManifest.xml:44:13-87
+143            android:enabled="true"
+143-->[androidx.credentials:credentials-play-services-auth:1.5.0] /home/kigawa/.gradle/caches/9.2.1/transforms/ee0395d74e96cd1441d54abc31231c0a/transformed/credentials-play-services-auth-1.5.0/AndroidManifest.xml:45:13-35
+144            android:exported="false"
+144-->[androidx.credentials:credentials-play-services-auth:1.5.0] /home/kigawa/.gradle/caches/9.2.1/transforms/ee0395d74e96cd1441d54abc31231c0a/transformed/credentials-play-services-auth-1.5.0/AndroidManifest.xml:46:13-37
+145            android:fitsSystemWindows="true"
+145-->[androidx.credentials:credentials-play-services-auth:1.5.0] /home/kigawa/.gradle/caches/9.2.1/transforms/ee0395d74e96cd1441d54abc31231c0a/transformed/credentials-play-services-auth-1.5.0/AndroidManifest.xml:47:13-45
+146            android:theme="@style/Theme.Hidden" >
+146-->[androidx.credentials:credentials-play-services-auth:1.5.0] /home/kigawa/.gradle/caches/9.2.1/transforms/ee0395d74e96cd1441d54abc31231c0a/transformed/credentials-play-services-auth-1.5.0/AndroidManifest.xml:48:13-48
+147        </activity>
+148        <activity
+148-->[com.google.android.gms:play-services-auth:21.3.0] /home/kigawa/.gradle/caches/9.2.1/transforms/159aa09d85ec046970e730cd51cfbc92/transformed/play-services-auth-21.3.0/AndroidManifest.xml:23:9-27:75
+149            android:name="com.google.android.gms.auth.api.signin.internal.SignInHubActivity"
+149-->[com.google.android.gms:play-services-auth:21.3.0] /home/kigawa/.gradle/caches/9.2.1/transforms/159aa09d85ec046970e730cd51cfbc92/transformed/play-services-auth-21.3.0/AndroidManifest.xml:24:13-93
+150            android:excludeFromRecents="true"
+150-->[com.google.android.gms:play-services-auth:21.3.0] /home/kigawa/.gradle/caches/9.2.1/transforms/159aa09d85ec046970e730cd51cfbc92/transformed/play-services-auth-21.3.0/AndroidManifest.xml:25:13-46
+151            android:exported="false"
+151-->[com.google.android.gms:play-services-auth:21.3.0] /home/kigawa/.gradle/caches/9.2.1/transforms/159aa09d85ec046970e730cd51cfbc92/transformed/play-services-auth-21.3.0/AndroidManifest.xml:26:13-37
+152            android:theme="@android:style/Theme.Translucent.NoTitleBar" />
+152-->[com.google.android.gms:play-services-auth:21.3.0] /home/kigawa/.gradle/caches/9.2.1/transforms/159aa09d85ec046970e730cd51cfbc92/transformed/play-services-auth-21.3.0/AndroidManifest.xml:27:13-72
+153        <!--
+154            Service handling Google Sign-In user revocation. For apps that do not integrate with
+155            Google Sign-In, this service will never be started.
+156        -->
+157        <service
+157-->[com.google.android.gms:play-services-auth:21.3.0] /home/kigawa/.gradle/caches/9.2.1/transforms/159aa09d85ec046970e730cd51cfbc92/transformed/play-services-auth-21.3.0/AndroidManifest.xml:33:9-37:51
+158            android:name="com.google.android.gms.auth.api.signin.RevocationBoundService"
+158-->[com.google.android.gms:play-services-auth:21.3.0] /home/kigawa/.gradle/caches/9.2.1/transforms/159aa09d85ec046970e730cd51cfbc92/transformed/play-services-auth-21.3.0/AndroidManifest.xml:34:13-89
+159            android:exported="true"
+159-->[com.google.android.gms:play-services-auth:21.3.0] /home/kigawa/.gradle/caches/9.2.1/transforms/159aa09d85ec046970e730cd51cfbc92/transformed/play-services-auth-21.3.0/AndroidManifest.xml:35:13-36
+160            android:permission="com.google.android.gms.auth.api.signin.permission.REVOCATION_NOTIFICATION"
+160-->[com.google.android.gms:play-services-auth:21.3.0] /home/kigawa/.gradle/caches/9.2.1/transforms/159aa09d85ec046970e730cd51cfbc92/transformed/play-services-auth-21.3.0/AndroidManifest.xml:36:13-107
+161            android:visibleToInstantApps="true" />
+161-->[com.google.android.gms:play-services-auth:21.3.0] /home/kigawa/.gradle/caches/9.2.1/transforms/159aa09d85ec046970e730cd51cfbc92/transformed/play-services-auth-21.3.0/AndroidManifest.xml:37:13-48
+162
+163        <activity
+163-->[com.google.android.gms:play-services-base:18.5.0] /home/kigawa/.gradle/caches/9.2.1/transforms/d35dae743574fcbf427b32e0eb4e4cc5/transformed/play-services-base-18.5.0/AndroidManifest.xml:5:9-173
+164            android:name="com.google.android.gms.common.api.GoogleApiActivity"
+164-->[com.google.android.gms:play-services-base:18.5.0] /home/kigawa/.gradle/caches/9.2.1/transforms/d35dae743574fcbf427b32e0eb4e4cc5/transformed/play-services-base-18.5.0/AndroidManifest.xml:5:19-85
+165            android:exported="false"
+165-->[com.google.android.gms:play-services-base:18.5.0] /home/kigawa/.gradle/caches/9.2.1/transforms/d35dae743574fcbf427b32e0eb4e4cc5/transformed/play-services-base-18.5.0/AndroidManifest.xml:5:146-170
+166            android:theme="@android:style/Theme.Translucent.NoTitleBar" />
+166-->[com.google.android.gms:play-services-base:18.5.0] /home/kigawa/.gradle/caches/9.2.1/transforms/d35dae743574fcbf427b32e0eb4e4cc5/transformed/play-services-base-18.5.0/AndroidManifest.xml:5:86-145
+167
+168        <meta-data
+168-->[com.google.android.gms:play-services-basement:18.4.0] /home/kigawa/.gradle/caches/9.2.1/transforms/7e558d29496173adef5f48b5527fb266/transformed/play-services-basement-18.4.0/AndroidManifest.xml:6:9-122
+169            android:name="com.google.android.gms.version"
+169-->[com.google.android.gms:play-services-basement:18.4.0] /home/kigawa/.gradle/caches/9.2.1/transforms/7e558d29496173adef5f48b5527fb266/transformed/play-services-basement-18.4.0/AndroidManifest.xml:6:20-65
+170            android:value="@integer/google_play_services_version" />
+170-->[com.google.android.gms:play-services-basement:18.4.0] /home/kigawa/.gradle/caches/9.2.1/transforms/7e558d29496173adef5f48b5527fb266/transformed/play-services-basement-18.4.0/AndroidManifest.xml:6:66-119
+171
+172        <provider
+172-->[org.jetbrains.compose.components:components-resources-android:1.10.0] /home/kigawa/.gradle/caches/9.2.1/transforms/416ff785341dba9afe90577a3b267de9/transformed/library-release/AndroidManifest.xml:8:9-13:20
+173            android:name="org.jetbrains.compose.resources.AndroidContextProvider"
+173-->[org.jetbrains.compose.components:components-resources-android:1.10.0] /home/kigawa/.gradle/caches/9.2.1/transforms/416ff785341dba9afe90577a3b267de9/transformed/library-release/AndroidManifest.xml:9:13-82
+174            android:authorities="net.kigawa.kalender.resources.AndroidContextProvider"
+174-->[org.jetbrains.compose.components:components-resources-android:1.10.0] /home/kigawa/.gradle/caches/9.2.1/transforms/416ff785341dba9afe90577a3b267de9/transformed/library-release/AndroidManifest.xml:10:13-84
+175            android:enabled="true"
+175-->[org.jetbrains.compose.components:components-resources-android:1.10.0] /home/kigawa/.gradle/caches/9.2.1/transforms/416ff785341dba9afe90577a3b267de9/transformed/library-release/AndroidManifest.xml:11:13-35
+176            android:exported="false" >
+176-->[org.jetbrains.compose.components:components-resources-android:1.10.0] /home/kigawa/.gradle/caches/9.2.1/transforms/416ff785341dba9afe90577a3b267de9/transformed/library-release/AndroidManifest.xml:12:13-37
+177        </provider>
+178
+179        <activity
+179-->[androidx.compose.ui:ui-test-manifest:1.10.0] /home/kigawa/.gradle/caches/9.2.1/transforms/493276c4bab77af9e7c219615257da36/transformed/ui-test-manifest-1.10.0/AndroidManifest.xml:23:9-26:79
+180            android:name="androidx.activity.ComponentActivity"
+180-->[androidx.compose.ui:ui-test-manifest:1.10.0] /home/kigawa/.gradle/caches/9.2.1/transforms/493276c4bab77af9e7c219615257da36/transformed/ui-test-manifest-1.10.0/AndroidManifest.xml:24:13-63
+181            android:exported="true"
+181-->[androidx.compose.ui:ui-test-manifest:1.10.0] /home/kigawa/.gradle/caches/9.2.1/transforms/493276c4bab77af9e7c219615257da36/transformed/ui-test-manifest-1.10.0/AndroidManifest.xml:25:13-36
+182            android:theme="@android:style/Theme.Material.Light.NoActionBar" />
+182-->[androidx.compose.ui:ui-test-manifest:1.10.0] /home/kigawa/.gradle/caches/9.2.1/transforms/493276c4bab77af9e7c219615257da36/transformed/ui-test-manifest-1.10.0/AndroidManifest.xml:26:13-76
+183        <activity
+183-->[androidx.compose.ui:ui-tooling-android:1.10.0] /home/kigawa/.gradle/caches/9.2.1/transforms/c81febcc9bd856155e8a4d7c3c6086b5/transformed/ui-tooling/AndroidManifest.xml:23:9-25:39
+184            android:name="androidx.compose.ui.tooling.PreviewActivity"
+184-->[androidx.compose.ui:ui-tooling-android:1.10.0] /home/kigawa/.gradle/caches/9.2.1/transforms/c81febcc9bd856155e8a4d7c3c6086b5/transformed/ui-tooling/AndroidManifest.xml:24:13-71
+185            android:exported="true" />
+185-->[androidx.compose.ui:ui-tooling-android:1.10.0] /home/kigawa/.gradle/caches/9.2.1/transforms/c81febcc9bd856155e8a4d7c3c6086b5/transformed/ui-tooling/AndroidManifest.xml:25:13-36
+186
+187        <uses-library
+187-->[androidx.window:window:1.5.0] /home/kigawa/.gradle/caches/9.2.1/transforms/cacf9a6ad128caea8221915f24f3cc29/transformed/window-1.5.0/AndroidManifest.xml:23:9-25:40
+188            android:name="androidx.window.extensions"
+188-->[androidx.window:window:1.5.0] /home/kigawa/.gradle/caches/9.2.1/transforms/cacf9a6ad128caea8221915f24f3cc29/transformed/window-1.5.0/AndroidManifest.xml:24:13-54
+189            android:required="false" />
+189-->[androidx.window:window:1.5.0] /home/kigawa/.gradle/caches/9.2.1/transforms/cacf9a6ad128caea8221915f24f3cc29/transformed/window-1.5.0/AndroidManifest.xml:25:13-37
+190        <uses-library
+190-->[androidx.window:window:1.5.0] /home/kigawa/.gradle/caches/9.2.1/transforms/cacf9a6ad128caea8221915f24f3cc29/transformed/window-1.5.0/AndroidManifest.xml:26:9-28:40
+191            android:name="androidx.window.sidecar"
+191-->[androidx.window:window:1.5.0] /home/kigawa/.gradle/caches/9.2.1/transforms/cacf9a6ad128caea8221915f24f3cc29/transformed/window-1.5.0/AndroidManifest.xml:27:13-51
+192            android:required="false" />
+192-->[androidx.window:window:1.5.0] /home/kigawa/.gradle/caches/9.2.1/transforms/cacf9a6ad128caea8221915f24f3cc29/transformed/window-1.5.0/AndroidManifest.xml:28:13-37
+193
+194        <provider
+194-->[androidx.emoji2:emoji2:1.4.0] /home/kigawa/.gradle/caches/9.2.1/transforms/2d09cd40c28b797136a4c21c9ad30209/transformed/emoji2-1.4.0/AndroidManifest.xml:24:9-32:20
+195            android:name="androidx.startup.InitializationProvider"
+195-->[androidx.emoji2:emoji2:1.4.0] /home/kigawa/.gradle/caches/9.2.1/transforms/2d09cd40c28b797136a4c21c9ad30209/transformed/emoji2-1.4.0/AndroidManifest.xml:25:13-67
+196            android:authorities="net.kigawa.kalender.androidx-startup"
+196-->[androidx.emoji2:emoji2:1.4.0] /home/kigawa/.gradle/caches/9.2.1/transforms/2d09cd40c28b797136a4c21c9ad30209/transformed/emoji2-1.4.0/AndroidManifest.xml:26:13-68
+197            android:exported="false" >
+197-->[androidx.emoji2:emoji2:1.4.0] /home/kigawa/.gradle/caches/9.2.1/transforms/2d09cd40c28b797136a4c21c9ad30209/transformed/emoji2-1.4.0/AndroidManifest.xml:27:13-37
+198            <meta-data
+198-->[androidx.emoji2:emoji2:1.4.0] /home/kigawa/.gradle/caches/9.2.1/transforms/2d09cd40c28b797136a4c21c9ad30209/transformed/emoji2-1.4.0/AndroidManifest.xml:29:13-31:52
+199                android:name="androidx.emoji2.text.EmojiCompatInitializer"
+199-->[androidx.emoji2:emoji2:1.4.0] /home/kigawa/.gradle/caches/9.2.1/transforms/2d09cd40c28b797136a4c21c9ad30209/transformed/emoji2-1.4.0/AndroidManifest.xml:30:17-75
+200                android:value="androidx.startup" />
+200-->[androidx.emoji2:emoji2:1.4.0] /home/kigawa/.gradle/caches/9.2.1/transforms/2d09cd40c28b797136a4c21c9ad30209/transformed/emoji2-1.4.0/AndroidManifest.xml:31:17-49
+201            <meta-data
+201-->[androidx.lifecycle:lifecycle-process:2.9.4] /home/kigawa/.gradle/caches/9.2.1/transforms/42bd2e0d7aa8dc31ca4d5af9786500b7/transformed/lifecycle-process-2.9.4/AndroidManifest.xml:29:13-31:52
+202                android:name="androidx.lifecycle.ProcessLifecycleInitializer"
+202-->[androidx.lifecycle:lifecycle-process:2.9.4] /home/kigawa/.gradle/caches/9.2.1/transforms/42bd2e0d7aa8dc31ca4d5af9786500b7/transformed/lifecycle-process-2.9.4/AndroidManifest.xml:30:17-78
+203                android:value="androidx.startup" />
+203-->[androidx.lifecycle:lifecycle-process:2.9.4] /home/kigawa/.gradle/caches/9.2.1/transforms/42bd2e0d7aa8dc31ca4d5af9786500b7/transformed/lifecycle-process-2.9.4/AndroidManifest.xml:31:17-49
+204            <meta-data
+204-->[androidx.profileinstaller:profileinstaller:1.4.0] /home/kigawa/.gradle/caches/9.2.1/transforms/9a8d41a0c72425dbe6942446fda98a41/transformed/profileinstaller-1.4.0/AndroidManifest.xml:29:13-31:52
+205                android:name="androidx.profileinstaller.ProfileInstallerInitializer"
+205-->[androidx.profileinstaller:profileinstaller:1.4.0] /home/kigawa/.gradle/caches/9.2.1/transforms/9a8d41a0c72425dbe6942446fda98a41/transformed/profileinstaller-1.4.0/AndroidManifest.xml:30:17-85
+206                android:value="androidx.startup" />
+206-->[androidx.profileinstaller:profileinstaller:1.4.0] /home/kigawa/.gradle/caches/9.2.1/transforms/9a8d41a0c72425dbe6942446fda98a41/transformed/profileinstaller-1.4.0/AndroidManifest.xml:31:17-49
+207        </provider>
+208
+209        <service
+209-->[androidx.room:room-runtime-android:2.7.1] /home/kigawa/.gradle/caches/9.2.1/transforms/b444adedf75be8b687840090939e2810/transformed/room-runtime-release/AndroidManifest.xml:24:9-28:63
+210            android:name="androidx.room.MultiInstanceInvalidationService"
+210-->[androidx.room:room-runtime-android:2.7.1] /home/kigawa/.gradle/caches/9.2.1/transforms/b444adedf75be8b687840090939e2810/transformed/room-runtime-release/AndroidManifest.xml:25:13-74
+211            android:directBootAware="true"
+211-->[androidx.room:room-runtime-android:2.7.1] /home/kigawa/.gradle/caches/9.2.1/transforms/b444adedf75be8b687840090939e2810/transformed/room-runtime-release/AndroidManifest.xml:26:13-43
+212            android:exported="false" />
+212-->[androidx.room:room-runtime-android:2.7.1] /home/kigawa/.gradle/caches/9.2.1/transforms/b444adedf75be8b687840090939e2810/transformed/room-runtime-release/AndroidManifest.xml:27:13-37
+213
+214        <receiver
+214-->[androidx.profileinstaller:profileinstaller:1.4.0] /home/kigawa/.gradle/caches/9.2.1/transforms/9a8d41a0c72425dbe6942446fda98a41/transformed/profileinstaller-1.4.0/AndroidManifest.xml:34:9-52:20
+215            android:name="androidx.profileinstaller.ProfileInstallReceiver"
+215-->[androidx.profileinstaller:profileinstaller:1.4.0] /home/kigawa/.gradle/caches/9.2.1/transforms/9a8d41a0c72425dbe6942446fda98a41/transformed/profileinstaller-1.4.0/AndroidManifest.xml:35:13-76
+216            android:directBootAware="false"
+216-->[androidx.profileinstaller:profileinstaller:1.4.0] /home/kigawa/.gradle/caches/9.2.1/transforms/9a8d41a0c72425dbe6942446fda98a41/transformed/profileinstaller-1.4.0/AndroidManifest.xml:36:13-44
+217            android:enabled="true"
+217-->[androidx.profileinstaller:profileinstaller:1.4.0] /home/kigawa/.gradle/caches/9.2.1/transforms/9a8d41a0c72425dbe6942446fda98a41/transformed/profileinstaller-1.4.0/AndroidManifest.xml:37:13-35
+218            android:exported="true"
+218-->[androidx.profileinstaller:profileinstaller:1.4.0] /home/kigawa/.gradle/caches/9.2.1/transforms/9a8d41a0c72425dbe6942446fda98a41/transformed/profileinstaller-1.4.0/AndroidManifest.xml:38:13-36
+219            android:permission="android.permission.DUMP" >
+219-->[androidx.profileinstaller:profileinstaller:1.4.0] /home/kigawa/.gradle/caches/9.2.1/transforms/9a8d41a0c72425dbe6942446fda98a41/transformed/profileinstaller-1.4.0/AndroidManifest.xml:39:13-57
+220            <intent-filter>
+220-->[androidx.profileinstaller:profileinstaller:1.4.0] /home/kigawa/.gradle/caches/9.2.1/transforms/9a8d41a0c72425dbe6942446fda98a41/transformed/profileinstaller-1.4.0/AndroidManifest.xml:40:13-42:29
+221                <action android:name="androidx.profileinstaller.action.INSTALL_PROFILE" />
+221-->[androidx.profileinstaller:profileinstaller:1.4.0] /home/kigawa/.gradle/caches/9.2.1/transforms/9a8d41a0c72425dbe6942446fda98a41/transformed/profileinstaller-1.4.0/AndroidManifest.xml:41:17-91
+221-->[androidx.profileinstaller:profileinstaller:1.4.0] /home/kigawa/.gradle/caches/9.2.1/transforms/9a8d41a0c72425dbe6942446fda98a41/transformed/profileinstaller-1.4.0/AndroidManifest.xml:41:25-88
+222            </intent-filter>
+223            <intent-filter>
+223-->[androidx.profileinstaller:profileinstaller:1.4.0] /home/kigawa/.gradle/caches/9.2.1/transforms/9a8d41a0c72425dbe6942446fda98a41/transformed/profileinstaller-1.4.0/AndroidManifest.xml:43:13-45:29
+224                <action android:name="androidx.profileinstaller.action.SKIP_FILE" />
+224-->[androidx.profileinstaller:profileinstaller:1.4.0] /home/kigawa/.gradle/caches/9.2.1/transforms/9a8d41a0c72425dbe6942446fda98a41/transformed/profileinstaller-1.4.0/AndroidManifest.xml:44:17-85
+224-->[androidx.profileinstaller:profileinstaller:1.4.0] /home/kigawa/.gradle/caches/9.2.1/transforms/9a8d41a0c72425dbe6942446fda98a41/transformed/profileinstaller-1.4.0/AndroidManifest.xml:44:25-82
+225            </intent-filter>
+226            <intent-filter>
+226-->[androidx.profileinstaller:profileinstaller:1.4.0] /home/kigawa/.gradle/caches/9.2.1/transforms/9a8d41a0c72425dbe6942446fda98a41/transformed/profileinstaller-1.4.0/AndroidManifest.xml:46:13-48:29
+227                <action android:name="androidx.profileinstaller.action.SAVE_PROFILE" />
+227-->[androidx.profileinstaller:profileinstaller:1.4.0] /home/kigawa/.gradle/caches/9.2.1/transforms/9a8d41a0c72425dbe6942446fda98a41/transformed/profileinstaller-1.4.0/AndroidManifest.xml:47:17-88
+227-->[androidx.profileinstaller:profileinstaller:1.4.0] /home/kigawa/.gradle/caches/9.2.1/transforms/9a8d41a0c72425dbe6942446fda98a41/transformed/profileinstaller-1.4.0/AndroidManifest.xml:47:25-85
+228            </intent-filter>
+229            <intent-filter>
+229-->[androidx.profileinstaller:profileinstaller:1.4.0] /home/kigawa/.gradle/caches/9.2.1/transforms/9a8d41a0c72425dbe6942446fda98a41/transformed/profileinstaller-1.4.0/AndroidManifest.xml:49:13-51:29
+230                <action android:name="androidx.profileinstaller.action.BENCHMARK_OPERATION" />
+230-->[androidx.profileinstaller:profileinstaller:1.4.0] /home/kigawa/.gradle/caches/9.2.1/transforms/9a8d41a0c72425dbe6942446fda98a41/transformed/profileinstaller-1.4.0/AndroidManifest.xml:50:17-95
+230-->[androidx.profileinstaller:profileinstaller:1.4.0] /home/kigawa/.gradle/caches/9.2.1/transforms/9a8d41a0c72425dbe6942446fda98a41/transformed/profileinstaller-1.4.0/AndroidManifest.xml:50:25-92
+231            </intent-filter>
+232        </receiver>
+233
+234        <activity
+234-->[com.yubico.yubikit:android:2.3.0] /home/kigawa/.gradle/caches/9.2.1/transforms/2aed814f03a05d6d373842d9c9eb965b/transformed/android-2.3.0/AndroidManifest.xml:17:9-21:63
+235            android:name="com.yubico.yubikit.android.ui.OtpActivity"
+235-->[com.yubico.yubikit:android:2.3.0] /home/kigawa/.gradle/caches/9.2.1/transforms/2aed814f03a05d6d373842d9c9eb965b/transformed/android-2.3.0/AndroidManifest.xml:18:13-69
+236            android:excludeFromRecents="true"
+236-->[com.yubico.yubikit:android:2.3.0] /home/kigawa/.gradle/caches/9.2.1/transforms/2aed814f03a05d6d373842d9c9eb965b/transformed/android-2.3.0/AndroidManifest.xml:19:13-46
+237            android:label="@string/yubikit_otp_activity_title"
+237-->[com.yubico.yubikit:android:2.3.0] /home/kigawa/.gradle/caches/9.2.1/transforms/2aed814f03a05d6d373842d9c9eb965b/transformed/android-2.3.0/AndroidManifest.xml:20:13-63
+238            android:theme="@style/YubiKitPromptDialogTheme" />
+238-->[com.yubico.yubikit:android:2.3.0] /home/kigawa/.gradle/caches/9.2.1/transforms/2aed814f03a05d6d373842d9c9eb965b/transformed/android-2.3.0/AndroidManifest.xml:21:13-60
+239        <activity
+239-->[com.yubico.yubikit:android:2.3.0] /home/kigawa/.gradle/caches/9.2.1/transforms/2aed814f03a05d6d373842d9c9eb965b/transformed/android-2.3.0/AndroidManifest.xml:22:9-26:63
+240            android:name="com.yubico.yubikit.android.ui.YubiKeyPromptActivity"
+240-->[com.yubico.yubikit:android:2.3.0] /home/kigawa/.gradle/caches/9.2.1/transforms/2aed814f03a05d6d373842d9c9eb965b/transformed/android-2.3.0/AndroidManifest.xml:23:13-79
+241            android:excludeFromRecents="true"
+241-->[com.yubico.yubikit:android:2.3.0] /home/kigawa/.gradle/caches/9.2.1/transforms/2aed814f03a05d6d373842d9c9eb965b/transformed/android-2.3.0/AndroidManifest.xml:24:13-46
+242            android:label="@string/yubikit_prompt_activity_title"
+242-->[com.yubico.yubikit:android:2.3.0] /home/kigawa/.gradle/caches/9.2.1/transforms/2aed814f03a05d6d373842d9c9eb965b/transformed/android-2.3.0/AndroidManifest.xml:25:13-66
+243            android:theme="@style/YubiKitPromptDialogTheme" />
+243-->[com.yubico.yubikit:android:2.3.0] /home/kigawa/.gradle/caches/9.2.1/transforms/2aed814f03a05d6d373842d9c9eb965b/transformed/android-2.3.0/AndroidManifest.xml:26:13-60
+244    </application>
+245
+246</manifest>

@@ -1,0 +1,863 @@
+-- Merging decision tree log ---
+manifest
+ADDED from /home/kigawa/dev/kigawa-net/kalender/composeApp/src/androidMain/AndroidManifest.xml:2:1-55:12
+INJECTED from /home/kigawa/dev/kigawa-net/kalender/composeApp/src/androidMain/AndroidManifest.xml:2:1-55:12
+INJECTED from /home/kigawa/dev/kigawa-net/kalender/composeApp/src/androidMain/AndroidManifest.xml:2:1-55:12
+INJECTED from /home/kigawa/dev/kigawa-net/kalender/composeApp/src/androidMain/AndroidManifest.xml:2:1-55:12
+MERGED from [androidx.navigation:navigation-common:2.8.9] /home/kigawa/.gradle/caches/9.2.1/transforms/7328d89dd95029b2ae9bb325868d64e6/transformed/navigation-common-2.8.9/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.navigation:navigation-runtime:2.8.9] /home/kigawa/.gradle/caches/9.2.1/transforms/34a315a9c419f058bec9a0744873c43f/transformed/navigation-runtime-2.8.9/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.navigation:navigation-common-ktx:2.8.9] /home/kigawa/.gradle/caches/9.2.1/transforms/908406887376f1880a2fb2e1d26d8580/transformed/navigation-common-ktx-2.8.9/AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.navigation:navigation-runtime-ktx:2.8.9] /home/kigawa/.gradle/caches/9.2.1/transforms/a8fb29db37bc15e9e0f343007724b04d/transformed/navigation-runtime-ktx-2.8.9/AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.navigation:navigation-compose:2.8.9] /home/kigawa/.gradle/caches/9.2.1/transforms/30644fa7fd1f4691965b75209a3a06a9/transformed/navigation-compose-2.8.9/AndroidManifest.xml:2:1-7:12
+MERGED from [com.microsoft.identity.client:msal:5.3.0] /home/kigawa/.gradle/caches/9.2.1/transforms/c1b8591157a393205c3a79b592ce29f5/transformed/msal-5.3.0/AndroidManifest.xml:2:1-40:12
+MERGED from [com.microsoft.identity:common:17.3.0] /home/kigawa/.gradle/caches/9.2.1/transforms/5a134e551200707bbe22646fe000c298/transformed/common-17.3.0/AndroidManifest.xml:2:1-64:12
+MERGED from [androidx.credentials:credentials-play-services-auth:1.5.0] /home/kigawa/.gradle/caches/9.2.1/transforms/ee0395d74e96cd1441d54abc31231c0a/transformed/credentials-play-services-auth-1.5.0/AndroidManifest.xml:17:1-52:12
+MERGED from [com.google.android.libraries.identity.googleid:googleid:1.1.1] /home/kigawa/.gradle/caches/9.2.1/transforms/59903bef774f82a99a5a24c7728c6ad8/transformed/googleid-1.1.1/AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.credentials:credentials:1.5.0] /home/kigawa/.gradle/caches/9.2.1/transforms/76223a71395597f98c3cef311e17e29b/transformed/credentials-1.5.0/AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.biometric:biometric:1.1.0] /home/kigawa/.gradle/caches/9.2.1/transforms/66a59b6dcd10409e02b4b28d26397a1c/transformed/biometric-1.1.0/AndroidManifest.xml:17:1-29:12
+MERGED from [io.insert-koin:koin-android:4.0.0] /home/kigawa/.gradle/caches/9.2.1/transforms/0a76fd2ad46c5a0a0fdcabd0fbf4c9a7/transformed/koin-android-4.0.0/AndroidManifest.xml:2:1-9:12
+MERGED from [androidx.appcompat:appcompat-resources:1.7.0] /home/kigawa/.gradle/caches/9.2.1/transforms/eab6a84130f3e6a1b8b95931254a004c/transformed/appcompat-resources-1.7.0/AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.appcompat:appcompat:1.7.0] /home/kigawa/.gradle/caches/9.2.1/transforms/554e06bf228ac25a86002d39d30cd545/transformed/appcompat-1.7.0/AndroidManifest.xml:2:1-7:12
+MERGED from [com.google.android.gms:play-services-auth:21.3.0] /home/kigawa/.gradle/caches/9.2.1/transforms/159aa09d85ec046970e730cd51cfbc92/transformed/play-services-auth-21.3.0/AndroidManifest.xml:17:1-40:12
+MERGED from [com.google.android.gms:play-services-auth-blockstore:16.4.0] /home/kigawa/.gradle/caches/9.2.1/transforms/5d2dbf12a15e506641b1ed816e44f9c5/transformed/play-services-auth-blockstore-16.4.0/AndroidManifest.xml:2:1-9:12
+MERGED from [com.google.android.gms:play-services-fido:21.0.0] /home/kigawa/.gradle/caches/9.2.1/transforms/35f371410b6e9d88c393e7368bf5ff8e/transformed/play-services-fido-21.0.0/AndroidManifest.xml:2:1-10:12
+MERGED from [com.google.android.gms:play-services-identity-credentials:16.0.0-alpha02] /home/kigawa/.gradle/caches/9.2.1/transforms/efb283378e55a57ed2c8d0105a12a64b/transformed/play-services-identity-credentials-16.0.0-alpha02/AndroidManifest.xml:2:1-7:12
+MERGED from [com.google.android.gms:play-services-auth-api-phone:18.0.2] /home/kigawa/.gradle/caches/9.2.1/transforms/c4099f103f48f7d4014c9f963566575e/transformed/play-services-auth-api-phone-18.0.2/AndroidManifest.xml:2:1-7:12
+MERGED from [com.google.android.gms:play-services-auth-base:18.0.10] /home/kigawa/.gradle/caches/9.2.1/transforms/5e8748530a3eeb19151032feb5110916/transformed/play-services-auth-base-18.0.10/AndroidManifest.xml:2:1-7:12
+MERGED from [com.google.android.gms:play-services-base:18.5.0] /home/kigawa/.gradle/caches/9.2.1/transforms/d35dae743574fcbf427b32e0eb4e4cc5/transformed/play-services-base-18.5.0/AndroidManifest.xml:2:1-7:12
+MERGED from [com.google.android.gms:play-services-tasks:18.2.0] /home/kigawa/.gradle/caches/9.2.1/transforms/8645da93be999af433de09e2c84876db/transformed/play-services-tasks-18.2.0/AndroidManifest.xml:2:1-5:12
+MERGED from [com.google.android.gms:play-services-basement:18.4.0] /home/kigawa/.gradle/caches/9.2.1/transforms/7e558d29496173adef5f48b5527fb266/transformed/play-services-basement-18.4.0/AndroidManifest.xml:2:1-9:12
+MERGED from [androidx.fragment:fragment:1.8.3] /home/kigawa/.gradle/caches/9.2.1/transforms/9857a0e7606b859a59867e081794724a/transformed/fragment-1.8.3/AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.fragment:fragment-ktx:1.8.3] /home/kigawa/.gradle/caches/9.2.1/transforms/6556d2cc0386b3a2a7b20aa386f30cd1/transformed/fragment-ktx-1.8.3/AndroidManifest.xml:2:1-7:12
+MERGED from [org.jetbrains.compose.components:components-resources-android:1.10.0] /home/kigawa/.gradle/caches/9.2.1/transforms/416ff785341dba9afe90577a3b267de9/transformed/library-release/AndroidManifest.xml:2:1-16:12
+MERGED from [androidx.compose.material3:material3:1.0.1] /home/kigawa/.gradle/caches/9.2.1/transforms/b71168c4ac86bbaf92f7fe067374c0f6/transformed/material3-1.0.1/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.navigationevent:navigationevent-android:1.0.0] /home/kigawa/.gradle/caches/9.2.1/transforms/f678e5147e20424b31b7008ba81c0d59/transformed/navigationevent/AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.navigationevent:navigationevent-compose-android:1.0.0] /home/kigawa/.gradle/caches/9.2.1/transforms/bae2860b821d59e7c1b55516f7e4ae90/transformed/navigationevent-compose/AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.compose.material:material-ripple:1.0.0] /home/kigawa/.gradle/caches/9.2.1/transforms/9eaceb9ee6a773abf01542842e670d2b/transformed/material-ripple-1.0.0/AndroidManifest.xml:17:1-24:12
+MERGED from [androidx.compose.animation:animation-core-android:1.10.0] /home/kigawa/.gradle/caches/9.2.1/transforms/32e3248ed72757d0fa79e8e233a15c41/transformed/animation-core/AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.compose.animation:animation-android:1.10.0] /home/kigawa/.gradle/caches/9.2.1/transforms/a72fa74033fc5f17259a99f27628fe68/transformed/animation/AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.compose.foundation:foundation-layout-android:1.10.0] /home/kigawa/.gradle/caches/9.2.1/transforms/7fceb208732648273d4b2772d38dff7d/transformed/foundation-layout/AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.compose.foundation:foundation-android:1.10.0] /home/kigawa/.gradle/caches/9.2.1/transforms/a6c873ce1508673b7fb8c78a0db5db51/transformed/foundation/AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.compose.ui:ui-tooling-data-android:1.10.0] /home/kigawa/.gradle/caches/9.2.1/transforms/c58951f4805faee4c75345247f11104c/transformed/ui-tooling-data/AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.compose.ui:ui-unit-android:1.10.0] /home/kigawa/.gradle/caches/9.2.1/transforms/5992bc22574516d2f8c65c88793f872f/transformed/ui-unit/AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.compose.ui:ui-graphics-android:1.10.0] /home/kigawa/.gradle/caches/9.2.1/transforms/7a33e13a0d8aad0836198ddc4eb29519/transformed/ui-graphics/AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.compose.ui:ui-geometry-android:1.10.0] /home/kigawa/.gradle/caches/9.2.1/transforms/4ac17c740a5bd7bad5d54002076daeff/transformed/ui-geometry/AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.compose.ui:ui-util-android:1.10.0] /home/kigawa/.gradle/caches/9.2.1/transforms/922ff9c64da9f1f0e1612f735192f5dc/transformed/ui-util/AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.compose.ui:ui-text-android:1.10.0] /home/kigawa/.gradle/caches/9.2.1/transforms/d90c62986099ae00315fe2609b3443f6/transformed/ui-text/AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.compose.ui:ui-test-manifest:1.10.0] /home/kigawa/.gradle/caches/9.2.1/transforms/493276c4bab77af9e7c219615257da36/transformed/ui-test-manifest-1.10.0/AndroidManifest.xml:17:1-29:12
+MERGED from [androidx.compose.ui:ui-tooling-preview-android:1.10.0] /home/kigawa/.gradle/caches/9.2.1/transforms/fbfd7d0ab8f9e7dae63566f86530c17d/transformed/ui-tooling-preview/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.compose.ui:ui-tooling-android:1.10.0] /home/kigawa/.gradle/caches/9.2.1/transforms/c81febcc9bd856155e8a4d7c3c6086b5/transformed/ui-tooling/AndroidManifest.xml:17:1-28:12
+MERGED from [androidx.compose.material:material:1.0.0] /home/kigawa/.gradle/caches/9.2.1/transforms/8018139a5f72a0d075afd039768af871/transformed/material-1.0.0/AndroidManifest.xml:17:1-24:12
+MERGED from [androidx.compose.material:material-icons-core:1.0.2] /home/kigawa/.gradle/caches/9.2.1/transforms/3ec688233b5fd6c0249c9b2b5ffa8b4b/transformed/material-icons-core-1.0.2/AndroidManifest.xml:17:1-24:12
+MERGED from [androidx.browser:browser:1.0.0] /home/kigawa/.gradle/caches/9.2.1/transforms/d1033f311ec9dd657dd83c576dfb9e3d/transformed/browser-1.0.0/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.legacy:legacy-support-core-ui:1.0.0] /home/kigawa/.gradle/caches/9.2.1/transforms/dbe276385972bdb8d670ee22581a7eb5/transformed/legacy-support-core-ui-1.0.0/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.transition:transition:1.6.0] /home/kigawa/.gradle/caches/9.2.1/transforms/8a5942c0e8d7d159e2a7152918350f48/transformed/transition-1.6.0/AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.dynamicanimation:dynamicanimation:1.0.0] /home/kigawa/.gradle/caches/9.2.1/transforms/7ef23b0d7d043efc2f52cc0453f077c2/transformed/dynamicanimation-1.0.0/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.legacy:legacy-support-core-utils:1.0.0] /home/kigawa/.gradle/caches/9.2.1/transforms/b0b7087eea819f166e870c3ce09bd421/transformed/legacy-support-core-utils-1.0.0/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.loader:loader:1.1.0] /home/kigawa/.gradle/caches/9.2.1/transforms/41e2f95e26e146bb4f9a18c28aac8d36/transformed/loader-1.1.0/AndroidManifest.xml:17:1-24:12
+MERGED from [androidx.drawerlayout:drawerlayout:1.0.0] /home/kigawa/.gradle/caches/9.2.1/transforms/26b4aba1f50d95c23ac00948703e2141/transformed/drawerlayout-1.0.0/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.viewpager:viewpager:1.0.0] /home/kigawa/.gradle/caches/9.2.1/transforms/267dfff99ae4211250d93dd70010ef76/transformed/viewpager-1.0.0/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.coordinatorlayout:coordinatorlayout:1.0.0] /home/kigawa/.gradle/caches/9.2.1/transforms/70cd26d6eb3c3d515dcd9a5bf2696f9b/transformed/coordinatorlayout-1.0.0/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.slidingpanelayout:slidingpanelayout:1.0.0] /home/kigawa/.gradle/caches/9.2.1/transforms/887eb916332b4eb718f28431537061b4/transformed/slidingpanelayout-1.0.0/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.customview:customview:1.0.0] /home/kigawa/.gradle/caches/9.2.1/transforms/3e63c7c5ab0c0fcce2b7ed629cde12b0/transformed/customview-1.0.0/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.swiperefreshlayout:swiperefreshlayout:1.0.0] /home/kigawa/.gradle/caches/9.2.1/transforms/459c5012e713fab4e9811d222aded210/transformed/swiperefreshlayout-1.0.0/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.asynclayoutinflater:asynclayoutinflater:1.0.0] /home/kigawa/.gradle/caches/9.2.1/transforms/73fa15e34c66eaa19ecfe4e01ea7b517/transformed/asynclayoutinflater-1.0.0/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.vectordrawable:vectordrawable-animated:1.1.0] /home/kigawa/.gradle/caches/9.2.1/transforms/17d465ab16d496910e87324de92efd81/transformed/vectordrawable-animated-1.1.0/AndroidManifest.xml:17:1-24:12
+MERGED from [androidx.vectordrawable:vectordrawable:1.1.0] /home/kigawa/.gradle/caches/9.2.1/transforms/b5e470abd1080a0a2b25d22cc9065362/transformed/vectordrawable-1.1.0/AndroidManifest.xml:17:1-24:12
+MERGED from [androidx.autofill:autofill:1.0.0] /home/kigawa/.gradle/caches/9.2.1/transforms/d64efbbc241a58494514a91c9c516db6/transformed/autofill-1.0.0/AndroidManifest.xml:17:1-24:12
+MERGED from [androidx.window:window-core-android:1.5.0] /home/kigawa/.gradle/caches/9.2.1/transforms/90da37137606ab9429c9d9ebe13df05a/transformed/window-core/AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.window:window:1.5.0] /home/kigawa/.gradle/caches/9.2.1/transforms/cacf9a6ad128caea8221915f24f3cc29/transformed/window-1.5.0/AndroidManifest.xml:17:1-31:12
+MERGED from [androidx.emoji2:emoji2-views-helper:1.4.0] /home/kigawa/.gradle/caches/9.2.1/transforms/34533e18e5f2c622fb84bc49780c5d26/transformed/emoji2-views-helper-1.4.0/AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.emoji2:emoji2:1.4.0] /home/kigawa/.gradle/caches/9.2.1/transforms/2d09cd40c28b797136a4c21c9ad30209/transformed/emoji2-1.4.0/AndroidManifest.xml:17:1-35:12
+MERGED from [androidx.graphics:graphics-path:1.0.1] /home/kigawa/.gradle/caches/9.2.1/transforms/1e79cf895ac96bbf64eee2380163bd18/transformed/graphics-path-1.0.1/AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.core:core:1.18.0] /home/kigawa/.gradle/caches/9.2.1/transforms/7f8eb18d12c23a198eafa24675657cfa/transformed/core-1.18.0/AndroidManifest.xml:17:1-30:12
+MERGED from [androidx.lifecycle:lifecycle-process:2.9.4] /home/kigawa/.gradle/caches/9.2.1/transforms/42bd2e0d7aa8dc31ca4d5af9786500b7/transformed/lifecycle-process-2.9.4/AndroidManifest.xml:17:1-35:12
+MERGED from [androidx.lifecycle:lifecycle-runtime-ktx-android:2.9.4] /home/kigawa/.gradle/caches/9.2.1/transforms/0ee5640ce66f13e2f324b9eba1efa0df/transformed/lifecycle-runtime-ktx/AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.lifecycle:lifecycle-viewmodel-ktx:2.9.4] /home/kigawa/.gradle/caches/9.2.1/transforms/a51185b1108c20767227ad2d616ae868/transformed/lifecycle-viewmodel-ktx-2.9.4/AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.lifecycle:lifecycle-livedata-core-ktx:2.9.4] /home/kigawa/.gradle/caches/9.2.1/transforms/2bf0a06c300897392103a9cb7589f641/transformed/lifecycle-livedata-core-ktx-2.9.4/AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.lifecycle:lifecycle-livedata-core:2.9.4] /home/kigawa/.gradle/caches/9.2.1/transforms/b6f50178f05aa70df8410a085bb458ef/transformed/lifecycle-livedata-core-2.9.4/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.lifecycle:lifecycle-viewmodel:2.9.4] /home/kigawa/.gradle/caches/9.2.1/transforms/bbe7399613f661fad71473e450c0e217/transformed/lifecycle-viewmodel-2.9.4/AndroidManifest.xml:2:1-5:12
+MERGED from [androidx.lifecycle:lifecycle-viewmodel-android:2.9.4] /home/kigawa/.gradle/caches/9.2.1/transforms/ff77819ef1cf9b1edba8e916041170e0/transformed/lifecycle-viewmodel-release/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.lifecycle:lifecycle-runtime-android:2.9.4] /home/kigawa/.gradle/caches/9.2.1/transforms/e13dae24b8c4ae95e0431c21ffa3911d/transformed/lifecycle-runtime-release/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.lifecycle:lifecycle-viewmodel-savedstate-android:2.9.4] /home/kigawa/.gradle/caches/9.2.1/transforms/467c34e2e4657947cb7b7bf462c2c65a/transformed/lifecycle-viewmodel-savedstate-release/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.savedstate:savedstate-ktx:1.3.3] /home/kigawa/.gradle/caches/9.2.1/transforms/aa67ba3bfb1ceeefda67337ff83610ba/transformed/savedstate-ktx-1.3.3/AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.savedstate:savedstate-android:1.3.3] /home/kigawa/.gradle/caches/9.2.1/transforms/8838984e7e7ca76f26bc018ea101608e/transformed/savedstate-release/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.savedstate:savedstate-compose-android:1.3.3] /home/kigawa/.gradle/caches/9.2.1/transforms/0cad9459d70a952bbefff09b0e63cf45/transformed/savedstate-compose/AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.compose.runtime:runtime-annotation-android:1.10.0] /home/kigawa/.gradle/caches/9.2.1/transforms/ec18e1ca1c0f397e8b09519d1127a1f5/transformed/runtime-annotation/AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.compose.runtime:runtime-android:1.10.0] /home/kigawa/.gradle/caches/9.2.1/transforms/75bc7022ccb19e58211187de1f4ac0f4/transformed/runtime/AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.compose.runtime:runtime-retain-android:1.10.0] /home/kigawa/.gradle/caches/9.2.1/transforms/48d8109160f5f4123141df49aeed1f75/transformed/runtime-retain/AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.compose.runtime:runtime-saveable-android:1.10.0] /home/kigawa/.gradle/caches/9.2.1/transforms/4756418fad943e68bf0ee31879f13b05/transformed/runtime-saveable/AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.lifecycle:lifecycle-runtime-compose-android:2.9.4] /home/kigawa/.gradle/caches/9.2.1/transforms/060b818c42f459906ed88ea28c5a5e4c/transformed/lifecycle-runtime-compose-release/AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.lifecycle:lifecycle-viewmodel-compose-android:2.9.4] /home/kigawa/.gradle/caches/9.2.1/transforms/2be13d93de7127b41330bf5fc7d3a61e/transformed/lifecycle-viewmodel-compose-release/AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.compose.ui:ui-android:1.10.0] /home/kigawa/.gradle/caches/9.2.1/transforms/2b07412c3e95e07a11aeadba6a09490d/transformed/ui/AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.activity:activity-ktx:1.13.0] /home/kigawa/.gradle/caches/9.2.1/transforms/565629ffcf85a1ec08b606804e3d1616/transformed/activity-ktx-1.13.0/AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.activity:activity:1.13.0] /home/kigawa/.gradle/caches/9.2.1/transforms/0618dca3eb28aa11cf65d7187a0f8c44/transformed/activity-1.13.0/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.activity:activity-compose:1.13.0] /home/kigawa/.gradle/caches/9.2.1/transforms/3e38cf31dc357f525ed711d3964f7688/transformed/activity-compose-1.13.0/AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.customview:customview-poolingcontainer:1.0.0] /home/kigawa/.gradle/caches/9.2.1/transforms/804717ca9d804a470233492b67da996e/transformed/customview-poolingcontainer-1.0.0/AndroidManifest.xml:17:1-23:12
+MERGED from [org.jetbrains.androidx.core:core-bundle-android-debug:1.0.0] /home/kigawa/.gradle/caches/9.2.1/transforms/a99838b6987563716497977e3f1bbcd2/transformed/core-bundle-debug/AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.core:core-ktx:1.18.0] /home/kigawa/.gradle/caches/9.2.1/transforms/a8743e5a4b18c6c356f105e09355ce31/transformed/core-ktx-1.18.0/AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.room:room-runtime-android:2.7.1] /home/kigawa/.gradle/caches/9.2.1/transforms/b444adedf75be8b687840090939e2810/transformed/room-runtime-release/AndroidManifest.xml:17:1-31:12
+MERGED from [androidx.room:room-ktx:2.7.1] /home/kigawa/.gradle/caches/9.2.1/transforms/16fdd05ae90a1799680158b14ed82cc6/transformed/room-ktx-2.7.1/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.datastore:datastore-preferences:1.0.0] /home/kigawa/.gradle/caches/9.2.1/transforms/74722c6637f05bf9705573033a135cf0/transformed/datastore-preferences-1.0.0/AndroidManifest.xml:17:1-24:12
+MERGED from [androidx.datastore:datastore:1.0.0] /home/kigawa/.gradle/caches/9.2.1/transforms/0963817439c4acd79d4e1fb36df291dd/transformed/datastore-1.0.0/AndroidManifest.xml:17:1-24:12
+MERGED from [androidx.annotation:annotation-experimental:1.4.1] /home/kigawa/.gradle/caches/9.2.1/transforms/484fb4833ce9543b8a6774364e8412ef/transformed/annotation-experimental-1.4.1/AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.core:core-viewtree:1.0.0] /home/kigawa/.gradle/caches/9.2.1/transforms/84f34e65c7924c6d30c5c9ef706592ef/transformed/core-viewtree-1.0.0/AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.interpolator:interpolator:1.0.0] /home/kigawa/.gradle/caches/9.2.1/transforms/12d9cb6149407f0a3c00e8df0dc0a916/transformed/interpolator-1.0.0/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.profileinstaller:profileinstaller:1.4.0] /home/kigawa/.gradle/caches/9.2.1/transforms/9a8d41a0c72425dbe6942446fda98a41/transformed/profileinstaller-1.4.0/AndroidManifest.xml:17:1-55:12
+MERGED from [androidx.startup:startup-runtime:1.1.1] /home/kigawa/.gradle/caches/9.2.1/transforms/3a32b31e5bc9fdd8a299671fc086ce9a/transformed/startup-runtime-1.1.1/AndroidManifest.xml:17:1-33:12
+MERGED from [androidx.tracing:tracing:1.2.0] /home/kigawa/.gradle/caches/9.2.1/transforms/a02b36f970e032d70ccd4d81e177bf3e/transformed/tracing-1.2.0/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.versionedparcelable:versionedparcelable:1.1.1] /home/kigawa/.gradle/caches/9.2.1/transforms/c8a565d0ac0e7e74868b592e0628dc0d/transformed/versionedparcelable-1.1.1/AndroidManifest.xml:17:1-27:12
+MERGED from [androidx.cursoradapter:cursoradapter:1.0.0] /home/kigawa/.gradle/caches/9.2.1/transforms/6519687fd9663ea0ff19e67186d29be0/transformed/cursoradapter-1.0.0/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.arch.core:core-runtime:2.2.0] /home/kigawa/.gradle/caches/9.2.1/transforms/1821e062c44c2f5783df841fff65e9b3/transformed/core-runtime-2.2.0/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.sqlite:sqlite-framework-android:2.5.0] /home/kigawa/.gradle/caches/9.2.1/transforms/9cc335ea994f806839db3e57ae6ce493/transformed/sqlite-framework-release/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.sqlite:sqlite-android:2.5.0] /home/kigawa/.gradle/caches/9.2.1/transforms/c0e30864ea6238250a0a3e668d7f4662/transformed/sqlite-release/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.documentfile:documentfile:1.0.0] /home/kigawa/.gradle/caches/9.2.1/transforms/d611910902774c702c729408ae63aa68/transformed/documentfile-1.0.0/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.localbroadcastmanager:localbroadcastmanager:1.0.0] /home/kigawa/.gradle/caches/9.2.1/transforms/7d4d7dacda7e6817b4127bc02902aad7/transformed/localbroadcastmanager-1.0.0/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.print:print:1.0.0] /home/kigawa/.gradle/caches/9.2.1/transforms/02d1835c40107ffd41f88906636d6325/transformed/print-1.0.0/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.constraintlayout:constraintlayout:1.1.3] /home/kigawa/.gradle/caches/9.2.1/transforms/2e84c502726cdbb259c45dd657639191/transformed/constraintlayout-1.1.3/AndroidManifest.xml:2:1-11:12
+MERGED from [com.yubico.yubikit:android:2.3.0] /home/kigawa/.gradle/caches/9.2.1/transforms/2aed814f03a05d6d373842d9c9eb965b/transformed/android-2.3.0/AndroidManifest.xml:2:1-29:12
+	package
+		INJECTED from /home/kigawa/dev/kigawa-net/kalender/composeApp/src/androidMain/AndroidManifest.xml
+	android:versionName
+		INJECTED from /home/kigawa/dev/kigawa-net/kalender/composeApp/src/androidMain/AndroidManifest.xml
+	xmlns:tools
+		ADDED from /home/kigawa/dev/kigawa-net/kalender/composeApp/src/androidMain/AndroidManifest.xml:3:11-57
+	android:versionCode
+		INJECTED from /home/kigawa/dev/kigawa-net/kalender/composeApp/src/androidMain/AndroidManifest.xml
+	xmlns:android
+		ADDED from /home/kigawa/dev/kigawa-net/kalender/composeApp/src/androidMain/AndroidManifest.xml:2:11-69
+uses-permission#android.permission.INTERNET
+ADDED from /home/kigawa/dev/kigawa-net/kalender/composeApp/src/androidMain/AndroidManifest.xml:5:5-67
+MERGED from [com.microsoft.identity.client:msal:5.3.0] /home/kigawa/.gradle/caches/9.2.1/transforms/c1b8591157a393205c3a79b592ce29f5/transformed/msal-5.3.0/AndroidManifest.xml:7:5-67
+MERGED from [com.microsoft.identity.client:msal:5.3.0] /home/kigawa/.gradle/caches/9.2.1/transforms/c1b8591157a393205c3a79b592ce29f5/transformed/msal-5.3.0/AndroidManifest.xml:7:5-67
+MERGED from [com.microsoft.identity:common:17.3.0] /home/kigawa/.gradle/caches/9.2.1/transforms/5a134e551200707bbe22646fe000c298/transformed/common-17.3.0/AndroidManifest.xml:9:5-67
+MERGED from [com.microsoft.identity:common:17.3.0] /home/kigawa/.gradle/caches/9.2.1/transforms/5a134e551200707bbe22646fe000c298/transformed/common-17.3.0/AndroidManifest.xml:9:5-67
+	android:name
+		ADDED from /home/kigawa/dev/kigawa-net/kalender/composeApp/src/androidMain/AndroidManifest.xml:5:22-64
+uses-permission#android.permission.READ_CALENDAR
+ADDED from /home/kigawa/dev/kigawa-net/kalender/composeApp/src/androidMain/AndroidManifest.xml:6:5-72
+	android:name
+		ADDED from /home/kigawa/dev/kigawa-net/kalender/composeApp/src/androidMain/AndroidManifest.xml:6:22-69
+uses-permission#android.permission.WRITE_CALENDAR
+ADDED from /home/kigawa/dev/kigawa-net/kalender/composeApp/src/androidMain/AndroidManifest.xml:7:5-73
+	android:name
+		ADDED from /home/kigawa/dev/kigawa-net/kalender/composeApp/src/androidMain/AndroidManifest.xml:7:22-70
+queries
+ADDED from /home/kigawa/dev/kigawa-net/kalender/composeApp/src/androidMain/AndroidManifest.xml:9:5-12:15
+MERGED from [com.microsoft.identity:common:17.3.0] /home/kigawa/.gradle/caches/9.2.1/transforms/5a134e551200707bbe22646fe000c298/transformed/common-17.3.0/AndroidManifest.xml:17:5-41:15
+MERGED from [com.microsoft.identity:common:17.3.0] /home/kigawa/.gradle/caches/9.2.1/transforms/5a134e551200707bbe22646fe000c298/transformed/common-17.3.0/AndroidManifest.xml:17:5-41:15
+package#com.azure.authenticator
+ADDED from /home/kigawa/dev/kigawa-net/kalender/composeApp/src/androidMain/AndroidManifest.xml:10:9-59
+MERGED from [com.microsoft.identity:common:17.3.0] /home/kigawa/.gradle/caches/9.2.1/transforms/5a134e551200707bbe22646fe000c298/transformed/common-17.3.0/AndroidManifest.xml:18:9-59
+MERGED from [com.microsoft.identity:common:17.3.0] /home/kigawa/.gradle/caches/9.2.1/transforms/5a134e551200707bbe22646fe000c298/transformed/common-17.3.0/AndroidManifest.xml:18:9-59
+	android:name
+		ADDED from /home/kigawa/dev/kigawa-net/kalender/composeApp/src/androidMain/AndroidManifest.xml:10:18-56
+package#com.microsoft.windowsintune.companyportal
+ADDED from /home/kigawa/dev/kigawa-net/kalender/composeApp/src/androidMain/AndroidManifest.xml:11:9-77
+MERGED from [com.microsoft.identity:common:17.3.0] /home/kigawa/.gradle/caches/9.2.1/transforms/5a134e551200707bbe22646fe000c298/transformed/common-17.3.0/AndroidManifest.xml:20:9-77
+MERGED from [com.microsoft.identity:common:17.3.0] /home/kigawa/.gradle/caches/9.2.1/transforms/5a134e551200707bbe22646fe000c298/transformed/common-17.3.0/AndroidManifest.xml:20:9-77
+	android:name
+		ADDED from /home/kigawa/dev/kigawa-net/kalender/composeApp/src/androidMain/AndroidManifest.xml:11:18-74
+application
+ADDED from /home/kigawa/dev/kigawa-net/kalender/composeApp/src/androidMain/AndroidManifest.xml:14:5-53:19
+INJECTED from /home/kigawa/dev/kigawa-net/kalender/composeApp/src/androidMain/AndroidManifest.xml:14:5-53:19
+MERGED from [com.microsoft.identity.client:msal:5.3.0] /home/kigawa/.gradle/caches/9.2.1/transforms/c1b8591157a393205c3a79b592ce29f5/transformed/msal-5.3.0/AndroidManifest.xml:10:5-38:19
+MERGED from [com.microsoft.identity.client:msal:5.3.0] /home/kigawa/.gradle/caches/9.2.1/transforms/c1b8591157a393205c3a79b592ce29f5/transformed/msal-5.3.0/AndroidManifest.xml:10:5-38:19
+MERGED from [com.microsoft.identity:common:17.3.0] /home/kigawa/.gradle/caches/9.2.1/transforms/5a134e551200707bbe22646fe000c298/transformed/common-17.3.0/AndroidManifest.xml:43:5-62:19
+MERGED from [com.microsoft.identity:common:17.3.0] /home/kigawa/.gradle/caches/9.2.1/transforms/5a134e551200707bbe22646fe000c298/transformed/common-17.3.0/AndroidManifest.xml:43:5-62:19
+MERGED from [androidx.credentials:credentials-play-services-auth:1.5.0] /home/kigawa/.gradle/caches/9.2.1/transforms/ee0395d74e96cd1441d54abc31231c0a/transformed/credentials-play-services-auth-1.5.0/AndroidManifest.xml:23:5-50:19
+MERGED from [androidx.credentials:credentials-play-services-auth:1.5.0] /home/kigawa/.gradle/caches/9.2.1/transforms/ee0395d74e96cd1441d54abc31231c0a/transformed/credentials-play-services-auth-1.5.0/AndroidManifest.xml:23:5-50:19
+MERGED from [io.insert-koin:koin-android:4.0.0] /home/kigawa/.gradle/caches/9.2.1/transforms/0a76fd2ad46c5a0a0fdcabd0fbf4c9a7/transformed/koin-android-4.0.0/AndroidManifest.xml:7:5-20
+MERGED from [io.insert-koin:koin-android:4.0.0] /home/kigawa/.gradle/caches/9.2.1/transforms/0a76fd2ad46c5a0a0fdcabd0fbf4c9a7/transformed/koin-android-4.0.0/AndroidManifest.xml:7:5-20
+MERGED from [com.google.android.gms:play-services-auth:21.3.0] /home/kigawa/.gradle/caches/9.2.1/transforms/159aa09d85ec046970e730cd51cfbc92/transformed/play-services-auth-21.3.0/AndroidManifest.xml:22:5-38:19
+MERGED from [com.google.android.gms:play-services-auth:21.3.0] /home/kigawa/.gradle/caches/9.2.1/transforms/159aa09d85ec046970e730cd51cfbc92/transformed/play-services-auth-21.3.0/AndroidManifest.xml:22:5-38:19
+MERGED from [com.google.android.gms:play-services-auth-blockstore:16.4.0] /home/kigawa/.gradle/caches/9.2.1/transforms/5d2dbf12a15e506641b1ed816e44f9c5/transformed/play-services-auth-blockstore-16.4.0/AndroidManifest.xml:7:5-20
+MERGED from [com.google.android.gms:play-services-auth-blockstore:16.4.0] /home/kigawa/.gradle/caches/9.2.1/transforms/5d2dbf12a15e506641b1ed816e44f9c5/transformed/play-services-auth-blockstore-16.4.0/AndroidManifest.xml:7:5-20
+MERGED from [com.google.android.gms:play-services-fido:21.0.0] /home/kigawa/.gradle/caches/9.2.1/transforms/35f371410b6e9d88c393e7368bf5ff8e/transformed/play-services-fido-21.0.0/AndroidManifest.xml:7:5-8:19
+MERGED from [com.google.android.gms:play-services-fido:21.0.0] /home/kigawa/.gradle/caches/9.2.1/transforms/35f371410b6e9d88c393e7368bf5ff8e/transformed/play-services-fido-21.0.0/AndroidManifest.xml:7:5-8:19
+MERGED from [com.google.android.gms:play-services-base:18.5.0] /home/kigawa/.gradle/caches/9.2.1/transforms/d35dae743574fcbf427b32e0eb4e4cc5/transformed/play-services-base-18.5.0/AndroidManifest.xml:4:5-6:19
+MERGED from [com.google.android.gms:play-services-base:18.5.0] /home/kigawa/.gradle/caches/9.2.1/transforms/d35dae743574fcbf427b32e0eb4e4cc5/transformed/play-services-base-18.5.0/AndroidManifest.xml:4:5-6:19
+MERGED from [com.google.android.gms:play-services-tasks:18.2.0] /home/kigawa/.gradle/caches/9.2.1/transforms/8645da93be999af433de09e2c84876db/transformed/play-services-tasks-18.2.0/AndroidManifest.xml:4:5-20
+MERGED from [com.google.android.gms:play-services-tasks:18.2.0] /home/kigawa/.gradle/caches/9.2.1/transforms/8645da93be999af433de09e2c84876db/transformed/play-services-tasks-18.2.0/AndroidManifest.xml:4:5-20
+MERGED from [com.google.android.gms:play-services-basement:18.4.0] /home/kigawa/.gradle/caches/9.2.1/transforms/7e558d29496173adef5f48b5527fb266/transformed/play-services-basement-18.4.0/AndroidManifest.xml:5:5-7:19
+MERGED from [com.google.android.gms:play-services-basement:18.4.0] /home/kigawa/.gradle/caches/9.2.1/transforms/7e558d29496173adef5f48b5527fb266/transformed/play-services-basement-18.4.0/AndroidManifest.xml:5:5-7:19
+MERGED from [org.jetbrains.compose.components:components-resources-android:1.10.0] /home/kigawa/.gradle/caches/9.2.1/transforms/416ff785341dba9afe90577a3b267de9/transformed/library-release/AndroidManifest.xml:7:5-14:19
+MERGED from [org.jetbrains.compose.components:components-resources-android:1.10.0] /home/kigawa/.gradle/caches/9.2.1/transforms/416ff785341dba9afe90577a3b267de9/transformed/library-release/AndroidManifest.xml:7:5-14:19
+MERGED from [androidx.compose.ui:ui-test-manifest:1.10.0] /home/kigawa/.gradle/caches/9.2.1/transforms/493276c4bab77af9e7c219615257da36/transformed/ui-test-manifest-1.10.0/AndroidManifest.xml:22:5-27:19
+MERGED from [androidx.compose.ui:ui-test-manifest:1.10.0] /home/kigawa/.gradle/caches/9.2.1/transforms/493276c4bab77af9e7c219615257da36/transformed/ui-test-manifest-1.10.0/AndroidManifest.xml:22:5-27:19
+MERGED from [androidx.compose.ui:ui-tooling-android:1.10.0] /home/kigawa/.gradle/caches/9.2.1/transforms/c81febcc9bd856155e8a4d7c3c6086b5/transformed/ui-tooling/AndroidManifest.xml:22:5-26:19
+MERGED from [androidx.compose.ui:ui-tooling-android:1.10.0] /home/kigawa/.gradle/caches/9.2.1/transforms/c81febcc9bd856155e8a4d7c3c6086b5/transformed/ui-tooling/AndroidManifest.xml:22:5-26:19
+MERGED from [androidx.window:window:1.5.0] /home/kigawa/.gradle/caches/9.2.1/transforms/cacf9a6ad128caea8221915f24f3cc29/transformed/window-1.5.0/AndroidManifest.xml:22:5-29:19
+MERGED from [androidx.window:window:1.5.0] /home/kigawa/.gradle/caches/9.2.1/transforms/cacf9a6ad128caea8221915f24f3cc29/transformed/window-1.5.0/AndroidManifest.xml:22:5-29:19
+MERGED from [androidx.emoji2:emoji2:1.4.0] /home/kigawa/.gradle/caches/9.2.1/transforms/2d09cd40c28b797136a4c21c9ad30209/transformed/emoji2-1.4.0/AndroidManifest.xml:23:5-33:19
+MERGED from [androidx.emoji2:emoji2:1.4.0] /home/kigawa/.gradle/caches/9.2.1/transforms/2d09cd40c28b797136a4c21c9ad30209/transformed/emoji2-1.4.0/AndroidManifest.xml:23:5-33:19
+MERGED from [androidx.core:core:1.18.0] /home/kigawa/.gradle/caches/9.2.1/transforms/7f8eb18d12c23a198eafa24675657cfa/transformed/core-1.18.0/AndroidManifest.xml:28:5-89
+MERGED from [androidx.core:core:1.18.0] /home/kigawa/.gradle/caches/9.2.1/transforms/7f8eb18d12c23a198eafa24675657cfa/transformed/core-1.18.0/AndroidManifest.xml:28:5-89
+MERGED from [androidx.lifecycle:lifecycle-process:2.9.4] /home/kigawa/.gradle/caches/9.2.1/transforms/42bd2e0d7aa8dc31ca4d5af9786500b7/transformed/lifecycle-process-2.9.4/AndroidManifest.xml:23:5-33:19
+MERGED from [androidx.lifecycle:lifecycle-process:2.9.4] /home/kigawa/.gradle/caches/9.2.1/transforms/42bd2e0d7aa8dc31ca4d5af9786500b7/transformed/lifecycle-process-2.9.4/AndroidManifest.xml:23:5-33:19
+MERGED from [androidx.room:room-runtime-android:2.7.1] /home/kigawa/.gradle/caches/9.2.1/transforms/b444adedf75be8b687840090939e2810/transformed/room-runtime-release/AndroidManifest.xml:23:5-29:19
+MERGED from [androidx.room:room-runtime-android:2.7.1] /home/kigawa/.gradle/caches/9.2.1/transforms/b444adedf75be8b687840090939e2810/transformed/room-runtime-release/AndroidManifest.xml:23:5-29:19
+MERGED from [androidx.profileinstaller:profileinstaller:1.4.0] /home/kigawa/.gradle/caches/9.2.1/transforms/9a8d41a0c72425dbe6942446fda98a41/transformed/profileinstaller-1.4.0/AndroidManifest.xml:23:5-53:19
+MERGED from [androidx.profileinstaller:profileinstaller:1.4.0] /home/kigawa/.gradle/caches/9.2.1/transforms/9a8d41a0c72425dbe6942446fda98a41/transformed/profileinstaller-1.4.0/AndroidManifest.xml:23:5-53:19
+MERGED from [androidx.startup:startup-runtime:1.1.1] /home/kigawa/.gradle/caches/9.2.1/transforms/3a32b31e5bc9fdd8a299671fc086ce9a/transformed/startup-runtime-1.1.1/AndroidManifest.xml:25:5-31:19
+MERGED from [androidx.startup:startup-runtime:1.1.1] /home/kigawa/.gradle/caches/9.2.1/transforms/3a32b31e5bc9fdd8a299671fc086ce9a/transformed/startup-runtime-1.1.1/AndroidManifest.xml:25:5-31:19
+MERGED from [androidx.versionedparcelable:versionedparcelable:1.1.1] /home/kigawa/.gradle/caches/9.2.1/transforms/c8a565d0ac0e7e74868b592e0628dc0d/transformed/versionedparcelable-1.1.1/AndroidManifest.xml:24:5-25:19
+MERGED from [androidx.versionedparcelable:versionedparcelable:1.1.1] /home/kigawa/.gradle/caches/9.2.1/transforms/c8a565d0ac0e7e74868b592e0628dc0d/transformed/versionedparcelable-1.1.1/AndroidManifest.xml:24:5-25:19
+MERGED from [androidx.constraintlayout:constraintlayout:1.1.3] /home/kigawa/.gradle/caches/9.2.1/transforms/2e84c502726cdbb259c45dd657639191/transformed/constraintlayout-1.1.3/AndroidManifest.xml:9:5-20
+MERGED from [androidx.constraintlayout:constraintlayout:1.1.3] /home/kigawa/.gradle/caches/9.2.1/transforms/2e84c502726cdbb259c45dd657639191/transformed/constraintlayout-1.1.3/AndroidManifest.xml:9:5-20
+MERGED from [com.yubico.yubikit:android:2.3.0] /home/kigawa/.gradle/caches/9.2.1/transforms/2aed814f03a05d6d373842d9c9eb965b/transformed/android-2.3.0/AndroidManifest.xml:16:5-27:19
+MERGED from [com.yubico.yubikit:android:2.3.0] /home/kigawa/.gradle/caches/9.2.1/transforms/2aed814f03a05d6d373842d9c9eb965b/transformed/android-2.3.0/AndroidManifest.xml:16:5-27:19
+	android:extractNativeLibs
+		INJECTED from /home/kigawa/dev/kigawa-net/kalender/composeApp/src/androidMain/AndroidManifest.xml
+	android:appComponentFactory
+		ADDED from [androidx.core:core:1.18.0] /home/kigawa/.gradle/caches/9.2.1/transforms/7f8eb18d12c23a198eafa24675657cfa/transformed/core-1.18.0/AndroidManifest.xml:28:18-86
+	android:supportsRtl
+		ADDED from /home/kigawa/dev/kigawa-net/kalender/composeApp/src/androidMain/AndroidManifest.xml:22:13-39
+	android:label
+		ADDED from /home/kigawa/dev/kigawa-net/kalender/composeApp/src/androidMain/AndroidManifest.xml:20:13-45
+	android:fullBackupContent
+		ADDED from /home/kigawa/dev/kigawa-net/kalender/composeApp/src/androidMain/AndroidManifest.xml:18:13-58
+	android:roundIcon
+		ADDED from /home/kigawa/dev/kigawa-net/kalender/composeApp/src/androidMain/AndroidManifest.xml:21:13-58
+	android:icon
+		ADDED from /home/kigawa/dev/kigawa-net/kalender/composeApp/src/androidMain/AndroidManifest.xml:19:13-47
+	android:allowBackup
+		ADDED from /home/kigawa/dev/kigawa-net/kalender/composeApp/src/androidMain/AndroidManifest.xml:16:13-39
+	android:theme
+		ADDED from /home/kigawa/dev/kigawa-net/kalender/composeApp/src/androidMain/AndroidManifest.xml:23:13-50
+	android:dataExtractionRules
+		ADDED from /home/kigawa/dev/kigawa-net/kalender/composeApp/src/androidMain/AndroidManifest.xml:17:13-69
+	android:name
+		ADDED from /home/kigawa/dev/kigawa-net/kalender/composeApp/src/androidMain/AndroidManifest.xml:15:13-48
+activity#com.microsoft.identity.client.BrowserTabActivity
+ADDED from /home/kigawa/dev/kigawa-net/kalender/composeApp/src/androidMain/AndroidManifest.xml:24:9-36:20
+MERGED from [com.microsoft.identity.client:msal:5.3.0] /home/kigawa/.gradle/caches/9.2.1/transforms/c1b8591157a393205c3a79b592ce29f5/transformed/msal-5.3.0/AndroidManifest.xml:31:9-34:39
+MERGED from [com.microsoft.identity.client:msal:5.3.0] /home/kigawa/.gradle/caches/9.2.1/transforms/c1b8591157a393205c3a79b592ce29f5/transformed/msal-5.3.0/AndroidManifest.xml:31:9-34:39
+	android:exported
+		ADDED from /home/kigawa/dev/kigawa-net/kalender/composeApp/src/androidMain/AndroidManifest.xml:26:17-40
+	android:configChanges
+		ADDED from [com.microsoft.identity.client:msal:5.3.0] /home/kigawa/.gradle/caches/9.2.1/transforms/c1b8591157a393205c3a79b592ce29f5/transformed/msal-5.3.0/AndroidManifest.xml:33:13-106
+	android:name
+		ADDED from /home/kigawa/dev/kigawa-net/kalender/composeApp/src/androidMain/AndroidManifest.xml:25:17-80
+intent-filter#action:name:android.intent.action.VIEW+category:name:android.intent.category.BROWSABLE+category:name:android.intent.category.DEFAULT+data:host:net.kigawa.kalender+data:path:/NzMGGgqiavH14j5mkahAmPCPc9E=+data:scheme:msauth
+ADDED from /home/kigawa/dev/kigawa-net/kalender/composeApp/src/androidMain/AndroidManifest.xml:27:13-35:29
+action#android.intent.action.VIEW
+ADDED from /home/kigawa/dev/kigawa-net/kalender/composeApp/src/androidMain/AndroidManifest.xml:28:17-69
+	android:name
+		ADDED from /home/kigawa/dev/kigawa-net/kalender/composeApp/src/androidMain/AndroidManifest.xml:28:25-66
+category#android.intent.category.DEFAULT
+ADDED from /home/kigawa/dev/kigawa-net/kalender/composeApp/src/androidMain/AndroidManifest.xml:29:17-76
+	android:name
+		ADDED from /home/kigawa/dev/kigawa-net/kalender/composeApp/src/androidMain/AndroidManifest.xml:29:27-73
+category#android.intent.category.BROWSABLE
+ADDED from /home/kigawa/dev/kigawa-net/kalender/composeApp/src/androidMain/AndroidManifest.xml:30:17-78
+	android:name
+		ADDED from /home/kigawa/dev/kigawa-net/kalender/composeApp/src/androidMain/AndroidManifest.xml:30:27-75
+data
+ADDED from /home/kigawa/dev/kigawa-net/kalender/composeApp/src/androidMain/AndroidManifest.xml:31:17-34:51
+	android:path
+		ADDED from /home/kigawa/dev/kigawa-net/kalender/composeApp/src/androidMain/AndroidManifest.xml:33:25-69
+	android:host
+		ADDED from /home/kigawa/dev/kigawa-net/kalender/composeApp/src/androidMain/AndroidManifest.xml:32:25-59
+	android:scheme
+		ADDED from /home/kigawa/dev/kigawa-net/kalender/composeApp/src/androidMain/AndroidManifest.xml:34:25-48
+activity#com.microsoft.identity.common.internal.providers.oauth2.AuthorizationActivity
+ADDED from /home/kigawa/dev/kigawa-net/kalender/composeApp/src/androidMain/AndroidManifest.xml:38:9-39:40
+MERGED from [com.microsoft.identity.client:msal:5.3.0] /home/kigawa/.gradle/caches/9.2.1/transforms/c1b8591157a393205c3a79b592ce29f5/transformed/msal-5.3.0/AndroidManifest.xml:13:9-17:47
+MERGED from [com.microsoft.identity.client:msal:5.3.0] /home/kigawa/.gradle/caches/9.2.1/transforms/c1b8591157a393205c3a79b592ce29f5/transformed/msal-5.3.0/AndroidManifest.xml:13:9-17:47
+MERGED from [com.microsoft.identity:common:17.3.0] /home/kigawa/.gradle/caches/9.2.1/transforms/5a134e551200707bbe22646fe000c298/transformed/common-17.3.0/AndroidManifest.xml:46:9-48:118
+MERGED from [com.microsoft.identity:common:17.3.0] /home/kigawa/.gradle/caches/9.2.1/transforms/5a134e551200707bbe22646fe000c298/transformed/common-17.3.0/AndroidManifest.xml:46:9-48:118
+	android:launchMode
+		ADDED from [com.microsoft.identity.client:msal:5.3.0] /home/kigawa/.gradle/caches/9.2.1/transforms/c1b8591157a393205c3a79b592ce29f5/transformed/msal-5.3.0/AndroidManifest.xml:17:13-44
+	android:exported
+		ADDED from /home/kigawa/dev/kigawa-net/kalender/composeApp/src/androidMain/AndroidManifest.xml:39:13-37
+	android:configChanges
+		ADDED from [com.microsoft.identity.client:msal:5.3.0] /home/kigawa/.gradle/caches/9.2.1/transforms/c1b8591157a393205c3a79b592ce29f5/transformed/msal-5.3.0/AndroidManifest.xml:15:13-115
+	android:name
+		ADDED from /home/kigawa/dev/kigawa-net/kalender/composeApp/src/androidMain/AndroidManifest.xml:38:19-111
+activity#com.microsoft.identity.common.internal.providers.oauth2.CurrentTaskAuthorizationActivity
+ADDED from /home/kigawa/dev/kigawa-net/kalender/composeApp/src/androidMain/AndroidManifest.xml:40:9-41:40
+MERGED from [com.microsoft.identity.client:msal:5.3.0] /home/kigawa/.gradle/caches/9.2.1/transforms/c1b8591157a393205c3a79b592ce29f5/transformed/msal-5.3.0/AndroidManifest.xml:18:9-22:45
+MERGED from [com.microsoft.identity.client:msal:5.3.0] /home/kigawa/.gradle/caches/9.2.1/transforms/c1b8591157a393205c3a79b592ce29f5/transformed/msal-5.3.0/AndroidManifest.xml:18:9-22:45
+MERGED from [com.microsoft.identity:common:17.3.0] /home/kigawa/.gradle/caches/9.2.1/transforms/5a134e551200707bbe22646fe000c298/transformed/common-17.3.0/AndroidManifest.xml:49:9-51:118
+MERGED from [com.microsoft.identity:common:17.3.0] /home/kigawa/.gradle/caches/9.2.1/transforms/5a134e551200707bbe22646fe000c298/transformed/common-17.3.0/AndroidManifest.xml:49:9-51:118
+	android:launchMode
+		ADDED from [com.microsoft.identity.client:msal:5.3.0] /home/kigawa/.gradle/caches/9.2.1/transforms/c1b8591157a393205c3a79b592ce29f5/transformed/msal-5.3.0/AndroidManifest.xml:22:13-42
+	android:exported
+		ADDED from /home/kigawa/dev/kigawa-net/kalender/composeApp/src/androidMain/AndroidManifest.xml:41:13-37
+	android:configChanges
+		ADDED from [com.microsoft.identity.client:msal:5.3.0] /home/kigawa/.gradle/caches/9.2.1/transforms/c1b8591157a393205c3a79b592ce29f5/transformed/msal-5.3.0/AndroidManifest.xml:20:13-115
+	android:name
+		ADDED from /home/kigawa/dev/kigawa-net/kalender/composeApp/src/androidMain/AndroidManifest.xml:40:19-122
+activity#net.kigawa.kalender.MainActivity
+ADDED from /home/kigawa/dev/kigawa-net/kalender/composeApp/src/androidMain/AndroidManifest.xml:43:9-52:20
+	android:exported
+		ADDED from /home/kigawa/dev/kigawa-net/kalender/composeApp/src/androidMain/AndroidManifest.xml:45:17-40
+	android:theme
+		ADDED from /home/kigawa/dev/kigawa-net/kalender/composeApp/src/androidMain/AndroidManifest.xml:46:17-54
+	android:name
+		ADDED from /home/kigawa/dev/kigawa-net/kalender/composeApp/src/androidMain/AndroidManifest.xml:44:17-45
+intent-filter#action:name:android.intent.action.MAIN+category:name:android.intent.category.LAUNCHER
+ADDED from /home/kigawa/dev/kigawa-net/kalender/composeApp/src/androidMain/AndroidManifest.xml:47:13-51:29
+action#android.intent.action.MAIN
+ADDED from /home/kigawa/dev/kigawa-net/kalender/composeApp/src/androidMain/AndroidManifest.xml:48:17-68
+	android:name
+		ADDED from /home/kigawa/dev/kigawa-net/kalender/composeApp/src/androidMain/AndroidManifest.xml:48:25-66
+category#android.intent.category.LAUNCHER
+ADDED from /home/kigawa/dev/kigawa-net/kalender/composeApp/src/androidMain/AndroidManifest.xml:50:17-76
+	android:name
+		ADDED from /home/kigawa/dev/kigawa-net/kalender/composeApp/src/androidMain/AndroidManifest.xml:50:27-74
+uses-sdk
+INJECTED from /home/kigawa/dev/kigawa-net/kalender/composeApp/src/androidMain/AndroidManifest.xml reason: use-sdk injection requested
+INJECTED from /home/kigawa/dev/kigawa-net/kalender/composeApp/src/androidMain/AndroidManifest.xml
+INJECTED from /home/kigawa/dev/kigawa-net/kalender/composeApp/src/androidMain/AndroidManifest.xml
+MERGED from [androidx.navigation:navigation-common:2.8.9] /home/kigawa/.gradle/caches/9.2.1/transforms/7328d89dd95029b2ae9bb325868d64e6/transformed/navigation-common-2.8.9/AndroidManifest.xml:20:5-44
+MERGED from [androidx.navigation:navigation-common:2.8.9] /home/kigawa/.gradle/caches/9.2.1/transforms/7328d89dd95029b2ae9bb325868d64e6/transformed/navigation-common-2.8.9/AndroidManifest.xml:20:5-44
+MERGED from [androidx.navigation:navigation-runtime:2.8.9] /home/kigawa/.gradle/caches/9.2.1/transforms/34a315a9c419f058bec9a0744873c43f/transformed/navigation-runtime-2.8.9/AndroidManifest.xml:20:5-44
+MERGED from [androidx.navigation:navigation-runtime:2.8.9] /home/kigawa/.gradle/caches/9.2.1/transforms/34a315a9c419f058bec9a0744873c43f/transformed/navigation-runtime-2.8.9/AndroidManifest.xml:20:5-44
+MERGED from [androidx.navigation:navigation-common-ktx:2.8.9] /home/kigawa/.gradle/caches/9.2.1/transforms/908406887376f1880a2fb2e1d26d8580/transformed/navigation-common-ktx-2.8.9/AndroidManifest.xml:5:5-44
+MERGED from [androidx.navigation:navigation-common-ktx:2.8.9] /home/kigawa/.gradle/caches/9.2.1/transforms/908406887376f1880a2fb2e1d26d8580/transformed/navigation-common-ktx-2.8.9/AndroidManifest.xml:5:5-44
+MERGED from [androidx.navigation:navigation-runtime-ktx:2.8.9] /home/kigawa/.gradle/caches/9.2.1/transforms/a8fb29db37bc15e9e0f343007724b04d/transformed/navigation-runtime-ktx-2.8.9/AndroidManifest.xml:5:5-44
+MERGED from [androidx.navigation:navigation-runtime-ktx:2.8.9] /home/kigawa/.gradle/caches/9.2.1/transforms/a8fb29db37bc15e9e0f343007724b04d/transformed/navigation-runtime-ktx-2.8.9/AndroidManifest.xml:5:5-44
+MERGED from [androidx.navigation:navigation-compose:2.8.9] /home/kigawa/.gradle/caches/9.2.1/transforms/30644fa7fd1f4691965b75209a3a06a9/transformed/navigation-compose-2.8.9/AndroidManifest.xml:5:5-44
+MERGED from [androidx.navigation:navigation-compose:2.8.9] /home/kigawa/.gradle/caches/9.2.1/transforms/30644fa7fd1f4691965b75209a3a06a9/transformed/navigation-compose-2.8.9/AndroidManifest.xml:5:5-44
+MERGED from [com.microsoft.identity.client:msal:5.3.0] /home/kigawa/.gradle/caches/9.2.1/transforms/c1b8591157a393205c3a79b592ce29f5/transformed/msal-5.3.0/AndroidManifest.xml:5:5-44
+MERGED from [com.microsoft.identity.client:msal:5.3.0] /home/kigawa/.gradle/caches/9.2.1/transforms/c1b8591157a393205c3a79b592ce29f5/transformed/msal-5.3.0/AndroidManifest.xml:5:5-44
+MERGED from [com.microsoft.identity:common:17.3.0] /home/kigawa/.gradle/caches/9.2.1/transforms/5a134e551200707bbe22646fe000c298/transformed/common-17.3.0/AndroidManifest.xml:5:5-7:151
+MERGED from [com.microsoft.identity:common:17.3.0] /home/kigawa/.gradle/caches/9.2.1/transforms/5a134e551200707bbe22646fe000c298/transformed/common-17.3.0/AndroidManifest.xml:5:5-7:151
+MERGED from [androidx.credentials:credentials-play-services-auth:1.5.0] /home/kigawa/.gradle/caches/9.2.1/transforms/ee0395d74e96cd1441d54abc31231c0a/transformed/credentials-play-services-auth-1.5.0/AndroidManifest.xml:21:5-44
+MERGED from [androidx.credentials:credentials-play-services-auth:1.5.0] /home/kigawa/.gradle/caches/9.2.1/transforms/ee0395d74e96cd1441d54abc31231c0a/transformed/credentials-play-services-auth-1.5.0/AndroidManifest.xml:21:5-44
+MERGED from [com.google.android.libraries.identity.googleid:googleid:1.1.1] /home/kigawa/.gradle/caches/9.2.1/transforms/59903bef774f82a99a5a24c7728c6ad8/transformed/googleid-1.1.1/AndroidManifest.xml:5:5-44
+MERGED from [com.google.android.libraries.identity.googleid:googleid:1.1.1] /home/kigawa/.gradle/caches/9.2.1/transforms/59903bef774f82a99a5a24c7728c6ad8/transformed/googleid-1.1.1/AndroidManifest.xml:5:5-44
+MERGED from [androidx.credentials:credentials:1.5.0] /home/kigawa/.gradle/caches/9.2.1/transforms/76223a71395597f98c3cef311e17e29b/transformed/credentials-1.5.0/AndroidManifest.xml:5:5-44
+MERGED from [androidx.credentials:credentials:1.5.0] /home/kigawa/.gradle/caches/9.2.1/transforms/76223a71395597f98c3cef311e17e29b/transformed/credentials-1.5.0/AndroidManifest.xml:5:5-44
+MERGED from [androidx.biometric:biometric:1.1.0] /home/kigawa/.gradle/caches/9.2.1/transforms/66a59b6dcd10409e02b4b28d26397a1c/transformed/biometric-1.1.0/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.biometric:biometric:1.1.0] /home/kigawa/.gradle/caches/9.2.1/transforms/66a59b6dcd10409e02b4b28d26397a1c/transformed/biometric-1.1.0/AndroidManifest.xml:20:5-22:41
+MERGED from [io.insert-koin:koin-android:4.0.0] /home/kigawa/.gradle/caches/9.2.1/transforms/0a76fd2ad46c5a0a0fdcabd0fbf4c9a7/transformed/koin-android-4.0.0/AndroidManifest.xml:5:5-44
+MERGED from [io.insert-koin:koin-android:4.0.0] /home/kigawa/.gradle/caches/9.2.1/transforms/0a76fd2ad46c5a0a0fdcabd0fbf4c9a7/transformed/koin-android-4.0.0/AndroidManifest.xml:5:5-44
+MERGED from [androidx.appcompat:appcompat-resources:1.7.0] /home/kigawa/.gradle/caches/9.2.1/transforms/eab6a84130f3e6a1b8b95931254a004c/transformed/appcompat-resources-1.7.0/AndroidManifest.xml:5:5-44
+MERGED from [androidx.appcompat:appcompat-resources:1.7.0] /home/kigawa/.gradle/caches/9.2.1/transforms/eab6a84130f3e6a1b8b95931254a004c/transformed/appcompat-resources-1.7.0/AndroidManifest.xml:5:5-44
+MERGED from [androidx.appcompat:appcompat:1.7.0] /home/kigawa/.gradle/caches/9.2.1/transforms/554e06bf228ac25a86002d39d30cd545/transformed/appcompat-1.7.0/AndroidManifest.xml:5:5-44
+MERGED from [androidx.appcompat:appcompat:1.7.0] /home/kigawa/.gradle/caches/9.2.1/transforms/554e06bf228ac25a86002d39d30cd545/transformed/appcompat-1.7.0/AndroidManifest.xml:5:5-44
+MERGED from [com.google.android.gms:play-services-auth:21.3.0] /home/kigawa/.gradle/caches/9.2.1/transforms/159aa09d85ec046970e730cd51cfbc92/transformed/play-services-auth-21.3.0/AndroidManifest.xml:20:5-44
+MERGED from [com.google.android.gms:play-services-auth:21.3.0] /home/kigawa/.gradle/caches/9.2.1/transforms/159aa09d85ec046970e730cd51cfbc92/transformed/play-services-auth-21.3.0/AndroidManifest.xml:20:5-44
+MERGED from [com.google.android.gms:play-services-auth-blockstore:16.4.0] /home/kigawa/.gradle/caches/9.2.1/transforms/5d2dbf12a15e506641b1ed816e44f9c5/transformed/play-services-auth-blockstore-16.4.0/AndroidManifest.xml:5:5-44
+MERGED from [com.google.android.gms:play-services-auth-blockstore:16.4.0] /home/kigawa/.gradle/caches/9.2.1/transforms/5d2dbf12a15e506641b1ed816e44f9c5/transformed/play-services-auth-blockstore-16.4.0/AndroidManifest.xml:5:5-44
+MERGED from [com.google.android.gms:play-services-fido:21.0.0] /home/kigawa/.gradle/caches/9.2.1/transforms/35f371410b6e9d88c393e7368bf5ff8e/transformed/play-services-fido-21.0.0/AndroidManifest.xml:5:5-44
+MERGED from [com.google.android.gms:play-services-fido:21.0.0] /home/kigawa/.gradle/caches/9.2.1/transforms/35f371410b6e9d88c393e7368bf5ff8e/transformed/play-services-fido-21.0.0/AndroidManifest.xml:5:5-44
+MERGED from [com.google.android.gms:play-services-identity-credentials:16.0.0-alpha02] /home/kigawa/.gradle/caches/9.2.1/transforms/efb283378e55a57ed2c8d0105a12a64b/transformed/play-services-identity-credentials-16.0.0-alpha02/AndroidManifest.xml:5:5-44
+MERGED from [com.google.android.gms:play-services-identity-credentials:16.0.0-alpha02] /home/kigawa/.gradle/caches/9.2.1/transforms/efb283378e55a57ed2c8d0105a12a64b/transformed/play-services-identity-credentials-16.0.0-alpha02/AndroidManifest.xml:5:5-44
+MERGED from [com.google.android.gms:play-services-auth-api-phone:18.0.2] /home/kigawa/.gradle/caches/9.2.1/transforms/c4099f103f48f7d4014c9f963566575e/transformed/play-services-auth-api-phone-18.0.2/AndroidManifest.xml:5:5-44
+MERGED from [com.google.android.gms:play-services-auth-api-phone:18.0.2] /home/kigawa/.gradle/caches/9.2.1/transforms/c4099f103f48f7d4014c9f963566575e/transformed/play-services-auth-api-phone-18.0.2/AndroidManifest.xml:5:5-44
+MERGED from [com.google.android.gms:play-services-auth-base:18.0.10] /home/kigawa/.gradle/caches/9.2.1/transforms/5e8748530a3eeb19151032feb5110916/transformed/play-services-auth-base-18.0.10/AndroidManifest.xml:5:5-44
+MERGED from [com.google.android.gms:play-services-auth-base:18.0.10] /home/kigawa/.gradle/caches/9.2.1/transforms/5e8748530a3eeb19151032feb5110916/transformed/play-services-auth-base-18.0.10/AndroidManifest.xml:5:5-44
+MERGED from [com.google.android.gms:play-services-base:18.5.0] /home/kigawa/.gradle/caches/9.2.1/transforms/d35dae743574fcbf427b32e0eb4e4cc5/transformed/play-services-base-18.5.0/AndroidManifest.xml:3:5-44
+MERGED from [com.google.android.gms:play-services-base:18.5.0] /home/kigawa/.gradle/caches/9.2.1/transforms/d35dae743574fcbf427b32e0eb4e4cc5/transformed/play-services-base-18.5.0/AndroidManifest.xml:3:5-44
+MERGED from [com.google.android.gms:play-services-tasks:18.2.0] /home/kigawa/.gradle/caches/9.2.1/transforms/8645da93be999af433de09e2c84876db/transformed/play-services-tasks-18.2.0/AndroidManifest.xml:3:5-44
+MERGED from [com.google.android.gms:play-services-tasks:18.2.0] /home/kigawa/.gradle/caches/9.2.1/transforms/8645da93be999af433de09e2c84876db/transformed/play-services-tasks-18.2.0/AndroidManifest.xml:3:5-44
+MERGED from [com.google.android.gms:play-services-basement:18.4.0] /home/kigawa/.gradle/caches/9.2.1/transforms/7e558d29496173adef5f48b5527fb266/transformed/play-services-basement-18.4.0/AndroidManifest.xml:3:5-44
+MERGED from [com.google.android.gms:play-services-basement:18.4.0] /home/kigawa/.gradle/caches/9.2.1/transforms/7e558d29496173adef5f48b5527fb266/transformed/play-services-basement-18.4.0/AndroidManifest.xml:3:5-44
+MERGED from [androidx.fragment:fragment:1.8.3] /home/kigawa/.gradle/caches/9.2.1/transforms/9857a0e7606b859a59867e081794724a/transformed/fragment-1.8.3/AndroidManifest.xml:5:5-44
+MERGED from [androidx.fragment:fragment:1.8.3] /home/kigawa/.gradle/caches/9.2.1/transforms/9857a0e7606b859a59867e081794724a/transformed/fragment-1.8.3/AndroidManifest.xml:5:5-44
+MERGED from [androidx.fragment:fragment-ktx:1.8.3] /home/kigawa/.gradle/caches/9.2.1/transforms/6556d2cc0386b3a2a7b20aa386f30cd1/transformed/fragment-ktx-1.8.3/AndroidManifest.xml:5:5-44
+MERGED from [androidx.fragment:fragment-ktx:1.8.3] /home/kigawa/.gradle/caches/9.2.1/transforms/6556d2cc0386b3a2a7b20aa386f30cd1/transformed/fragment-ktx-1.8.3/AndroidManifest.xml:5:5-44
+MERGED from [org.jetbrains.compose.components:components-resources-android:1.10.0] /home/kigawa/.gradle/caches/9.2.1/transforms/416ff785341dba9afe90577a3b267de9/transformed/library-release/AndroidManifest.xml:5:5-44
+MERGED from [org.jetbrains.compose.components:components-resources-android:1.10.0] /home/kigawa/.gradle/caches/9.2.1/transforms/416ff785341dba9afe90577a3b267de9/transformed/library-release/AndroidManifest.xml:5:5-44
+MERGED from [androidx.compose.material3:material3:1.0.1] /home/kigawa/.gradle/caches/9.2.1/transforms/b71168c4ac86bbaf92f7fe067374c0f6/transformed/material3-1.0.1/AndroidManifest.xml:20:5-44
+MERGED from [androidx.compose.material3:material3:1.0.1] /home/kigawa/.gradle/caches/9.2.1/transforms/b71168c4ac86bbaf92f7fe067374c0f6/transformed/material3-1.0.1/AndroidManifest.xml:20:5-44
+MERGED from [androidx.navigationevent:navigationevent-android:1.0.0] /home/kigawa/.gradle/caches/9.2.1/transforms/f678e5147e20424b31b7008ba81c0d59/transformed/navigationevent/AndroidManifest.xml:5:5-44
+MERGED from [androidx.navigationevent:navigationevent-android:1.0.0] /home/kigawa/.gradle/caches/9.2.1/transforms/f678e5147e20424b31b7008ba81c0d59/transformed/navigationevent/AndroidManifest.xml:5:5-44
+MERGED from [androidx.navigationevent:navigationevent-compose-android:1.0.0] /home/kigawa/.gradle/caches/9.2.1/transforms/bae2860b821d59e7c1b55516f7e4ae90/transformed/navigationevent-compose/AndroidManifest.xml:5:5-44
+MERGED from [androidx.navigationevent:navigationevent-compose-android:1.0.0] /home/kigawa/.gradle/caches/9.2.1/transforms/bae2860b821d59e7c1b55516f7e4ae90/transformed/navigationevent-compose/AndroidManifest.xml:5:5-44
+MERGED from [androidx.compose.material:material-ripple:1.0.0] /home/kigawa/.gradle/caches/9.2.1/transforms/9eaceb9ee6a773abf01542842e670d2b/transformed/material-ripple-1.0.0/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.compose.material:material-ripple:1.0.0] /home/kigawa/.gradle/caches/9.2.1/transforms/9eaceb9ee6a773abf01542842e670d2b/transformed/material-ripple-1.0.0/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.compose.animation:animation-core-android:1.10.0] /home/kigawa/.gradle/caches/9.2.1/transforms/32e3248ed72757d0fa79e8e233a15c41/transformed/animation-core/AndroidManifest.xml:5:5-44
+MERGED from [androidx.compose.animation:animation-core-android:1.10.0] /home/kigawa/.gradle/caches/9.2.1/transforms/32e3248ed72757d0fa79e8e233a15c41/transformed/animation-core/AndroidManifest.xml:5:5-44
+MERGED from [androidx.compose.animation:animation-android:1.10.0] /home/kigawa/.gradle/caches/9.2.1/transforms/a72fa74033fc5f17259a99f27628fe68/transformed/animation/AndroidManifest.xml:5:5-44
+MERGED from [androidx.compose.animation:animation-android:1.10.0] /home/kigawa/.gradle/caches/9.2.1/transforms/a72fa74033fc5f17259a99f27628fe68/transformed/animation/AndroidManifest.xml:5:5-44
+MERGED from [androidx.compose.foundation:foundation-layout-android:1.10.0] /home/kigawa/.gradle/caches/9.2.1/transforms/7fceb208732648273d4b2772d38dff7d/transformed/foundation-layout/AndroidManifest.xml:5:5-44
+MERGED from [androidx.compose.foundation:foundation-layout-android:1.10.0] /home/kigawa/.gradle/caches/9.2.1/transforms/7fceb208732648273d4b2772d38dff7d/transformed/foundation-layout/AndroidManifest.xml:5:5-44
+MERGED from [androidx.compose.foundation:foundation-android:1.10.0] /home/kigawa/.gradle/caches/9.2.1/transforms/a6c873ce1508673b7fb8c78a0db5db51/transformed/foundation/AndroidManifest.xml:5:5-44
+MERGED from [androidx.compose.foundation:foundation-android:1.10.0] /home/kigawa/.gradle/caches/9.2.1/transforms/a6c873ce1508673b7fb8c78a0db5db51/transformed/foundation/AndroidManifest.xml:5:5-44
+MERGED from [androidx.compose.ui:ui-tooling-data-android:1.10.0] /home/kigawa/.gradle/caches/9.2.1/transforms/c58951f4805faee4c75345247f11104c/transformed/ui-tooling-data/AndroidManifest.xml:5:5-44
+MERGED from [androidx.compose.ui:ui-tooling-data-android:1.10.0] /home/kigawa/.gradle/caches/9.2.1/transforms/c58951f4805faee4c75345247f11104c/transformed/ui-tooling-data/AndroidManifest.xml:5:5-44
+MERGED from [androidx.compose.ui:ui-unit-android:1.10.0] /home/kigawa/.gradle/caches/9.2.1/transforms/5992bc22574516d2f8c65c88793f872f/transformed/ui-unit/AndroidManifest.xml:5:5-44
+MERGED from [androidx.compose.ui:ui-unit-android:1.10.0] /home/kigawa/.gradle/caches/9.2.1/transforms/5992bc22574516d2f8c65c88793f872f/transformed/ui-unit/AndroidManifest.xml:5:5-44
+MERGED from [androidx.compose.ui:ui-graphics-android:1.10.0] /home/kigawa/.gradle/caches/9.2.1/transforms/7a33e13a0d8aad0836198ddc4eb29519/transformed/ui-graphics/AndroidManifest.xml:5:5-44
+MERGED from [androidx.compose.ui:ui-graphics-android:1.10.0] /home/kigawa/.gradle/caches/9.2.1/transforms/7a33e13a0d8aad0836198ddc4eb29519/transformed/ui-graphics/AndroidManifest.xml:5:5-44
+MERGED from [androidx.compose.ui:ui-geometry-android:1.10.0] /home/kigawa/.gradle/caches/9.2.1/transforms/4ac17c740a5bd7bad5d54002076daeff/transformed/ui-geometry/AndroidManifest.xml:5:5-44
+MERGED from [androidx.compose.ui:ui-geometry-android:1.10.0] /home/kigawa/.gradle/caches/9.2.1/transforms/4ac17c740a5bd7bad5d54002076daeff/transformed/ui-geometry/AndroidManifest.xml:5:5-44
+MERGED from [androidx.compose.ui:ui-util-android:1.10.0] /home/kigawa/.gradle/caches/9.2.1/transforms/922ff9c64da9f1f0e1612f735192f5dc/transformed/ui-util/AndroidManifest.xml:5:5-44
+MERGED from [androidx.compose.ui:ui-util-android:1.10.0] /home/kigawa/.gradle/caches/9.2.1/transforms/922ff9c64da9f1f0e1612f735192f5dc/transformed/ui-util/AndroidManifest.xml:5:5-44
+MERGED from [androidx.compose.ui:ui-text-android:1.10.0] /home/kigawa/.gradle/caches/9.2.1/transforms/d90c62986099ae00315fe2609b3443f6/transformed/ui-text/AndroidManifest.xml:5:5-44
+MERGED from [androidx.compose.ui:ui-text-android:1.10.0] /home/kigawa/.gradle/caches/9.2.1/transforms/d90c62986099ae00315fe2609b3443f6/transformed/ui-text/AndroidManifest.xml:5:5-44
+MERGED from [androidx.compose.ui:ui-test-manifest:1.10.0] /home/kigawa/.gradle/caches/9.2.1/transforms/493276c4bab77af9e7c219615257da36/transformed/ui-test-manifest-1.10.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.compose.ui:ui-test-manifest:1.10.0] /home/kigawa/.gradle/caches/9.2.1/transforms/493276c4bab77af9e7c219615257da36/transformed/ui-test-manifest-1.10.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.compose.ui:ui-tooling-preview-android:1.10.0] /home/kigawa/.gradle/caches/9.2.1/transforms/fbfd7d0ab8f9e7dae63566f86530c17d/transformed/ui-tooling-preview/AndroidManifest.xml:20:5-44
+MERGED from [androidx.compose.ui:ui-tooling-preview-android:1.10.0] /home/kigawa/.gradle/caches/9.2.1/transforms/fbfd7d0ab8f9e7dae63566f86530c17d/transformed/ui-tooling-preview/AndroidManifest.xml:20:5-44
+MERGED from [androidx.compose.ui:ui-tooling-android:1.10.0] /home/kigawa/.gradle/caches/9.2.1/transforms/c81febcc9bd856155e8a4d7c3c6086b5/transformed/ui-tooling/AndroidManifest.xml:20:5-44
+MERGED from [androidx.compose.ui:ui-tooling-android:1.10.0] /home/kigawa/.gradle/caches/9.2.1/transforms/c81febcc9bd856155e8a4d7c3c6086b5/transformed/ui-tooling/AndroidManifest.xml:20:5-44
+MERGED from [androidx.compose.material:material:1.0.0] /home/kigawa/.gradle/caches/9.2.1/transforms/8018139a5f72a0d075afd039768af871/transformed/material-1.0.0/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.compose.material:material:1.0.0] /home/kigawa/.gradle/caches/9.2.1/transforms/8018139a5f72a0d075afd039768af871/transformed/material-1.0.0/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.compose.material:material-icons-core:1.0.2] /home/kigawa/.gradle/caches/9.2.1/transforms/3ec688233b5fd6c0249c9b2b5ffa8b4b/transformed/material-icons-core-1.0.2/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.compose.material:material-icons-core:1.0.2] /home/kigawa/.gradle/caches/9.2.1/transforms/3ec688233b5fd6c0249c9b2b5ffa8b4b/transformed/material-icons-core-1.0.2/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.browser:browser:1.0.0] /home/kigawa/.gradle/caches/9.2.1/transforms/d1033f311ec9dd657dd83c576dfb9e3d/transformed/browser-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.browser:browser:1.0.0] /home/kigawa/.gradle/caches/9.2.1/transforms/d1033f311ec9dd657dd83c576dfb9e3d/transformed/browser-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.legacy:legacy-support-core-ui:1.0.0] /home/kigawa/.gradle/caches/9.2.1/transforms/dbe276385972bdb8d670ee22581a7eb5/transformed/legacy-support-core-ui-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.legacy:legacy-support-core-ui:1.0.0] /home/kigawa/.gradle/caches/9.2.1/transforms/dbe276385972bdb8d670ee22581a7eb5/transformed/legacy-support-core-ui-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.transition:transition:1.6.0] /home/kigawa/.gradle/caches/9.2.1/transforms/8a5942c0e8d7d159e2a7152918350f48/transformed/transition-1.6.0/AndroidManifest.xml:5:5-44
+MERGED from [androidx.transition:transition:1.6.0] /home/kigawa/.gradle/caches/9.2.1/transforms/8a5942c0e8d7d159e2a7152918350f48/transformed/transition-1.6.0/AndroidManifest.xml:5:5-44
+MERGED from [androidx.dynamicanimation:dynamicanimation:1.0.0] /home/kigawa/.gradle/caches/9.2.1/transforms/7ef23b0d7d043efc2f52cc0453f077c2/transformed/dynamicanimation-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.dynamicanimation:dynamicanimation:1.0.0] /home/kigawa/.gradle/caches/9.2.1/transforms/7ef23b0d7d043efc2f52cc0453f077c2/transformed/dynamicanimation-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.legacy:legacy-support-core-utils:1.0.0] /home/kigawa/.gradle/caches/9.2.1/transforms/b0b7087eea819f166e870c3ce09bd421/transformed/legacy-support-core-utils-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.legacy:legacy-support-core-utils:1.0.0] /home/kigawa/.gradle/caches/9.2.1/transforms/b0b7087eea819f166e870c3ce09bd421/transformed/legacy-support-core-utils-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.loader:loader:1.1.0] /home/kigawa/.gradle/caches/9.2.1/transforms/41e2f95e26e146bb4f9a18c28aac8d36/transformed/loader-1.1.0/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.loader:loader:1.1.0] /home/kigawa/.gradle/caches/9.2.1/transforms/41e2f95e26e146bb4f9a18c28aac8d36/transformed/loader-1.1.0/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.drawerlayout:drawerlayout:1.0.0] /home/kigawa/.gradle/caches/9.2.1/transforms/26b4aba1f50d95c23ac00948703e2141/transformed/drawerlayout-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.drawerlayout:drawerlayout:1.0.0] /home/kigawa/.gradle/caches/9.2.1/transforms/26b4aba1f50d95c23ac00948703e2141/transformed/drawerlayout-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.viewpager:viewpager:1.0.0] /home/kigawa/.gradle/caches/9.2.1/transforms/267dfff99ae4211250d93dd70010ef76/transformed/viewpager-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.viewpager:viewpager:1.0.0] /home/kigawa/.gradle/caches/9.2.1/transforms/267dfff99ae4211250d93dd70010ef76/transformed/viewpager-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.coordinatorlayout:coordinatorlayout:1.0.0] /home/kigawa/.gradle/caches/9.2.1/transforms/70cd26d6eb3c3d515dcd9a5bf2696f9b/transformed/coordinatorlayout-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.coordinatorlayout:coordinatorlayout:1.0.0] /home/kigawa/.gradle/caches/9.2.1/transforms/70cd26d6eb3c3d515dcd9a5bf2696f9b/transformed/coordinatorlayout-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.slidingpanelayout:slidingpanelayout:1.0.0] /home/kigawa/.gradle/caches/9.2.1/transforms/887eb916332b4eb718f28431537061b4/transformed/slidingpanelayout-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.slidingpanelayout:slidingpanelayout:1.0.0] /home/kigawa/.gradle/caches/9.2.1/transforms/887eb916332b4eb718f28431537061b4/transformed/slidingpanelayout-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.customview:customview:1.0.0] /home/kigawa/.gradle/caches/9.2.1/transforms/3e63c7c5ab0c0fcce2b7ed629cde12b0/transformed/customview-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.customview:customview:1.0.0] /home/kigawa/.gradle/caches/9.2.1/transforms/3e63c7c5ab0c0fcce2b7ed629cde12b0/transformed/customview-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.swiperefreshlayout:swiperefreshlayout:1.0.0] /home/kigawa/.gradle/caches/9.2.1/transforms/459c5012e713fab4e9811d222aded210/transformed/swiperefreshlayout-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.swiperefreshlayout:swiperefreshlayout:1.0.0] /home/kigawa/.gradle/caches/9.2.1/transforms/459c5012e713fab4e9811d222aded210/transformed/swiperefreshlayout-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.asynclayoutinflater:asynclayoutinflater:1.0.0] /home/kigawa/.gradle/caches/9.2.1/transforms/73fa15e34c66eaa19ecfe4e01ea7b517/transformed/asynclayoutinflater-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.asynclayoutinflater:asynclayoutinflater:1.0.0] /home/kigawa/.gradle/caches/9.2.1/transforms/73fa15e34c66eaa19ecfe4e01ea7b517/transformed/asynclayoutinflater-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.vectordrawable:vectordrawable-animated:1.1.0] /home/kigawa/.gradle/caches/9.2.1/transforms/17d465ab16d496910e87324de92efd81/transformed/vectordrawable-animated-1.1.0/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.vectordrawable:vectordrawable-animated:1.1.0] /home/kigawa/.gradle/caches/9.2.1/transforms/17d465ab16d496910e87324de92efd81/transformed/vectordrawable-animated-1.1.0/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.vectordrawable:vectordrawable:1.1.0] /home/kigawa/.gradle/caches/9.2.1/transforms/b5e470abd1080a0a2b25d22cc9065362/transformed/vectordrawable-1.1.0/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.vectordrawable:vectordrawable:1.1.0] /home/kigawa/.gradle/caches/9.2.1/transforms/b5e470abd1080a0a2b25d22cc9065362/transformed/vectordrawable-1.1.0/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.autofill:autofill:1.0.0] /home/kigawa/.gradle/caches/9.2.1/transforms/d64efbbc241a58494514a91c9c516db6/transformed/autofill-1.0.0/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.autofill:autofill:1.0.0] /home/kigawa/.gradle/caches/9.2.1/transforms/d64efbbc241a58494514a91c9c516db6/transformed/autofill-1.0.0/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.window:window-core-android:1.5.0] /home/kigawa/.gradle/caches/9.2.1/transforms/90da37137606ab9429c9d9ebe13df05a/transformed/window-core/AndroidManifest.xml:5:5-44
+MERGED from [androidx.window:window-core-android:1.5.0] /home/kigawa/.gradle/caches/9.2.1/transforms/90da37137606ab9429c9d9ebe13df05a/transformed/window-core/AndroidManifest.xml:5:5-44
+MERGED from [androidx.window:window:1.5.0] /home/kigawa/.gradle/caches/9.2.1/transforms/cacf9a6ad128caea8221915f24f3cc29/transformed/window-1.5.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.window:window:1.5.0] /home/kigawa/.gradle/caches/9.2.1/transforms/cacf9a6ad128caea8221915f24f3cc29/transformed/window-1.5.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.emoji2:emoji2-views-helper:1.4.0] /home/kigawa/.gradle/caches/9.2.1/transforms/34533e18e5f2c622fb84bc49780c5d26/transformed/emoji2-views-helper-1.4.0/AndroidManifest.xml:5:5-44
+MERGED from [androidx.emoji2:emoji2-views-helper:1.4.0] /home/kigawa/.gradle/caches/9.2.1/transforms/34533e18e5f2c622fb84bc49780c5d26/transformed/emoji2-views-helper-1.4.0/AndroidManifest.xml:5:5-44
+MERGED from [androidx.emoji2:emoji2:1.4.0] /home/kigawa/.gradle/caches/9.2.1/transforms/2d09cd40c28b797136a4c21c9ad30209/transformed/emoji2-1.4.0/AndroidManifest.xml:21:5-44
+MERGED from [androidx.emoji2:emoji2:1.4.0] /home/kigawa/.gradle/caches/9.2.1/transforms/2d09cd40c28b797136a4c21c9ad30209/transformed/emoji2-1.4.0/AndroidManifest.xml:21:5-44
+MERGED from [androidx.graphics:graphics-path:1.0.1] /home/kigawa/.gradle/caches/9.2.1/transforms/1e79cf895ac96bbf64eee2380163bd18/transformed/graphics-path-1.0.1/AndroidManifest.xml:5:5-44
+MERGED from [androidx.graphics:graphics-path:1.0.1] /home/kigawa/.gradle/caches/9.2.1/transforms/1e79cf895ac96bbf64eee2380163bd18/transformed/graphics-path-1.0.1/AndroidManifest.xml:5:5-44
+MERGED from [androidx.core:core:1.18.0] /home/kigawa/.gradle/caches/9.2.1/transforms/7f8eb18d12c23a198eafa24675657cfa/transformed/core-1.18.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.core:core:1.18.0] /home/kigawa/.gradle/caches/9.2.1/transforms/7f8eb18d12c23a198eafa24675657cfa/transformed/core-1.18.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.lifecycle:lifecycle-process:2.9.4] /home/kigawa/.gradle/caches/9.2.1/transforms/42bd2e0d7aa8dc31ca4d5af9786500b7/transformed/lifecycle-process-2.9.4/AndroidManifest.xml:21:5-44
+MERGED from [androidx.lifecycle:lifecycle-process:2.9.4] /home/kigawa/.gradle/caches/9.2.1/transforms/42bd2e0d7aa8dc31ca4d5af9786500b7/transformed/lifecycle-process-2.9.4/AndroidManifest.xml:21:5-44
+MERGED from [androidx.lifecycle:lifecycle-runtime-ktx-android:2.9.4] /home/kigawa/.gradle/caches/9.2.1/transforms/0ee5640ce66f13e2f324b9eba1efa0df/transformed/lifecycle-runtime-ktx/AndroidManifest.xml:5:5-44
+MERGED from [androidx.lifecycle:lifecycle-runtime-ktx-android:2.9.4] /home/kigawa/.gradle/caches/9.2.1/transforms/0ee5640ce66f13e2f324b9eba1efa0df/transformed/lifecycle-runtime-ktx/AndroidManifest.xml:5:5-44
+MERGED from [androidx.lifecycle:lifecycle-viewmodel-ktx:2.9.4] /home/kigawa/.gradle/caches/9.2.1/transforms/a51185b1108c20767227ad2d616ae868/transformed/lifecycle-viewmodel-ktx-2.9.4/AndroidManifest.xml:5:5-44
+MERGED from [androidx.lifecycle:lifecycle-viewmodel-ktx:2.9.4] /home/kigawa/.gradle/caches/9.2.1/transforms/a51185b1108c20767227ad2d616ae868/transformed/lifecycle-viewmodel-ktx-2.9.4/AndroidManifest.xml:5:5-44
+MERGED from [androidx.lifecycle:lifecycle-livedata-core-ktx:2.9.4] /home/kigawa/.gradle/caches/9.2.1/transforms/2bf0a06c300897392103a9cb7589f641/transformed/lifecycle-livedata-core-ktx-2.9.4/AndroidManifest.xml:5:5-44
+MERGED from [androidx.lifecycle:lifecycle-livedata-core-ktx:2.9.4] /home/kigawa/.gradle/caches/9.2.1/transforms/2bf0a06c300897392103a9cb7589f641/transformed/lifecycle-livedata-core-ktx-2.9.4/AndroidManifest.xml:5:5-44
+MERGED from [androidx.lifecycle:lifecycle-livedata-core:2.9.4] /home/kigawa/.gradle/caches/9.2.1/transforms/b6f50178f05aa70df8410a085bb458ef/transformed/lifecycle-livedata-core-2.9.4/AndroidManifest.xml:20:5-44
+MERGED from [androidx.lifecycle:lifecycle-livedata-core:2.9.4] /home/kigawa/.gradle/caches/9.2.1/transforms/b6f50178f05aa70df8410a085bb458ef/transformed/lifecycle-livedata-core-2.9.4/AndroidManifest.xml:20:5-44
+MERGED from [androidx.lifecycle:lifecycle-viewmodel:2.9.4] /home/kigawa/.gradle/caches/9.2.1/transforms/bbe7399613f661fad71473e450c0e217/transformed/lifecycle-viewmodel-2.9.4/AndroidManifest.xml:4:5-43
+MERGED from [androidx.lifecycle:lifecycle-viewmodel:2.9.4] /home/kigawa/.gradle/caches/9.2.1/transforms/bbe7399613f661fad71473e450c0e217/transformed/lifecycle-viewmodel-2.9.4/AndroidManifest.xml:4:5-43
+MERGED from [androidx.lifecycle:lifecycle-viewmodel-android:2.9.4] /home/kigawa/.gradle/caches/9.2.1/transforms/ff77819ef1cf9b1edba8e916041170e0/transformed/lifecycle-viewmodel-release/AndroidManifest.xml:20:5-44
+MERGED from [androidx.lifecycle:lifecycle-viewmodel-android:2.9.4] /home/kigawa/.gradle/caches/9.2.1/transforms/ff77819ef1cf9b1edba8e916041170e0/transformed/lifecycle-viewmodel-release/AndroidManifest.xml:20:5-44
+MERGED from [androidx.lifecycle:lifecycle-runtime-android:2.9.4] /home/kigawa/.gradle/caches/9.2.1/transforms/e13dae24b8c4ae95e0431c21ffa3911d/transformed/lifecycle-runtime-release/AndroidManifest.xml:20:5-44
+MERGED from [androidx.lifecycle:lifecycle-runtime-android:2.9.4] /home/kigawa/.gradle/caches/9.2.1/transforms/e13dae24b8c4ae95e0431c21ffa3911d/transformed/lifecycle-runtime-release/AndroidManifest.xml:20:5-44
+MERGED from [androidx.lifecycle:lifecycle-viewmodel-savedstate-android:2.9.4] /home/kigawa/.gradle/caches/9.2.1/transforms/467c34e2e4657947cb7b7bf462c2c65a/transformed/lifecycle-viewmodel-savedstate-release/AndroidManifest.xml:20:5-44
+MERGED from [androidx.lifecycle:lifecycle-viewmodel-savedstate-android:2.9.4] /home/kigawa/.gradle/caches/9.2.1/transforms/467c34e2e4657947cb7b7bf462c2c65a/transformed/lifecycle-viewmodel-savedstate-release/AndroidManifest.xml:20:5-44
+MERGED from [androidx.savedstate:savedstate-ktx:1.3.3] /home/kigawa/.gradle/caches/9.2.1/transforms/aa67ba3bfb1ceeefda67337ff83610ba/transformed/savedstate-ktx-1.3.3/AndroidManifest.xml:5:5-44
+MERGED from [androidx.savedstate:savedstate-ktx:1.3.3] /home/kigawa/.gradle/caches/9.2.1/transforms/aa67ba3bfb1ceeefda67337ff83610ba/transformed/savedstate-ktx-1.3.3/AndroidManifest.xml:5:5-44
+MERGED from [androidx.savedstate:savedstate-android:1.3.3] /home/kigawa/.gradle/caches/9.2.1/transforms/8838984e7e7ca76f26bc018ea101608e/transformed/savedstate-release/AndroidManifest.xml:20:5-44
+MERGED from [androidx.savedstate:savedstate-android:1.3.3] /home/kigawa/.gradle/caches/9.2.1/transforms/8838984e7e7ca76f26bc018ea101608e/transformed/savedstate-release/AndroidManifest.xml:20:5-44
+MERGED from [androidx.savedstate:savedstate-compose-android:1.3.3] /home/kigawa/.gradle/caches/9.2.1/transforms/0cad9459d70a952bbefff09b0e63cf45/transformed/savedstate-compose/AndroidManifest.xml:5:5-44
+MERGED from [androidx.savedstate:savedstate-compose-android:1.3.3] /home/kigawa/.gradle/caches/9.2.1/transforms/0cad9459d70a952bbefff09b0e63cf45/transformed/savedstate-compose/AndroidManifest.xml:5:5-44
+MERGED from [androidx.compose.runtime:runtime-annotation-android:1.10.0] /home/kigawa/.gradle/caches/9.2.1/transforms/ec18e1ca1c0f397e8b09519d1127a1f5/transformed/runtime-annotation/AndroidManifest.xml:5:5-44
+MERGED from [androidx.compose.runtime:runtime-annotation-android:1.10.0] /home/kigawa/.gradle/caches/9.2.1/transforms/ec18e1ca1c0f397e8b09519d1127a1f5/transformed/runtime-annotation/AndroidManifest.xml:5:5-44
+MERGED from [androidx.compose.runtime:runtime-android:1.10.0] /home/kigawa/.gradle/caches/9.2.1/transforms/75bc7022ccb19e58211187de1f4ac0f4/transformed/runtime/AndroidManifest.xml:5:5-44
+MERGED from [androidx.compose.runtime:runtime-android:1.10.0] /home/kigawa/.gradle/caches/9.2.1/transforms/75bc7022ccb19e58211187de1f4ac0f4/transformed/runtime/AndroidManifest.xml:5:5-44
+MERGED from [androidx.compose.runtime:runtime-retain-android:1.10.0] /home/kigawa/.gradle/caches/9.2.1/transforms/48d8109160f5f4123141df49aeed1f75/transformed/runtime-retain/AndroidManifest.xml:5:5-44
+MERGED from [androidx.compose.runtime:runtime-retain-android:1.10.0] /home/kigawa/.gradle/caches/9.2.1/transforms/48d8109160f5f4123141df49aeed1f75/transformed/runtime-retain/AndroidManifest.xml:5:5-44
+MERGED from [androidx.compose.runtime:runtime-saveable-android:1.10.0] /home/kigawa/.gradle/caches/9.2.1/transforms/4756418fad943e68bf0ee31879f13b05/transformed/runtime-saveable/AndroidManifest.xml:5:5-44
+MERGED from [androidx.compose.runtime:runtime-saveable-android:1.10.0] /home/kigawa/.gradle/caches/9.2.1/transforms/4756418fad943e68bf0ee31879f13b05/transformed/runtime-saveable/AndroidManifest.xml:5:5-44
+MERGED from [androidx.lifecycle:lifecycle-runtime-compose-android:2.9.4] /home/kigawa/.gradle/caches/9.2.1/transforms/060b818c42f459906ed88ea28c5a5e4c/transformed/lifecycle-runtime-compose-release/AndroidManifest.xml:5:5-44
+MERGED from [androidx.lifecycle:lifecycle-runtime-compose-android:2.9.4] /home/kigawa/.gradle/caches/9.2.1/transforms/060b818c42f459906ed88ea28c5a5e4c/transformed/lifecycle-runtime-compose-release/AndroidManifest.xml:5:5-44
+MERGED from [androidx.lifecycle:lifecycle-viewmodel-compose-android:2.9.4] /home/kigawa/.gradle/caches/9.2.1/transforms/2be13d93de7127b41330bf5fc7d3a61e/transformed/lifecycle-viewmodel-compose-release/AndroidManifest.xml:5:5-44
+MERGED from [androidx.lifecycle:lifecycle-viewmodel-compose-android:2.9.4] /home/kigawa/.gradle/caches/9.2.1/transforms/2be13d93de7127b41330bf5fc7d3a61e/transformed/lifecycle-viewmodel-compose-release/AndroidManifest.xml:5:5-44
+MERGED from [androidx.compose.ui:ui-android:1.10.0] /home/kigawa/.gradle/caches/9.2.1/transforms/2b07412c3e95e07a11aeadba6a09490d/transformed/ui/AndroidManifest.xml:5:5-44
+MERGED from [androidx.compose.ui:ui-android:1.10.0] /home/kigawa/.gradle/caches/9.2.1/transforms/2b07412c3e95e07a11aeadba6a09490d/transformed/ui/AndroidManifest.xml:5:5-44
+MERGED from [androidx.activity:activity-ktx:1.13.0] /home/kigawa/.gradle/caches/9.2.1/transforms/565629ffcf85a1ec08b606804e3d1616/transformed/activity-ktx-1.13.0/AndroidManifest.xml:5:5-44
+MERGED from [androidx.activity:activity-ktx:1.13.0] /home/kigawa/.gradle/caches/9.2.1/transforms/565629ffcf85a1ec08b606804e3d1616/transformed/activity-ktx-1.13.0/AndroidManifest.xml:5:5-44
+MERGED from [androidx.activity:activity:1.13.0] /home/kigawa/.gradle/caches/9.2.1/transforms/0618dca3eb28aa11cf65d7187a0f8c44/transformed/activity-1.13.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.activity:activity:1.13.0] /home/kigawa/.gradle/caches/9.2.1/transforms/0618dca3eb28aa11cf65d7187a0f8c44/transformed/activity-1.13.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.activity:activity-compose:1.13.0] /home/kigawa/.gradle/caches/9.2.1/transforms/3e38cf31dc357f525ed711d3964f7688/transformed/activity-compose-1.13.0/AndroidManifest.xml:5:5-44
+MERGED from [androidx.activity:activity-compose:1.13.0] /home/kigawa/.gradle/caches/9.2.1/transforms/3e38cf31dc357f525ed711d3964f7688/transformed/activity-compose-1.13.0/AndroidManifest.xml:5:5-44
+MERGED from [androidx.customview:customview-poolingcontainer:1.0.0] /home/kigawa/.gradle/caches/9.2.1/transforms/804717ca9d804a470233492b67da996e/transformed/customview-poolingcontainer-1.0.0/AndroidManifest.xml:20:5-21:38
+MERGED from [androidx.customview:customview-poolingcontainer:1.0.0] /home/kigawa/.gradle/caches/9.2.1/transforms/804717ca9d804a470233492b67da996e/transformed/customview-poolingcontainer-1.0.0/AndroidManifest.xml:20:5-21:38
+MERGED from [org.jetbrains.androidx.core:core-bundle-android-debug:1.0.0] /home/kigawa/.gradle/caches/9.2.1/transforms/a99838b6987563716497977e3f1bbcd2/transformed/core-bundle-debug/AndroidManifest.xml:5:5-44
+MERGED from [org.jetbrains.androidx.core:core-bundle-android-debug:1.0.0] /home/kigawa/.gradle/caches/9.2.1/transforms/a99838b6987563716497977e3f1bbcd2/transformed/core-bundle-debug/AndroidManifest.xml:5:5-44
+MERGED from [androidx.core:core-ktx:1.18.0] /home/kigawa/.gradle/caches/9.2.1/transforms/a8743e5a4b18c6c356f105e09355ce31/transformed/core-ktx-1.18.0/AndroidManifest.xml:5:5-44
+MERGED from [androidx.core:core-ktx:1.18.0] /home/kigawa/.gradle/caches/9.2.1/transforms/a8743e5a4b18c6c356f105e09355ce31/transformed/core-ktx-1.18.0/AndroidManifest.xml:5:5-44
+MERGED from [androidx.room:room-runtime-android:2.7.1] /home/kigawa/.gradle/caches/9.2.1/transforms/b444adedf75be8b687840090939e2810/transformed/room-runtime-release/AndroidManifest.xml:21:5-44
+MERGED from [androidx.room:room-runtime-android:2.7.1] /home/kigawa/.gradle/caches/9.2.1/transforms/b444adedf75be8b687840090939e2810/transformed/room-runtime-release/AndroidManifest.xml:21:5-44
+MERGED from [androidx.room:room-ktx:2.7.1] /home/kigawa/.gradle/caches/9.2.1/transforms/16fdd05ae90a1799680158b14ed82cc6/transformed/room-ktx-2.7.1/AndroidManifest.xml:20:5-44
+MERGED from [androidx.room:room-ktx:2.7.1] /home/kigawa/.gradle/caches/9.2.1/transforms/16fdd05ae90a1799680158b14ed82cc6/transformed/room-ktx-2.7.1/AndroidManifest.xml:20:5-44
+MERGED from [androidx.datastore:datastore-preferences:1.0.0] /home/kigawa/.gradle/caches/9.2.1/transforms/74722c6637f05bf9705573033a135cf0/transformed/datastore-preferences-1.0.0/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.datastore:datastore-preferences:1.0.0] /home/kigawa/.gradle/caches/9.2.1/transforms/74722c6637f05bf9705573033a135cf0/transformed/datastore-preferences-1.0.0/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.datastore:datastore:1.0.0] /home/kigawa/.gradle/caches/9.2.1/transforms/0963817439c4acd79d4e1fb36df291dd/transformed/datastore-1.0.0/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.datastore:datastore:1.0.0] /home/kigawa/.gradle/caches/9.2.1/transforms/0963817439c4acd79d4e1fb36df291dd/transformed/datastore-1.0.0/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.annotation:annotation-experimental:1.4.1] /home/kigawa/.gradle/caches/9.2.1/transforms/484fb4833ce9543b8a6774364e8412ef/transformed/annotation-experimental-1.4.1/AndroidManifest.xml:5:5-44
+MERGED from [androidx.annotation:annotation-experimental:1.4.1] /home/kigawa/.gradle/caches/9.2.1/transforms/484fb4833ce9543b8a6774364e8412ef/transformed/annotation-experimental-1.4.1/AndroidManifest.xml:5:5-44
+MERGED from [androidx.core:core-viewtree:1.0.0] /home/kigawa/.gradle/caches/9.2.1/transforms/84f34e65c7924c6d30c5c9ef706592ef/transformed/core-viewtree-1.0.0/AndroidManifest.xml:5:5-44
+MERGED from [androidx.core:core-viewtree:1.0.0] /home/kigawa/.gradle/caches/9.2.1/transforms/84f34e65c7924c6d30c5c9ef706592ef/transformed/core-viewtree-1.0.0/AndroidManifest.xml:5:5-44
+MERGED from [androidx.interpolator:interpolator:1.0.0] /home/kigawa/.gradle/caches/9.2.1/transforms/12d9cb6149407f0a3c00e8df0dc0a916/transformed/interpolator-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.interpolator:interpolator:1.0.0] /home/kigawa/.gradle/caches/9.2.1/transforms/12d9cb6149407f0a3c00e8df0dc0a916/transformed/interpolator-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.profileinstaller:profileinstaller:1.4.0] /home/kigawa/.gradle/caches/9.2.1/transforms/9a8d41a0c72425dbe6942446fda98a41/transformed/profileinstaller-1.4.0/AndroidManifest.xml:21:5-44
+MERGED from [androidx.profileinstaller:profileinstaller:1.4.0] /home/kigawa/.gradle/caches/9.2.1/transforms/9a8d41a0c72425dbe6942446fda98a41/transformed/profileinstaller-1.4.0/AndroidManifest.xml:21:5-44
+MERGED from [androidx.startup:startup-runtime:1.1.1] /home/kigawa/.gradle/caches/9.2.1/transforms/3a32b31e5bc9fdd8a299671fc086ce9a/transformed/startup-runtime-1.1.1/AndroidManifest.xml:21:5-23:41
+MERGED from [androidx.startup:startup-runtime:1.1.1] /home/kigawa/.gradle/caches/9.2.1/transforms/3a32b31e5bc9fdd8a299671fc086ce9a/transformed/startup-runtime-1.1.1/AndroidManifest.xml:21:5-23:41
+MERGED from [androidx.tracing:tracing:1.2.0] /home/kigawa/.gradle/caches/9.2.1/transforms/a02b36f970e032d70ccd4d81e177bf3e/transformed/tracing-1.2.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.tracing:tracing:1.2.0] /home/kigawa/.gradle/caches/9.2.1/transforms/a02b36f970e032d70ccd4d81e177bf3e/transformed/tracing-1.2.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.versionedparcelable:versionedparcelable:1.1.1] /home/kigawa/.gradle/caches/9.2.1/transforms/c8a565d0ac0e7e74868b592e0628dc0d/transformed/versionedparcelable-1.1.1/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.versionedparcelable:versionedparcelable:1.1.1] /home/kigawa/.gradle/caches/9.2.1/transforms/c8a565d0ac0e7e74868b592e0628dc0d/transformed/versionedparcelable-1.1.1/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.cursoradapter:cursoradapter:1.0.0] /home/kigawa/.gradle/caches/9.2.1/transforms/6519687fd9663ea0ff19e67186d29be0/transformed/cursoradapter-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.cursoradapter:cursoradapter:1.0.0] /home/kigawa/.gradle/caches/9.2.1/transforms/6519687fd9663ea0ff19e67186d29be0/transformed/cursoradapter-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.arch.core:core-runtime:2.2.0] /home/kigawa/.gradle/caches/9.2.1/transforms/1821e062c44c2f5783df841fff65e9b3/transformed/core-runtime-2.2.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.arch.core:core-runtime:2.2.0] /home/kigawa/.gradle/caches/9.2.1/transforms/1821e062c44c2f5783df841fff65e9b3/transformed/core-runtime-2.2.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.sqlite:sqlite-framework-android:2.5.0] /home/kigawa/.gradle/caches/9.2.1/transforms/9cc335ea994f806839db3e57ae6ce493/transformed/sqlite-framework-release/AndroidManifest.xml:20:5-44
+MERGED from [androidx.sqlite:sqlite-framework-android:2.5.0] /home/kigawa/.gradle/caches/9.2.1/transforms/9cc335ea994f806839db3e57ae6ce493/transformed/sqlite-framework-release/AndroidManifest.xml:20:5-44
+MERGED from [androidx.sqlite:sqlite-android:2.5.0] /home/kigawa/.gradle/caches/9.2.1/transforms/c0e30864ea6238250a0a3e668d7f4662/transformed/sqlite-release/AndroidManifest.xml:20:5-44
+MERGED from [androidx.sqlite:sqlite-android:2.5.0] /home/kigawa/.gradle/caches/9.2.1/transforms/c0e30864ea6238250a0a3e668d7f4662/transformed/sqlite-release/AndroidManifest.xml:20:5-44
+MERGED from [androidx.documentfile:documentfile:1.0.0] /home/kigawa/.gradle/caches/9.2.1/transforms/d611910902774c702c729408ae63aa68/transformed/documentfile-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.documentfile:documentfile:1.0.0] /home/kigawa/.gradle/caches/9.2.1/transforms/d611910902774c702c729408ae63aa68/transformed/documentfile-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.localbroadcastmanager:localbroadcastmanager:1.0.0] /home/kigawa/.gradle/caches/9.2.1/transforms/7d4d7dacda7e6817b4127bc02902aad7/transformed/localbroadcastmanager-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.localbroadcastmanager:localbroadcastmanager:1.0.0] /home/kigawa/.gradle/caches/9.2.1/transforms/7d4d7dacda7e6817b4127bc02902aad7/transformed/localbroadcastmanager-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.print:print:1.0.0] /home/kigawa/.gradle/caches/9.2.1/transforms/02d1835c40107ffd41f88906636d6325/transformed/print-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.print:print:1.0.0] /home/kigawa/.gradle/caches/9.2.1/transforms/02d1835c40107ffd41f88906636d6325/transformed/print-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.constraintlayout:constraintlayout:1.1.3] /home/kigawa/.gradle/caches/9.2.1/transforms/2e84c502726cdbb259c45dd657639191/transformed/constraintlayout-1.1.3/AndroidManifest.xml:5:5-7:41
+MERGED from [androidx.constraintlayout:constraintlayout:1.1.3] /home/kigawa/.gradle/caches/9.2.1/transforms/2e84c502726cdbb259c45dd657639191/transformed/constraintlayout-1.1.3/AndroidManifest.xml:5:5-7:41
+MERGED from [com.yubico.yubikit:android:2.3.0] /home/kigawa/.gradle/caches/9.2.1/transforms/2aed814f03a05d6d373842d9c9eb965b/transformed/android-2.3.0/AndroidManifest.xml:5:5-44
+MERGED from [com.yubico.yubikit:android:2.3.0] /home/kigawa/.gradle/caches/9.2.1/transforms/2aed814f03a05d6d373842d9c9eb965b/transformed/android-2.3.0/AndroidManifest.xml:5:5-44
+	tools:overrideLibrary
+		ADDED from [com.microsoft.identity:common:17.3.0] /home/kigawa/.gradle/caches/9.2.1/transforms/5a134e551200707bbe22646fe000c298/transformed/common-17.3.0/AndroidManifest.xml:7:9-148
+	android:targetSdkVersion
+		INJECTED from /home/kigawa/dev/kigawa-net/kalender/composeApp/src/androidMain/AndroidManifest.xml
+	android:minSdkVersion
+		INJECTED from /home/kigawa/dev/kigawa-net/kalender/composeApp/src/androidMain/AndroidManifest.xml
+uses-permission#android.permission.ACCESS_NETWORK_STATE
+ADDED from [com.microsoft.identity.client:msal:5.3.0] /home/kigawa/.gradle/caches/9.2.1/transforms/c1b8591157a393205c3a79b592ce29f5/transformed/msal-5.3.0/AndroidManifest.xml:8:5-79
+MERGED from [com.microsoft.identity:common:17.3.0] /home/kigawa/.gradle/caches/9.2.1/transforms/5a134e551200707bbe22646fe000c298/transformed/common-17.3.0/AndroidManifest.xml:10:5-79
+MERGED from [com.microsoft.identity:common:17.3.0] /home/kigawa/.gradle/caches/9.2.1/transforms/5a134e551200707bbe22646fe000c298/transformed/common-17.3.0/AndroidManifest.xml:10:5-79
+	android:name
+		ADDED from [com.microsoft.identity.client:msal:5.3.0] /home/kigawa/.gradle/caches/9.2.1/transforms/c1b8591157a393205c3a79b592ce29f5/transformed/msal-5.3.0/AndroidManifest.xml:8:22-76
+activity#com.microsoft.identity.client.helper.BrokerHelperActivity
+ADDED from [com.microsoft.identity.client:msal:5.3.0] /home/kigawa/.gradle/caches/9.2.1/transforms/c1b8591157a393205c3a79b592ce29f5/transformed/msal-5.3.0/AndroidManifest.xml:25:9-28:45
+	android:launchMode
+		ADDED from [com.microsoft.identity.client:msal:5.3.0] /home/kigawa/.gradle/caches/9.2.1/transforms/c1b8591157a393205c3a79b592ce29f5/transformed/msal-5.3.0/AndroidManifest.xml:28:13-42
+	android:exported
+		ADDED from [com.microsoft.identity.client:msal:5.3.0] /home/kigawa/.gradle/caches/9.2.1/transforms/c1b8591157a393205c3a79b592ce29f5/transformed/msal-5.3.0/AndroidManifest.xml:27:13-37
+	android:name
+		ADDED from [com.microsoft.identity.client:msal:5.3.0] /home/kigawa/.gradle/caches/9.2.1/transforms/c1b8591157a393205c3a79b592ce29f5/transformed/msal-5.3.0/AndroidManifest.xml:26:13-85
+activity#com.microsoft.identity.client.CurrentTaskBrowserTabActivity
+ADDED from [com.microsoft.identity.client:msal:5.3.0] /home/kigawa/.gradle/caches/9.2.1/transforms/c1b8591157a393205c3a79b592ce29f5/transformed/msal-5.3.0/AndroidManifest.xml:35:9-37:39
+	android:exported
+		ADDED from [com.microsoft.identity.client:msal:5.3.0] /home/kigawa/.gradle/caches/9.2.1/transforms/c1b8591157a393205c3a79b592ce29f5/transformed/msal-5.3.0/AndroidManifest.xml:37:13-36
+	android:name
+		ADDED from [com.microsoft.identity.client:msal:5.3.0] /home/kigawa/.gradle/caches/9.2.1/transforms/c1b8591157a393205c3a79b592ce29f5/transformed/msal-5.3.0/AndroidManifest.xml:36:13-87
+package#com.microsoft.identity.testuserapp
+ADDED from [com.microsoft.identity:common:17.3.0] /home/kigawa/.gradle/caches/9.2.1/transforms/5a134e551200707bbe22646fe000c298/transformed/common-17.3.0/AndroidManifest.xml:19:9-70
+	android:name
+		ADDED from [com.microsoft.identity:common:17.3.0] /home/kigawa/.gradle/caches/9.2.1/transforms/5a134e551200707bbe22646fe000c298/transformed/common-17.3.0/AndroidManifest.xml:19:18-67
+package#com.microsoft.mockauthapp
+ADDED from [com.microsoft.identity:common:17.3.0] /home/kigawa/.gradle/caches/9.2.1/transforms/5a134e551200707bbe22646fe000c298/transformed/common-17.3.0/AndroidManifest.xml:21:9-61
+	android:name
+		ADDED from [com.microsoft.identity:common:17.3.0] /home/kigawa/.gradle/caches/9.2.1/transforms/5a134e551200707bbe22646fe000c298/transformed/common-17.3.0/AndroidManifest.xml:21:18-58
+package#com.microsoft.mockcp
+ADDED from [com.microsoft.identity:common:17.3.0] /home/kigawa/.gradle/caches/9.2.1/transforms/5a134e551200707bbe22646fe000c298/transformed/common-17.3.0/AndroidManifest.xml:22:9-56
+	android:name
+		ADDED from [com.microsoft.identity:common:17.3.0] /home/kigawa/.gradle/caches/9.2.1/transforms/5a134e551200707bbe22646fe000c298/transformed/common-17.3.0/AndroidManifest.xml:22:18-53
+package#com.microsoft.mockltw
+ADDED from [com.microsoft.identity:common:17.3.0] /home/kigawa/.gradle/caches/9.2.1/transforms/5a134e551200707bbe22646fe000c298/transformed/common-17.3.0/AndroidManifest.xml:23:9-57
+	android:name
+		ADDED from [com.microsoft.identity:common:17.3.0] /home/kigawa/.gradle/caches/9.2.1/transforms/5a134e551200707bbe22646fe000c298/transformed/common-17.3.0/AndroidManifest.xml:23:18-54
+package#com.microsoft.appmanager
+ADDED from [com.microsoft.identity:common:17.3.0] /home/kigawa/.gradle/caches/9.2.1/transforms/5a134e551200707bbe22646fe000c298/transformed/common-17.3.0/AndroidManifest.xml:24:9-60
+	android:name
+		ADDED from [com.microsoft.identity:common:17.3.0] /home/kigawa/.gradle/caches/9.2.1/transforms/5a134e551200707bbe22646fe000c298/transformed/common-17.3.0/AndroidManifest.xml:24:18-57
+intent#action:name:android.intent.action.VIEW+category:name:android.intent.category.BROWSABLE+data:scheme:https
+ADDED from [com.microsoft.identity:common:17.3.0] /home/kigawa/.gradle/caches/9.2.1/transforms/5a134e551200707bbe22646fe000c298/transformed/common-17.3.0/AndroidManifest.xml:29:9-35:18
+intent#action:name:android.support.customtabs.action.CustomTabsService
+ADDED from [com.microsoft.identity:common:17.3.0] /home/kigawa/.gradle/caches/9.2.1/transforms/5a134e551200707bbe22646fe000c298/transformed/common-17.3.0/AndroidManifest.xml:38:9-40:18
+action#android.support.customtabs.action.CustomTabsService
+ADDED from [com.microsoft.identity:common:17.3.0] /home/kigawa/.gradle/caches/9.2.1/transforms/5a134e551200707bbe22646fe000c298/transformed/common-17.3.0/AndroidManifest.xml:39:13-90
+	android:name
+		ADDED from [com.microsoft.identity:common:17.3.0] /home/kigawa/.gradle/caches/9.2.1/transforms/5a134e551200707bbe22646fe000c298/transformed/common-17.3.0/AndroidManifest.xml:39:21-87
+activity#com.microsoft.identity.common.internal.broker.BrokerActivity
+ADDED from [com.microsoft.identity:common:17.3.0] /home/kigawa/.gradle/caches/9.2.1/transforms/5a134e551200707bbe22646fe000c298/transformed/common-17.3.0/AndroidManifest.xml:54:9-56:99
+	android:configChanges
+		ADDED from [com.microsoft.identity:common:17.3.0] /home/kigawa/.gradle/caches/9.2.1/transforms/5a134e551200707bbe22646fe000c298/transformed/common-17.3.0/AndroidManifest.xml:56:13-96
+	android:name
+		ADDED from [com.microsoft.identity:common:17.3.0] /home/kigawa/.gradle/caches/9.2.1/transforms/5a134e551200707bbe22646fe000c298/transformed/common-17.3.0/AndroidManifest.xml:55:13-88
+activity#com.microsoft.identity.common.internal.broker.InstallCertActivityLauncher
+ADDED from [com.microsoft.identity:common:17.3.0] /home/kigawa/.gradle/caches/9.2.1/transforms/5a134e551200707bbe22646fe000c298/transformed/common-17.3.0/AndroidManifest.xml:58:9-61:60
+	android:configChanges
+		ADDED from [com.microsoft.identity:common:17.3.0] /home/kigawa/.gradle/caches/9.2.1/transforms/5a134e551200707bbe22646fe000c298/transformed/common-17.3.0/AndroidManifest.xml:60:13-96
+	android:theme
+		ADDED from [com.microsoft.identity:common:17.3.0] /home/kigawa/.gradle/caches/9.2.1/transforms/5a134e551200707bbe22646fe000c298/transformed/common-17.3.0/AndroidManifest.xml:61:13-57
+	android:name
+		ADDED from [com.microsoft.identity:common:17.3.0] /home/kigawa/.gradle/caches/9.2.1/transforms/5a134e551200707bbe22646fe000c298/transformed/common-17.3.0/AndroidManifest.xml:59:13-101
+service#androidx.credentials.playservices.CredentialProviderMetadataHolder
+ADDED from [androidx.credentials:credentials-play-services-auth:1.5.0] /home/kigawa/.gradle/caches/9.2.1/transforms/ee0395d74e96cd1441d54abc31231c0a/transformed/credentials-play-services-auth-1.5.0/AndroidManifest.xml:24:9-32:19
+	android:enabled
+		ADDED from [androidx.credentials:credentials-play-services-auth:1.5.0] /home/kigawa/.gradle/caches/9.2.1/transforms/ee0395d74e96cd1441d54abc31231c0a/transformed/credentials-play-services-auth-1.5.0/AndroidManifest.xml:26:13-35
+	android:exported
+		ADDED from [androidx.credentials:credentials-play-services-auth:1.5.0] /home/kigawa/.gradle/caches/9.2.1/transforms/ee0395d74e96cd1441d54abc31231c0a/transformed/credentials-play-services-auth-1.5.0/AndroidManifest.xml:27:13-37
+	tools:ignore
+		ADDED from [androidx.credentials:credentials-play-services-auth:1.5.0] /home/kigawa/.gradle/caches/9.2.1/transforms/ee0395d74e96cd1441d54abc31231c0a/transformed/credentials-play-services-auth-1.5.0/AndroidManifest.xml:28:13-60
+	android:name
+		ADDED from [androidx.credentials:credentials-play-services-auth:1.5.0] /home/kigawa/.gradle/caches/9.2.1/transforms/ee0395d74e96cd1441d54abc31231c0a/transformed/credentials-play-services-auth-1.5.0/AndroidManifest.xml:25:13-94
+meta-data#androidx.credentials.CREDENTIAL_PROVIDER_KEY
+ADDED from [androidx.credentials:credentials-play-services-auth:1.5.0] /home/kigawa/.gradle/caches/9.2.1/transforms/ee0395d74e96cd1441d54abc31231c0a/transformed/credentials-play-services-auth-1.5.0/AndroidManifest.xml:29:13-31:104
+	android:value
+		ADDED from [androidx.credentials:credentials-play-services-auth:1.5.0] /home/kigawa/.gradle/caches/9.2.1/transforms/ee0395d74e96cd1441d54abc31231c0a/transformed/credentials-play-services-auth-1.5.0/AndroidManifest.xml:31:17-101
+	android:name
+		ADDED from [androidx.credentials:credentials-play-services-auth:1.5.0] /home/kigawa/.gradle/caches/9.2.1/transforms/ee0395d74e96cd1441d54abc31231c0a/transformed/credentials-play-services-auth-1.5.0/AndroidManifest.xml:30:17-76
+activity#androidx.credentials.playservices.HiddenActivity
+ADDED from [androidx.credentials:credentials-play-services-auth:1.5.0] /home/kigawa/.gradle/caches/9.2.1/transforms/ee0395d74e96cd1441d54abc31231c0a/transformed/credentials-play-services-auth-1.5.0/AndroidManifest.xml:34:9-41:20
+	android:fitsSystemWindows
+		ADDED from [androidx.credentials:credentials-play-services-auth:1.5.0] /home/kigawa/.gradle/caches/9.2.1/transforms/ee0395d74e96cd1441d54abc31231c0a/transformed/credentials-play-services-auth-1.5.0/AndroidManifest.xml:39:13-45
+	android:enabled
+		ADDED from [androidx.credentials:credentials-play-services-auth:1.5.0] /home/kigawa/.gradle/caches/9.2.1/transforms/ee0395d74e96cd1441d54abc31231c0a/transformed/credentials-play-services-auth-1.5.0/AndroidManifest.xml:37:13-35
+	android:exported
+		ADDED from [androidx.credentials:credentials-play-services-auth:1.5.0] /home/kigawa/.gradle/caches/9.2.1/transforms/ee0395d74e96cd1441d54abc31231c0a/transformed/credentials-play-services-auth-1.5.0/AndroidManifest.xml:38:13-37
+	android:configChanges
+		ADDED from [androidx.credentials:credentials-play-services-auth:1.5.0] /home/kigawa/.gradle/caches/9.2.1/transforms/ee0395d74e96cd1441d54abc31231c0a/transformed/credentials-play-services-auth-1.5.0/AndroidManifest.xml:36:13-87
+	android:theme
+		ADDED from [androidx.credentials:credentials-play-services-auth:1.5.0] /home/kigawa/.gradle/caches/9.2.1/transforms/ee0395d74e96cd1441d54abc31231c0a/transformed/credentials-play-services-auth-1.5.0/AndroidManifest.xml:40:13-48
+	android:name
+		ADDED from [androidx.credentials:credentials-play-services-auth:1.5.0] /home/kigawa/.gradle/caches/9.2.1/transforms/ee0395d74e96cd1441d54abc31231c0a/transformed/credentials-play-services-auth-1.5.0/AndroidManifest.xml:35:13-76
+activity#androidx.credentials.playservices.IdentityCredentialApiHiddenActivity
+ADDED from [androidx.credentials:credentials-play-services-auth:1.5.0] /home/kigawa/.gradle/caches/9.2.1/transforms/ee0395d74e96cd1441d54abc31231c0a/transformed/credentials-play-services-auth-1.5.0/AndroidManifest.xml:42:9-49:20
+	android:fitsSystemWindows
+		ADDED from [androidx.credentials:credentials-play-services-auth:1.5.0] /home/kigawa/.gradle/caches/9.2.1/transforms/ee0395d74e96cd1441d54abc31231c0a/transformed/credentials-play-services-auth-1.5.0/AndroidManifest.xml:47:13-45
+	android:enabled
+		ADDED from [androidx.credentials:credentials-play-services-auth:1.5.0] /home/kigawa/.gradle/caches/9.2.1/transforms/ee0395d74e96cd1441d54abc31231c0a/transformed/credentials-play-services-auth-1.5.0/AndroidManifest.xml:45:13-35
+	android:exported
+		ADDED from [androidx.credentials:credentials-play-services-auth:1.5.0] /home/kigawa/.gradle/caches/9.2.1/transforms/ee0395d74e96cd1441d54abc31231c0a/transformed/credentials-play-services-auth-1.5.0/AndroidManifest.xml:46:13-37
+	android:configChanges
+		ADDED from [androidx.credentials:credentials-play-services-auth:1.5.0] /home/kigawa/.gradle/caches/9.2.1/transforms/ee0395d74e96cd1441d54abc31231c0a/transformed/credentials-play-services-auth-1.5.0/AndroidManifest.xml:44:13-87
+	android:theme
+		ADDED from [androidx.credentials:credentials-play-services-auth:1.5.0] /home/kigawa/.gradle/caches/9.2.1/transforms/ee0395d74e96cd1441d54abc31231c0a/transformed/credentials-play-services-auth-1.5.0/AndroidManifest.xml:48:13-48
+	android:name
+		ADDED from [androidx.credentials:credentials-play-services-auth:1.5.0] /home/kigawa/.gradle/caches/9.2.1/transforms/ee0395d74e96cd1441d54abc31231c0a/transformed/credentials-play-services-auth-1.5.0/AndroidManifest.xml:43:13-97
+uses-permission#android.permission.USE_BIOMETRIC
+ADDED from [androidx.biometric:biometric:1.1.0] /home/kigawa/.gradle/caches/9.2.1/transforms/66a59b6dcd10409e02b4b28d26397a1c/transformed/biometric-1.1.0/AndroidManifest.xml:24:5-72
+	android:name
+		ADDED from [androidx.biometric:biometric:1.1.0] /home/kigawa/.gradle/caches/9.2.1/transforms/66a59b6dcd10409e02b4b28d26397a1c/transformed/biometric-1.1.0/AndroidManifest.xml:24:22-69
+uses-permission#android.permission.USE_FINGERPRINT
+ADDED from [androidx.biometric:biometric:1.1.0] /home/kigawa/.gradle/caches/9.2.1/transforms/66a59b6dcd10409e02b4b28d26397a1c/transformed/biometric-1.1.0/AndroidManifest.xml:27:5-74
+	android:name
+		ADDED from [androidx.biometric:biometric:1.1.0] /home/kigawa/.gradle/caches/9.2.1/transforms/66a59b6dcd10409e02b4b28d26397a1c/transformed/biometric-1.1.0/AndroidManifest.xml:27:22-71
+activity#com.google.android.gms.auth.api.signin.internal.SignInHubActivity
+ADDED from [com.google.android.gms:play-services-auth:21.3.0] /home/kigawa/.gradle/caches/9.2.1/transforms/159aa09d85ec046970e730cd51cfbc92/transformed/play-services-auth-21.3.0/AndroidManifest.xml:23:9-27:75
+	android:excludeFromRecents
+		ADDED from [com.google.android.gms:play-services-auth:21.3.0] /home/kigawa/.gradle/caches/9.2.1/transforms/159aa09d85ec046970e730cd51cfbc92/transformed/play-services-auth-21.3.0/AndroidManifest.xml:25:13-46
+	android:exported
+		ADDED from [com.google.android.gms:play-services-auth:21.3.0] /home/kigawa/.gradle/caches/9.2.1/transforms/159aa09d85ec046970e730cd51cfbc92/transformed/play-services-auth-21.3.0/AndroidManifest.xml:26:13-37
+	android:theme
+		ADDED from [com.google.android.gms:play-services-auth:21.3.0] /home/kigawa/.gradle/caches/9.2.1/transforms/159aa09d85ec046970e730cd51cfbc92/transformed/play-services-auth-21.3.0/AndroidManifest.xml:27:13-72
+	android:name
+		ADDED from [com.google.android.gms:play-services-auth:21.3.0] /home/kigawa/.gradle/caches/9.2.1/transforms/159aa09d85ec046970e730cd51cfbc92/transformed/play-services-auth-21.3.0/AndroidManifest.xml:24:13-93
+service#com.google.android.gms.auth.api.signin.RevocationBoundService
+ADDED from [com.google.android.gms:play-services-auth:21.3.0] /home/kigawa/.gradle/caches/9.2.1/transforms/159aa09d85ec046970e730cd51cfbc92/transformed/play-services-auth-21.3.0/AndroidManifest.xml:33:9-37:51
+	android:exported
+		ADDED from [com.google.android.gms:play-services-auth:21.3.0] /home/kigawa/.gradle/caches/9.2.1/transforms/159aa09d85ec046970e730cd51cfbc92/transformed/play-services-auth-21.3.0/AndroidManifest.xml:35:13-36
+	android:visibleToInstantApps
+		ADDED from [com.google.android.gms:play-services-auth:21.3.0] /home/kigawa/.gradle/caches/9.2.1/transforms/159aa09d85ec046970e730cd51cfbc92/transformed/play-services-auth-21.3.0/AndroidManifest.xml:37:13-48
+	android:permission
+		ADDED from [com.google.android.gms:play-services-auth:21.3.0] /home/kigawa/.gradle/caches/9.2.1/transforms/159aa09d85ec046970e730cd51cfbc92/transformed/play-services-auth-21.3.0/AndroidManifest.xml:36:13-107
+	android:name
+		ADDED from [com.google.android.gms:play-services-auth:21.3.0] /home/kigawa/.gradle/caches/9.2.1/transforms/159aa09d85ec046970e730cd51cfbc92/transformed/play-services-auth-21.3.0/AndroidManifest.xml:34:13-89
+activity#com.google.android.gms.common.api.GoogleApiActivity
+ADDED from [com.google.android.gms:play-services-base:18.5.0] /home/kigawa/.gradle/caches/9.2.1/transforms/d35dae743574fcbf427b32e0eb4e4cc5/transformed/play-services-base-18.5.0/AndroidManifest.xml:5:9-173
+	android:exported
+		ADDED from [com.google.android.gms:play-services-base:18.5.0] /home/kigawa/.gradle/caches/9.2.1/transforms/d35dae743574fcbf427b32e0eb4e4cc5/transformed/play-services-base-18.5.0/AndroidManifest.xml:5:146-170
+	android:theme
+		ADDED from [com.google.android.gms:play-services-base:18.5.0] /home/kigawa/.gradle/caches/9.2.1/transforms/d35dae743574fcbf427b32e0eb4e4cc5/transformed/play-services-base-18.5.0/AndroidManifest.xml:5:86-145
+	android:name
+		ADDED from [com.google.android.gms:play-services-base:18.5.0] /home/kigawa/.gradle/caches/9.2.1/transforms/d35dae743574fcbf427b32e0eb4e4cc5/transformed/play-services-base-18.5.0/AndroidManifest.xml:5:19-85
+meta-data#com.google.android.gms.version
+ADDED from [com.google.android.gms:play-services-basement:18.4.0] /home/kigawa/.gradle/caches/9.2.1/transforms/7e558d29496173adef5f48b5527fb266/transformed/play-services-basement-18.4.0/AndroidManifest.xml:6:9-122
+	android:value
+		ADDED from [com.google.android.gms:play-services-basement:18.4.0] /home/kigawa/.gradle/caches/9.2.1/transforms/7e558d29496173adef5f48b5527fb266/transformed/play-services-basement-18.4.0/AndroidManifest.xml:6:66-119
+	android:name
+		ADDED from [com.google.android.gms:play-services-basement:18.4.0] /home/kigawa/.gradle/caches/9.2.1/transforms/7e558d29496173adef5f48b5527fb266/transformed/play-services-basement-18.4.0/AndroidManifest.xml:6:20-65
+provider#org.jetbrains.compose.resources.AndroidContextProvider
+ADDED from [org.jetbrains.compose.components:components-resources-android:1.10.0] /home/kigawa/.gradle/caches/9.2.1/transforms/416ff785341dba9afe90577a3b267de9/transformed/library-release/AndroidManifest.xml:8:9-13:20
+	android:enabled
+		ADDED from [org.jetbrains.compose.components:components-resources-android:1.10.0] /home/kigawa/.gradle/caches/9.2.1/transforms/416ff785341dba9afe90577a3b267de9/transformed/library-release/AndroidManifest.xml:11:13-35
+	android:authorities
+		ADDED from [org.jetbrains.compose.components:components-resources-android:1.10.0] /home/kigawa/.gradle/caches/9.2.1/transforms/416ff785341dba9afe90577a3b267de9/transformed/library-release/AndroidManifest.xml:10:13-84
+	android:exported
+		ADDED from [org.jetbrains.compose.components:components-resources-android:1.10.0] /home/kigawa/.gradle/caches/9.2.1/transforms/416ff785341dba9afe90577a3b267de9/transformed/library-release/AndroidManifest.xml:12:13-37
+	android:name
+		ADDED from [org.jetbrains.compose.components:components-resources-android:1.10.0] /home/kigawa/.gradle/caches/9.2.1/transforms/416ff785341dba9afe90577a3b267de9/transformed/library-release/AndroidManifest.xml:9:13-82
+activity#androidx.activity.ComponentActivity
+ADDED from [androidx.compose.ui:ui-test-manifest:1.10.0] /home/kigawa/.gradle/caches/9.2.1/transforms/493276c4bab77af9e7c219615257da36/transformed/ui-test-manifest-1.10.0/AndroidManifest.xml:23:9-26:79
+	android:exported
+		ADDED from [androidx.compose.ui:ui-test-manifest:1.10.0] /home/kigawa/.gradle/caches/9.2.1/transforms/493276c4bab77af9e7c219615257da36/transformed/ui-test-manifest-1.10.0/AndroidManifest.xml:25:13-36
+	android:theme
+		ADDED from [androidx.compose.ui:ui-test-manifest:1.10.0] /home/kigawa/.gradle/caches/9.2.1/transforms/493276c4bab77af9e7c219615257da36/transformed/ui-test-manifest-1.10.0/AndroidManifest.xml:26:13-76
+	android:name
+		ADDED from [androidx.compose.ui:ui-test-manifest:1.10.0] /home/kigawa/.gradle/caches/9.2.1/transforms/493276c4bab77af9e7c219615257da36/transformed/ui-test-manifest-1.10.0/AndroidManifest.xml:24:13-63
+activity#androidx.compose.ui.tooling.PreviewActivity
+ADDED from [androidx.compose.ui:ui-tooling-android:1.10.0] /home/kigawa/.gradle/caches/9.2.1/transforms/c81febcc9bd856155e8a4d7c3c6086b5/transformed/ui-tooling/AndroidManifest.xml:23:9-25:39
+	android:exported
+		ADDED from [androidx.compose.ui:ui-tooling-android:1.10.0] /home/kigawa/.gradle/caches/9.2.1/transforms/c81febcc9bd856155e8a4d7c3c6086b5/transformed/ui-tooling/AndroidManifest.xml:25:13-36
+	android:name
+		ADDED from [androidx.compose.ui:ui-tooling-android:1.10.0] /home/kigawa/.gradle/caches/9.2.1/transforms/c81febcc9bd856155e8a4d7c3c6086b5/transformed/ui-tooling/AndroidManifest.xml:24:13-71
+uses-library#androidx.window.extensions
+ADDED from [androidx.window:window:1.5.0] /home/kigawa/.gradle/caches/9.2.1/transforms/cacf9a6ad128caea8221915f24f3cc29/transformed/window-1.5.0/AndroidManifest.xml:23:9-25:40
+	android:required
+		ADDED from [androidx.window:window:1.5.0] /home/kigawa/.gradle/caches/9.2.1/transforms/cacf9a6ad128caea8221915f24f3cc29/transformed/window-1.5.0/AndroidManifest.xml:25:13-37
+	android:name
+		ADDED from [androidx.window:window:1.5.0] /home/kigawa/.gradle/caches/9.2.1/transforms/cacf9a6ad128caea8221915f24f3cc29/transformed/window-1.5.0/AndroidManifest.xml:24:13-54
+uses-library#androidx.window.sidecar
+ADDED from [androidx.window:window:1.5.0] /home/kigawa/.gradle/caches/9.2.1/transforms/cacf9a6ad128caea8221915f24f3cc29/transformed/window-1.5.0/AndroidManifest.xml:26:9-28:40
+	android:required
+		ADDED from [androidx.window:window:1.5.0] /home/kigawa/.gradle/caches/9.2.1/transforms/cacf9a6ad128caea8221915f24f3cc29/transformed/window-1.5.0/AndroidManifest.xml:28:13-37
+	android:name
+		ADDED from [androidx.window:window:1.5.0] /home/kigawa/.gradle/caches/9.2.1/transforms/cacf9a6ad128caea8221915f24f3cc29/transformed/window-1.5.0/AndroidManifest.xml:27:13-51
+provider#androidx.startup.InitializationProvider
+ADDED from [androidx.emoji2:emoji2:1.4.0] /home/kigawa/.gradle/caches/9.2.1/transforms/2d09cd40c28b797136a4c21c9ad30209/transformed/emoji2-1.4.0/AndroidManifest.xml:24:9-32:20
+MERGED from [androidx.lifecycle:lifecycle-process:2.9.4] /home/kigawa/.gradle/caches/9.2.1/transforms/42bd2e0d7aa8dc31ca4d5af9786500b7/transformed/lifecycle-process-2.9.4/AndroidManifest.xml:24:9-32:20
+MERGED from [androidx.lifecycle:lifecycle-process:2.9.4] /home/kigawa/.gradle/caches/9.2.1/transforms/42bd2e0d7aa8dc31ca4d5af9786500b7/transformed/lifecycle-process-2.9.4/AndroidManifest.xml:24:9-32:20
+MERGED from [androidx.profileinstaller:profileinstaller:1.4.0] /home/kigawa/.gradle/caches/9.2.1/transforms/9a8d41a0c72425dbe6942446fda98a41/transformed/profileinstaller-1.4.0/AndroidManifest.xml:24:9-32:20
+MERGED from [androidx.profileinstaller:profileinstaller:1.4.0] /home/kigawa/.gradle/caches/9.2.1/transforms/9a8d41a0c72425dbe6942446fda98a41/transformed/profileinstaller-1.4.0/AndroidManifest.xml:24:9-32:20
+MERGED from [androidx.startup:startup-runtime:1.1.1] /home/kigawa/.gradle/caches/9.2.1/transforms/3a32b31e5bc9fdd8a299671fc086ce9a/transformed/startup-runtime-1.1.1/AndroidManifest.xml:26:9-30:34
+MERGED from [androidx.startup:startup-runtime:1.1.1] /home/kigawa/.gradle/caches/9.2.1/transforms/3a32b31e5bc9fdd8a299671fc086ce9a/transformed/startup-runtime-1.1.1/AndroidManifest.xml:26:9-30:34
+	tools:node
+		ADDED from [androidx.emoji2:emoji2:1.4.0] /home/kigawa/.gradle/caches/9.2.1/transforms/2d09cd40c28b797136a4c21c9ad30209/transformed/emoji2-1.4.0/AndroidManifest.xml:28:13-31
+	android:authorities
+		ADDED from [androidx.emoji2:emoji2:1.4.0] /home/kigawa/.gradle/caches/9.2.1/transforms/2d09cd40c28b797136a4c21c9ad30209/transformed/emoji2-1.4.0/AndroidManifest.xml:26:13-68
+	android:exported
+		ADDED from [androidx.emoji2:emoji2:1.4.0] /home/kigawa/.gradle/caches/9.2.1/transforms/2d09cd40c28b797136a4c21c9ad30209/transformed/emoji2-1.4.0/AndroidManifest.xml:27:13-37
+	android:name
+		ADDED from [androidx.emoji2:emoji2:1.4.0] /home/kigawa/.gradle/caches/9.2.1/transforms/2d09cd40c28b797136a4c21c9ad30209/transformed/emoji2-1.4.0/AndroidManifest.xml:25:13-67
+meta-data#androidx.emoji2.text.EmojiCompatInitializer
+ADDED from [androidx.emoji2:emoji2:1.4.0] /home/kigawa/.gradle/caches/9.2.1/transforms/2d09cd40c28b797136a4c21c9ad30209/transformed/emoji2-1.4.0/AndroidManifest.xml:29:13-31:52
+	android:value
+		ADDED from [androidx.emoji2:emoji2:1.4.0] /home/kigawa/.gradle/caches/9.2.1/transforms/2d09cd40c28b797136a4c21c9ad30209/transformed/emoji2-1.4.0/AndroidManifest.xml:31:17-49
+	android:name
+		ADDED from [androidx.emoji2:emoji2:1.4.0] /home/kigawa/.gradle/caches/9.2.1/transforms/2d09cd40c28b797136a4c21c9ad30209/transformed/emoji2-1.4.0/AndroidManifest.xml:30:17-75
+permission#${applicationId}.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION
+ADDED from [androidx.core:core:1.18.0] /home/kigawa/.gradle/caches/9.2.1/transforms/7f8eb18d12c23a198eafa24675657cfa/transformed/core-1.18.0/AndroidManifest.xml:22:5-24:47
+	android:protectionLevel
+		ADDED from [androidx.core:core:1.18.0] /home/kigawa/.gradle/caches/9.2.1/transforms/7f8eb18d12c23a198eafa24675657cfa/transformed/core-1.18.0/AndroidManifest.xml:24:9-44
+	android:name
+		ADDED from [androidx.core:core:1.18.0] /home/kigawa/.gradle/caches/9.2.1/transforms/7f8eb18d12c23a198eafa24675657cfa/transformed/core-1.18.0/AndroidManifest.xml:23:9-81
+permission#net.kigawa.kalender.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION
+ADDED from [androidx.core:core:1.18.0] /home/kigawa/.gradle/caches/9.2.1/transforms/7f8eb18d12c23a198eafa24675657cfa/transformed/core-1.18.0/AndroidManifest.xml:22:5-24:47
+	android:protectionLevel
+		ADDED from [androidx.core:core:1.18.0] /home/kigawa/.gradle/caches/9.2.1/transforms/7f8eb18d12c23a198eafa24675657cfa/transformed/core-1.18.0/AndroidManifest.xml:24:9-44
+	android:name
+		ADDED from [androidx.core:core:1.18.0] /home/kigawa/.gradle/caches/9.2.1/transforms/7f8eb18d12c23a198eafa24675657cfa/transformed/core-1.18.0/AndroidManifest.xml:23:9-81
+uses-permission#${applicationId}.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION
+ADDED from [androidx.core:core:1.18.0] /home/kigawa/.gradle/caches/9.2.1/transforms/7f8eb18d12c23a198eafa24675657cfa/transformed/core-1.18.0/AndroidManifest.xml:26:5-97
+	android:name
+		ADDED from [androidx.core:core:1.18.0] /home/kigawa/.gradle/caches/9.2.1/transforms/7f8eb18d12c23a198eafa24675657cfa/transformed/core-1.18.0/AndroidManifest.xml:26:22-94
+uses-permission#net.kigawa.kalender.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION
+ADDED from [androidx.core:core:1.18.0] /home/kigawa/.gradle/caches/9.2.1/transforms/7f8eb18d12c23a198eafa24675657cfa/transformed/core-1.18.0/AndroidManifest.xml:26:5-97
+	android:name
+		ADDED from [androidx.core:core:1.18.0] /home/kigawa/.gradle/caches/9.2.1/transforms/7f8eb18d12c23a198eafa24675657cfa/transformed/core-1.18.0/AndroidManifest.xml:26:22-94
+meta-data#androidx.lifecycle.ProcessLifecycleInitializer
+ADDED from [androidx.lifecycle:lifecycle-process:2.9.4] /home/kigawa/.gradle/caches/9.2.1/transforms/42bd2e0d7aa8dc31ca4d5af9786500b7/transformed/lifecycle-process-2.9.4/AndroidManifest.xml:29:13-31:52
+	android:value
+		ADDED from [androidx.lifecycle:lifecycle-process:2.9.4] /home/kigawa/.gradle/caches/9.2.1/transforms/42bd2e0d7aa8dc31ca4d5af9786500b7/transformed/lifecycle-process-2.9.4/AndroidManifest.xml:31:17-49
+	android:name
+		ADDED from [androidx.lifecycle:lifecycle-process:2.9.4] /home/kigawa/.gradle/caches/9.2.1/transforms/42bd2e0d7aa8dc31ca4d5af9786500b7/transformed/lifecycle-process-2.9.4/AndroidManifest.xml:30:17-78
+service#androidx.room.MultiInstanceInvalidationService
+ADDED from [androidx.room:room-runtime-android:2.7.1] /home/kigawa/.gradle/caches/9.2.1/transforms/b444adedf75be8b687840090939e2810/transformed/room-runtime-release/AndroidManifest.xml:24:9-28:63
+	android:exported
+		ADDED from [androidx.room:room-runtime-android:2.7.1] /home/kigawa/.gradle/caches/9.2.1/transforms/b444adedf75be8b687840090939e2810/transformed/room-runtime-release/AndroidManifest.xml:27:13-37
+	tools:ignore
+		ADDED from [androidx.room:room-runtime-android:2.7.1] /home/kigawa/.gradle/caches/9.2.1/transforms/b444adedf75be8b687840090939e2810/transformed/room-runtime-release/AndroidManifest.xml:28:13-60
+	android:directBootAware
+		ADDED from [androidx.room:room-runtime-android:2.7.1] /home/kigawa/.gradle/caches/9.2.1/transforms/b444adedf75be8b687840090939e2810/transformed/room-runtime-release/AndroidManifest.xml:26:13-43
+	android:name
+		ADDED from [androidx.room:room-runtime-android:2.7.1] /home/kigawa/.gradle/caches/9.2.1/transforms/b444adedf75be8b687840090939e2810/transformed/room-runtime-release/AndroidManifest.xml:25:13-74
+meta-data#androidx.profileinstaller.ProfileInstallerInitializer
+ADDED from [androidx.profileinstaller:profileinstaller:1.4.0] /home/kigawa/.gradle/caches/9.2.1/transforms/9a8d41a0c72425dbe6942446fda98a41/transformed/profileinstaller-1.4.0/AndroidManifest.xml:29:13-31:52
+	android:value
+		ADDED from [androidx.profileinstaller:profileinstaller:1.4.0] /home/kigawa/.gradle/caches/9.2.1/transforms/9a8d41a0c72425dbe6942446fda98a41/transformed/profileinstaller-1.4.0/AndroidManifest.xml:31:17-49
+	android:name
+		ADDED from [androidx.profileinstaller:profileinstaller:1.4.0] /home/kigawa/.gradle/caches/9.2.1/transforms/9a8d41a0c72425dbe6942446fda98a41/transformed/profileinstaller-1.4.0/AndroidManifest.xml:30:17-85
+receiver#androidx.profileinstaller.ProfileInstallReceiver
+ADDED from [androidx.profileinstaller:profileinstaller:1.4.0] /home/kigawa/.gradle/caches/9.2.1/transforms/9a8d41a0c72425dbe6942446fda98a41/transformed/profileinstaller-1.4.0/AndroidManifest.xml:34:9-52:20
+	android:enabled
+		ADDED from [androidx.profileinstaller:profileinstaller:1.4.0] /home/kigawa/.gradle/caches/9.2.1/transforms/9a8d41a0c72425dbe6942446fda98a41/transformed/profileinstaller-1.4.0/AndroidManifest.xml:37:13-35
+	android:exported
+		ADDED from [androidx.profileinstaller:profileinstaller:1.4.0] /home/kigawa/.gradle/caches/9.2.1/transforms/9a8d41a0c72425dbe6942446fda98a41/transformed/profileinstaller-1.4.0/AndroidManifest.xml:38:13-36
+	android:permission
+		ADDED from [androidx.profileinstaller:profileinstaller:1.4.0] /home/kigawa/.gradle/caches/9.2.1/transforms/9a8d41a0c72425dbe6942446fda98a41/transformed/profileinstaller-1.4.0/AndroidManifest.xml:39:13-57
+	android:directBootAware
+		ADDED from [androidx.profileinstaller:profileinstaller:1.4.0] /home/kigawa/.gradle/caches/9.2.1/transforms/9a8d41a0c72425dbe6942446fda98a41/transformed/profileinstaller-1.4.0/AndroidManifest.xml:36:13-44
+	android:name
+		ADDED from [androidx.profileinstaller:profileinstaller:1.4.0] /home/kigawa/.gradle/caches/9.2.1/transforms/9a8d41a0c72425dbe6942446fda98a41/transformed/profileinstaller-1.4.0/AndroidManifest.xml:35:13-76
+intent-filter#action:name:androidx.profileinstaller.action.INSTALL_PROFILE
+ADDED from [androidx.profileinstaller:profileinstaller:1.4.0] /home/kigawa/.gradle/caches/9.2.1/transforms/9a8d41a0c72425dbe6942446fda98a41/transformed/profileinstaller-1.4.0/AndroidManifest.xml:40:13-42:29
+action#androidx.profileinstaller.action.INSTALL_PROFILE
+ADDED from [androidx.profileinstaller:profileinstaller:1.4.0] /home/kigawa/.gradle/caches/9.2.1/transforms/9a8d41a0c72425dbe6942446fda98a41/transformed/profileinstaller-1.4.0/AndroidManifest.xml:41:17-91
+	android:name
+		ADDED from [androidx.profileinstaller:profileinstaller:1.4.0] /home/kigawa/.gradle/caches/9.2.1/transforms/9a8d41a0c72425dbe6942446fda98a41/transformed/profileinstaller-1.4.0/AndroidManifest.xml:41:25-88
+intent-filter#action:name:androidx.profileinstaller.action.SKIP_FILE
+ADDED from [androidx.profileinstaller:profileinstaller:1.4.0] /home/kigawa/.gradle/caches/9.2.1/transforms/9a8d41a0c72425dbe6942446fda98a41/transformed/profileinstaller-1.4.0/AndroidManifest.xml:43:13-45:29
+action#androidx.profileinstaller.action.SKIP_FILE
+ADDED from [androidx.profileinstaller:profileinstaller:1.4.0] /home/kigawa/.gradle/caches/9.2.1/transforms/9a8d41a0c72425dbe6942446fda98a41/transformed/profileinstaller-1.4.0/AndroidManifest.xml:44:17-85
+	android:name
+		ADDED from [androidx.profileinstaller:profileinstaller:1.4.0] /home/kigawa/.gradle/caches/9.2.1/transforms/9a8d41a0c72425dbe6942446fda98a41/transformed/profileinstaller-1.4.0/AndroidManifest.xml:44:25-82
+intent-filter#action:name:androidx.profileinstaller.action.SAVE_PROFILE
+ADDED from [androidx.profileinstaller:profileinstaller:1.4.0] /home/kigawa/.gradle/caches/9.2.1/transforms/9a8d41a0c72425dbe6942446fda98a41/transformed/profileinstaller-1.4.0/AndroidManifest.xml:46:13-48:29
+action#androidx.profileinstaller.action.SAVE_PROFILE
+ADDED from [androidx.profileinstaller:profileinstaller:1.4.0] /home/kigawa/.gradle/caches/9.2.1/transforms/9a8d41a0c72425dbe6942446fda98a41/transformed/profileinstaller-1.4.0/AndroidManifest.xml:47:17-88
+	android:name
+		ADDED from [androidx.profileinstaller:profileinstaller:1.4.0] /home/kigawa/.gradle/caches/9.2.1/transforms/9a8d41a0c72425dbe6942446fda98a41/transformed/profileinstaller-1.4.0/AndroidManifest.xml:47:25-85
+intent-filter#action:name:androidx.profileinstaller.action.BENCHMARK_OPERATION
+ADDED from [androidx.profileinstaller:profileinstaller:1.4.0] /home/kigawa/.gradle/caches/9.2.1/transforms/9a8d41a0c72425dbe6942446fda98a41/transformed/profileinstaller-1.4.0/AndroidManifest.xml:49:13-51:29
+action#androidx.profileinstaller.action.BENCHMARK_OPERATION
+ADDED from [androidx.profileinstaller:profileinstaller:1.4.0] /home/kigawa/.gradle/caches/9.2.1/transforms/9a8d41a0c72425dbe6942446fda98a41/transformed/profileinstaller-1.4.0/AndroidManifest.xml:50:17-95
+	android:name
+		ADDED from [androidx.profileinstaller:profileinstaller:1.4.0] /home/kigawa/.gradle/caches/9.2.1/transforms/9a8d41a0c72425dbe6942446fda98a41/transformed/profileinstaller-1.4.0/AndroidManifest.xml:50:25-92
+uses-permission#android.permission.NFC
+ADDED from [com.yubico.yubikit:android:2.3.0] /home/kigawa/.gradle/caches/9.2.1/transforms/2aed814f03a05d6d373842d9c9eb965b/transformed/android-2.3.0/AndroidManifest.xml:7:5-62
+	android:name
+		ADDED from [com.yubico.yubikit:android:2.3.0] /home/kigawa/.gradle/caches/9.2.1/transforms/2aed814f03a05d6d373842d9c9eb965b/transformed/android-2.3.0/AndroidManifest.xml:7:22-59
+uses-feature#android.hardware.usb.host
+ADDED from [com.yubico.yubikit:android:2.3.0] /home/kigawa/.gradle/caches/9.2.1/transforms/2aed814f03a05d6d373842d9c9eb965b/transformed/android-2.3.0/AndroidManifest.xml:9:5-11:36
+	android:required
+		ADDED from [com.yubico.yubikit:android:2.3.0] /home/kigawa/.gradle/caches/9.2.1/transforms/2aed814f03a05d6d373842d9c9eb965b/transformed/android-2.3.0/AndroidManifest.xml:11:9-33
+	android:name
+		ADDED from [com.yubico.yubikit:android:2.3.0] /home/kigawa/.gradle/caches/9.2.1/transforms/2aed814f03a05d6d373842d9c9eb965b/transformed/android-2.3.0/AndroidManifest.xml:10:9-49
+uses-feature#android.hardware.nfc
+ADDED from [com.yubico.yubikit:android:2.3.0] /home/kigawa/.gradle/caches/9.2.1/transforms/2aed814f03a05d6d373842d9c9eb965b/transformed/android-2.3.0/AndroidManifest.xml:12:5-14:36
+	android:required
+		ADDED from [com.yubico.yubikit:android:2.3.0] /home/kigawa/.gradle/caches/9.2.1/transforms/2aed814f03a05d6d373842d9c9eb965b/transformed/android-2.3.0/AndroidManifest.xml:14:9-33
+	android:name
+		ADDED from [com.yubico.yubikit:android:2.3.0] /home/kigawa/.gradle/caches/9.2.1/transforms/2aed814f03a05d6d373842d9c9eb965b/transformed/android-2.3.0/AndroidManifest.xml:13:9-44
+activity#com.yubico.yubikit.android.ui.OtpActivity
+ADDED from [com.yubico.yubikit:android:2.3.0] /home/kigawa/.gradle/caches/9.2.1/transforms/2aed814f03a05d6d373842d9c9eb965b/transformed/android-2.3.0/AndroidManifest.xml:17:9-21:63
+	android:label
+		ADDED from [com.yubico.yubikit:android:2.3.0] /home/kigawa/.gradle/caches/9.2.1/transforms/2aed814f03a05d6d373842d9c9eb965b/transformed/android-2.3.0/AndroidManifest.xml:20:13-63
+	android:excludeFromRecents
+		ADDED from [com.yubico.yubikit:android:2.3.0] /home/kigawa/.gradle/caches/9.2.1/transforms/2aed814f03a05d6d373842d9c9eb965b/transformed/android-2.3.0/AndroidManifest.xml:19:13-46
+	android:theme
+		ADDED from [com.yubico.yubikit:android:2.3.0] /home/kigawa/.gradle/caches/9.2.1/transforms/2aed814f03a05d6d373842d9c9eb965b/transformed/android-2.3.0/AndroidManifest.xml:21:13-60
+	android:name
+		ADDED from [com.yubico.yubikit:android:2.3.0] /home/kigawa/.gradle/caches/9.2.1/transforms/2aed814f03a05d6d373842d9c9eb965b/transformed/android-2.3.0/AndroidManifest.xml:18:13-69
+activity#com.yubico.yubikit.android.ui.YubiKeyPromptActivity
+ADDED from [com.yubico.yubikit:android:2.3.0] /home/kigawa/.gradle/caches/9.2.1/transforms/2aed814f03a05d6d373842d9c9eb965b/transformed/android-2.3.0/AndroidManifest.xml:22:9-26:63
+	android:label
+		ADDED from [com.yubico.yubikit:android:2.3.0] /home/kigawa/.gradle/caches/9.2.1/transforms/2aed814f03a05d6d373842d9c9eb965b/transformed/android-2.3.0/AndroidManifest.xml:25:13-66
+	android:excludeFromRecents
+		ADDED from [com.yubico.yubikit:android:2.3.0] /home/kigawa/.gradle/caches/9.2.1/transforms/2aed814f03a05d6d373842d9c9eb965b/transformed/android-2.3.0/AndroidManifest.xml:24:13-46
+	android:theme
+		ADDED from [com.yubico.yubikit:android:2.3.0] /home/kigawa/.gradle/caches/9.2.1/transforms/2aed814f03a05d6d373842d9c9eb965b/transformed/android-2.3.0/AndroidManifest.xml:26:13-60
+	android:name
+		ADDED from [com.yubico.yubikit:android:2.3.0] /home/kigawa/.gradle/caches/9.2.1/transforms/2aed814f03a05d6d373842d9c9eb965b/transformed/android-2.3.0/AndroidManifest.xml:23:13-79

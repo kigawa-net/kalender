@@ -1,0 +1,16 @@
+{
+  "client_id": "3b5392c1-34fe-447b-a09f-ae8144d7564a",
+  "authorization_user_agent": "DEFAULT",
+  "redirect_uri": "msauth://net.kigawa.kalender/NzMGGgqiavH14j5mkahAmPCPc9E%3D",
+  "account_mode": "MULTIPLE",
+  "broker_redirect_uri_registered": true,
+  "authorities": [
+    {
+      "type": "AAD",
+      "audience": {
+        "type": "AzureADandPersonalMicrosoftAccount",
+        "tenant_id": "common"
+      }
+    }
+  ]
+}

@@ -1,0 +1,20 @@
+{
+    "logs": [
+        {
+            "outputFile": "net.kigawa.kalender.composeApp-mergeDebugResources-70:/values-watch-v21/values-watch-v21.xml",
+            "map": [
+                {
+                    "source": "/home/kigawa/.gradle/caches/9.2.1/transforms/554e06bf228ac25a86002d39d30cd545/transformed/appcompat-1.7.0/res/values-watch-v21/values-watch-v21.xml",
+                    "from": {
+                        "startLines": "2,6,10",
+                        "startColumns": "4,4,4",
+                        "startOffsets": "55,271,499",
+                        "endLines": "5,9,13",
+                        "endColumns": "12,12,12",
+                        "endOffsets": "266,494,724"
+                    }
+                }
+            ]
+        }
+    ]
+}
