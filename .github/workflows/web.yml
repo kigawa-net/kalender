@@ -125,12 +125,15 @@ jobs:
           name: web-dist
           path: web-dist/
 
+      - name: Install Wrangler
+        run: npm install -g wrangler@latest
+
       - name: Deploy to Cloudflare Pages
-        uses: cloudflare/pages-action@v1
-        with:
-          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          projectName: kalender
-          directory: web-dist/
-          gitHubToken: ${{ secrets.GITHUB_TOKEN }}
-          branch: main
+        run: |
+          npx wrangler pages deploy web-dist/ \
+            --project-name=kalender \
+            --branch=main \
+            --commit-dirty=true
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
