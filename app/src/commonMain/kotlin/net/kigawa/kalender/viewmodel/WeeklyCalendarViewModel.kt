@@ -100,7 +100,11 @@ class WeeklyCalendarViewModel(
         val dataSources = mutableListOf<CalendarDataSource>()
         for (account in linkedAccounts) {
             val ownerEmail = account.providerUserName ?: continue
-            val providerToken = apiClient.fetchCalendarToken(keycloakAccessToken, account.provider) ?: continue
+            val providerToken = apiClient.fetchCalendarToken(keycloakAccessToken, account.provider)
+                ?: run {
+                    System.err.println("[WeeklyCalendarViewModel] Failed to fetch calendar token for provider=${account.provider}, email=$ownerEmail")
+                    continue
+                }
             when (account.provider) {
                 "google" -> dataSources.add(GoogleCalendarDataSource(providerToken, ownerEmail, httpClient))
                 "microsoft" -> dataSources.add(OutlookCalendarDataSource(providerToken, ownerEmail, httpClient))

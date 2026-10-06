@@ -9,6 +9,11 @@ import net.kigawa.kalender.model.UserCalendar
 
 private const val CACHE_TTL_MS = 1_800_000L // 30分
 
+private fun logError(tag: String, message: String, e: Throwable? = null) {
+    val msg = if (e != null) "$message: ${e.message}\n${e.stackTraceToString()}" else message
+    System.err.println("[$tag] $msg")
+}
+
 class CalendarRepository(
     private val dataSources: List<CalendarDataSource>,
     private val localStore: LocalCalendarStore,
@@ -30,7 +35,8 @@ class CalendarRepository(
                                 val events = dataSource.fetchEvents(startMs, endMs)
                                 val calendarIds = dataSource.fetchCalendars().map { it.id }
                                 localStore.upsertEventsForCalendars(events, startMs, endMs, calendarIds)
-                            }.onFailure {
+                            }.onFailure { e ->
+                                logError("CalendarRepository", "Failed to fetch events from ${dataSource.javaClass.simpleName}", e)
                                 allSucceeded = false
                             }
                         }
@@ -54,6 +60,8 @@ class CalendarRepository(
                 runCatching {
                     val calendars = dataSource.fetchCalendars()
                     localStore.upsertCalendars(calendars)
+                }.onFailure { e ->
+                    logError("CalendarRepository", "Failed to sync calendars from ${dataSource.javaClass.simpleName}", e)
                 }
             }
         }

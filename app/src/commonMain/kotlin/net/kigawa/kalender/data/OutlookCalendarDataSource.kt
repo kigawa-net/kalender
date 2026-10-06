@@ -43,7 +43,9 @@ class OutlookCalendarDataSource(
         }
         val text = response.bodyAsText()
         if (!response.status.isSuccess()) {
-            throw Exception("Graph API Error ${response.status.value}: $text")
+            val errorMsg = "Graph API Error ${response.status.value}: $text"
+            System.err.println("[OutlookCalendarDataSource] GET $url failed: $errorMsg")
+            throw Exception(errorMsg)
         }
         return Json.parseToJsonElement(text).jsonObject
     }
@@ -57,7 +59,9 @@ class OutlookCalendarDataSource(
         }
         val text = response.bodyAsText()
         if (!response.status.isSuccess()) {
-            throw Exception("Graph API Error ${response.status.value}: $text")
+            val errorMsg = "Graph API Error ${response.status.value}: $text"
+            System.err.println("[OutlookCalendarDataSource] POST $url failed: $errorMsg")
+            throw Exception(errorMsg)
         }
         return Json.parseToJsonElement(text).jsonObject
     }
@@ -71,7 +75,9 @@ class OutlookCalendarDataSource(
         }
         val text = response.bodyAsText()
         if (!response.status.isSuccess()) {
-            throw Exception("Graph API Error ${response.status.value}: $text")
+            val errorMsg = "Graph API Error ${response.status.value}: $text"
+            System.err.println("[OutlookCalendarDataSource] PATCH $url failed: $errorMsg")
+            throw Exception(errorMsg)
         }
         return Json.parseToJsonElement(text).jsonObject
     }
@@ -82,7 +88,9 @@ class OutlookCalendarDataSource(
             header(HttpHeaders.Accept, "application/json")
         }
         if (!response.status.isSuccess() && response.status.value != 204) {
-            throw Exception("Graph API Error ${response.status.value}: ${response.bodyAsText()}")
+            val errorMsg = "Graph API Error ${response.status.value}: ${response.bodyAsText()}"
+            System.err.println("[OutlookCalendarDataSource] DELETE $url failed: $errorMsg")
+            throw Exception(errorMsg)
         }
     }
 

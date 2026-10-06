@@ -53,7 +53,9 @@ class GoogleCalendarDataSource(
         }
         val text = response.bodyAsText()
         if (!response.status.isSuccess()) {
-            throw Exception("Google Calendar API Error ${response.status.value}: $text")
+            val errorMsg = "Google Calendar API Error ${response.status.value}: $text"
+            System.err.println("[GoogleCalendarDataSource] GET $url failed: $errorMsg")
+            throw Exception(errorMsg)
         }
         return Json.parseToJsonElement(text).jsonObject
     }
@@ -66,7 +68,9 @@ class GoogleCalendarDataSource(
         }
         val text = response.bodyAsText()
         if (!response.status.isSuccess()) {
-            throw Exception("Google Calendar API Error ${response.status.value}: $text")
+            val errorMsg = "Google Calendar API Error ${response.status.value}: $text"
+            System.err.println("[GoogleCalendarDataSource] POST $url failed: $errorMsg")
+            throw Exception(errorMsg)
         }
         return Json.parseToJsonElement(text).jsonObject
     }
@@ -79,7 +83,9 @@ class GoogleCalendarDataSource(
         }
         val text = response.bodyAsText()
         if (!response.status.isSuccess()) {
-            throw Exception("Google Calendar API Error ${response.status.value}: $text")
+            val errorMsg = "Google Calendar API Error ${response.status.value}: $text"
+            System.err.println("[GoogleCalendarDataSource] PUT $url failed: $errorMsg")
+            throw Exception(errorMsg)
         }
         return Json.parseToJsonElement(text).jsonObject
     }
@@ -89,7 +95,9 @@ class GoogleCalendarDataSource(
             header(HttpHeaders.Authorization, "Bearer $accessToken")
         }
         if (!response.status.isSuccess() && response.status.value != 204) {
-            throw Exception("Google Calendar API Error ${response.status.value}: ${response.bodyAsText()}")
+            val errorMsg = "Google Calendar API Error ${response.status.value}: ${response.bodyAsText()}"
+            System.err.println("[GoogleCalendarDataSource] DELETE $url failed: $errorMsg")
+            throw Exception(errorMsg)
         }
     }
 
