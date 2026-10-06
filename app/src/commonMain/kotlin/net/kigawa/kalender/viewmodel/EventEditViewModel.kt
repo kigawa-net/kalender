@@ -57,6 +57,7 @@ class EventEditViewModel(
     private val localStore: LocalCalendarStore,
     private val httpClient: HttpClient,
     private val eventId: Long?,
+    private val copyFromEventId: Long? = null,
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(EventEditUiState())
@@ -89,6 +90,24 @@ class EventEditViewModel(
                         location = event.location,
                         calendarId = event.calendarId,
                         remoteId = event.remoteId,
+                    )
+                }
+            }
+        } else if (copyFromEventId != null) {
+            viewModelScope.launch {
+                val event = localStore.observeEventById(copyFromEventId).filterNotNull().first()
+                _uiState.update {
+                    it.copy(
+                        isNew = true,
+                        isLoading = false,
+                        title = event.title,
+                        startMs = event.startMs,
+                        endMs = event.endMs,
+                        allDay = event.allDay,
+                        description = event.description,
+                        location = event.location,
+                        calendarId = event.calendarId,
+                        remoteId = "",
                     )
                 }
             }

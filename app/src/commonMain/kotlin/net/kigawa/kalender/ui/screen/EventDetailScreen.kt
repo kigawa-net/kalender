@@ -17,6 +17,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material.icons.filled.ContentCopy
 import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -49,6 +50,7 @@ import net.kigawa.kalender.viewmodel.EventDetailViewModel
 fun EventDetailScreen(
     onBack: () -> Unit,
     onEdit: (Long) -> Unit,
+    onCopy: (Long) -> Unit,
     viewModel: EventDetailViewModel,
     modifier: Modifier = Modifier,
 ) {
@@ -66,6 +68,9 @@ fun EventDetailScreen(
                 },
                 actions = {
                     uiState.event?.let { event ->
+                        IconButton(onClick = { onCopy(event.id) }) {
+                            Icon(Icons.Default.ContentCopy, contentDescription = "コピー")
+                        }
                         IconButton(onClick = { onEdit(event.id) }) {
                             Icon(Icons.Default.Edit, contentDescription = "編集")
                         }

@@ -144,6 +144,7 @@ private fun KalenderApp(container: AppContainer) {
                 EventDetailScreen(
                     onBack = { navController.popBackStack() },
                     onEdit = { id -> navController.navigate("event_edit/$id") },
+                    onCopy = { id -> navController.navigate("event_copy/$id") },
                     viewModel = vm,
                 )
             }
@@ -165,7 +166,11 @@ private fun KalenderApp(container: AppContainer) {
                 })
                 EventEditScreen(onBack = { navController.popBackStack() }, viewModel = vm)
             }
-            composable(route = "event_new") {
+            composable(
+                route = "event_copy/{eventId}",
+                arguments = listOf(navArgument("eventId") { type = NavType.LongType }),
+            ) { backStackEntry ->
+                val eventId = backStackEntry.arguments?.read { getLong("eventId") } ?: 0L
                 val vm: EventEditViewModel = viewModel(factory = viewModelFactory {
                     initializer {
                         EventEditViewModel(
@@ -174,6 +179,7 @@ private fun KalenderApp(container: AppContainer) {
                             container.localStore,
                             container.httpClient,
                             null,
+                            eventId,
                         )
                     }
                 })
