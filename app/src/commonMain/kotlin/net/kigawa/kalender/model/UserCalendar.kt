@@ -10,4 +10,5 @@ data class UserCalendar(
     val accountName: String,
     val isVisible: Boolean = true,
     val ownerEmail: String = "",
+    val ownerAccountId: String = "",
 )

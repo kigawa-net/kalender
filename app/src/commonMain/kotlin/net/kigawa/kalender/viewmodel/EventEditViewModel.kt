@@ -17,6 +17,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import net.kigawa.kalender.data.GoogleCalendarDataSource
 import net.kigawa.kalender.data.KalenderApiClient
+import net.kigawa.kalender.data.ProviderId
 import net.kigawa.kalender.data.LocalCalendarStore
 import net.kigawa.kalender.data.OutlookCalendarDataSource
 import net.kigawa.kalender.data.auth.AuthController
@@ -275,14 +276,14 @@ class EventEditViewModel(
     private suspend fun buildGoogleDataSource(ownerEmail: String): GoogleCalendarDataSource? {
         val authState = authController.authState.value
         if (authState !is KeycloakAuthState.SignedIn) return null
-        val token = apiClient.fetchCalendarToken(authState.accessToken, "google") ?: return null
+        val token = apiClient.fetchCalendarToken(authState.accessToken, ProviderId("google")) ?: return null
         return GoogleCalendarDataSource(token, ownerEmail, httpClient)
     }
 
     private suspend fun buildOutlookDataSource(ownerEmail: String): OutlookCalendarDataSource? {
         val authState = authController.authState.value
         if (authState !is KeycloakAuthState.SignedIn) return null
-        val token = apiClient.fetchCalendarToken(authState.accessToken, "microsoft") ?: return null
+        val token = apiClient.fetchCalendarToken(authState.accessToken, ProviderId("microsoft")) ?: return null
         return OutlookCalendarDataSource(token, ownerEmail, httpClient)
     }
 

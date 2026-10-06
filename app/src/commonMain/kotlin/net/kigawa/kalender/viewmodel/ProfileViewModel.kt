@@ -7,19 +7,20 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import net.kigawa.kalender.data.KalenderApiClient
+import net.kigawa.kalender.data.LinkedCalendarAccount
+import net.kigawa.kalender.data.AccountId
 import net.kigawa.kalender.data.LocalCalendarStore
-import net.kigawa.kalender.data.LinkedAccount
 import net.kigawa.kalender.data.auth.AuthController
 import net.kigawa.kalender.data.auth.KeycloakAuthState
 import net.kigawa.kalender.model.UserCalendar
 import net.kigawa.kalender.util.openUrlInBrowser
 
 data class ProfileUiState(
-    val linkedAccounts: List<LinkedAccount> = emptyList(),
+    val linkedCalendarAccounts: List<LinkedCalendarAccount> = emptyList(),
     val isLoadingLinkedAccounts: Boolean = true,
     val pendingLinkProvider: String? = null,
     val linkError: String? = null,
-    val calendarsByOwnerEmail: Map<String, List<UserCalendar>> = emptyMap(),
+    val calendarsByOwnerAccountId: Map<String, List<UserCalendar>> = emptyMap(),
 )
 
 class ProfileViewModel(
@@ -35,7 +36,7 @@ class ProfileViewModel(
         refreshLinkedAccounts()
         viewModelScope.launch {
             localStore.observeCalendars().collect { calendars ->
-                _uiState.update { it.copy(calendarsByOwnerEmail = calendars.groupBy { c -> c.ownerEmail }) }
+                _uiState.update { it.copy(calendarsByOwnerAccountId = calendars.groupBy { c -> c.ownerAccountId ?: c.ownerEmail }) }
             }
         }
     }
@@ -44,12 +45,12 @@ class ProfileViewModel(
         viewModelScope.launch {
             val authState = authController.authState.value
             if (authState !is KeycloakAuthState.SignedIn) {
-                _uiState.update { it.copy(isLoadingLinkedAccounts = false, linkedAccounts = emptyList()) }
+                _uiState.update { it.copy(isLoadingLinkedAccounts = false, linkedCalendarAccounts = emptyList()) }
                 return@launch
             }
             _uiState.update { it.copy(isLoadingLinkedAccounts = true) }
-            val accounts = apiClient.fetchLinkedAccounts(authState.accessToken)
-            _uiState.update { it.copy(isLoadingLinkedAccounts = false, linkedAccounts = accounts) }
+            val accounts = apiClient.fetchLinkedCalendarAccounts(authState.accessToken)
+            _uiState.update { it.copy(isLoadingLinkedAccounts = false, linkedCalendarAccounts = accounts) }
         }
     }
 
@@ -70,18 +71,23 @@ class ProfileViewModel(
         }
     }
 
-    fun unlinkAccount(provider: String, ownerEmail: String) {
+    fun unlinkAccount(accountId: String, ownerAccountId: String) {
         viewModelScope.launch {
             val authState = authController.authState.value
             if (authState is KeycloakAuthState.SignedIn) {
-                apiClient.unlinkAccount(authState.accessToken, provider)
+                apiClient.unlinkCalendarAccount(authState.accessToken, AccountId(accountId))
             }
-            localStore.deleteCalendarsByOwnerEmail(ownerEmail)
+            localStore.deleteCalendarsByOwnerAccountId(ownerAccountId)
             refreshLinkedAccounts()
         }
     }
 
     fun updateCalendarVisibility(id: Long, isVisible: Boolean) {
         viewModelScope.launch { localStore.updateCalendarVisibility(id, isVisible) }
+    }
+
+    /** プロバイダごとにアカウントをグループ化 */
+    fun getAccountsByProvider(): Map<String, List<LinkedCalendarAccount>> {
+        return uiState.value.linkedCalendarAccounts.groupBy { it.provider }
     }
 }

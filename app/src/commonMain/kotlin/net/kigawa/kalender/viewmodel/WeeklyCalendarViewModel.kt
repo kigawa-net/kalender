@@ -19,6 +19,7 @@ import net.kigawa.kalender.data.GoogleCalendarDataSource
 import net.kigawa.kalender.data.KalenderApiClient
 import net.kigawa.kalender.data.LocalCalendarStore
 import net.kigawa.kalender.data.OutlookCalendarDataSource
+import net.kigawa.kalender.data.ProviderId
 import net.kigawa.kalender.data.auth.AuthController
 import net.kigawa.kalender.data.auth.KeycloakAuthState
 import net.kigawa.kalender.model.CalendarEvent
@@ -100,7 +101,7 @@ class WeeklyCalendarViewModel(
         val dataSources = mutableListOf<CalendarDataSource>()
         for (account in linkedAccounts) {
             val ownerEmail = account.providerUserName ?: continue
-            val providerToken = apiClient.fetchCalendarToken(keycloakAccessToken, account.provider)
+            val providerToken = apiClient.fetchCalendarToken(keycloakAccessToken, ProviderId(account.provider))
                 ?: run {
                     System.err.println("[WeeklyCalendarViewModel] Failed to fetch calendar token for provider=${account.provider}, email=$ownerEmail")
                     continue

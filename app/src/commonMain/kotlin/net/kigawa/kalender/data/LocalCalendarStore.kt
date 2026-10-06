@@ -20,6 +20,7 @@ interface LocalCalendarStore {
     suspend fun deleteEventById(id: Long)
     suspend fun updateCalendarVisibility(id: Long, isVisible: Boolean)
     suspend fun deleteCalendarsByOwnerEmail(ownerEmail: String)
+    suspend fun deleteCalendarsByOwnerAccountId(ownerAccountId: String)
 
     /** 週開始msをキーにしたフェッチキャッシュの鮮度を確認する */
     suspend fun isWeekCacheFresh(weekStartMs: Long, ttlMs: Long): Boolean

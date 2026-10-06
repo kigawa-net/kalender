@@ -61,6 +61,10 @@ class RoomCalendarStore(
         calendarDao.deleteByOwnerEmail(ownerEmail)
     }
 
+    override suspend fun deleteCalendarsByOwnerAccountId(ownerAccountId: String) {
+        calendarDao.deleteByOwnerAccountId(ownerAccountId)
+    }
+
     override suspend fun isWeekCacheFresh(weekStartMs: Long, ttlMs: Long): Boolean {
         val meta = cacheMetaDao.getByWeekStart(weekStartMs)
         val age = System.currentTimeMillis() - (meta?.lastFetchedMs ?: 0L)
@@ -75,10 +79,10 @@ class RoomCalendarStore(
         cacheMetaDao.deleteAll()
     }
 
-    private fun CalendarEntity.toModel() = UserCalendar(id, name, color, accountName, isVisible, ownerEmail)
+    private fun CalendarEntity.toModel() = UserCalendar(id, name, color, accountName, isVisible, ownerEmail, ownerAccountId)
     private fun EventEntity.toModel() =
         CalendarEvent(id, calendarId, title, startMs, endMs, allDay, color, timeZone, description, location, remoteId)
-    private fun UserCalendar.toEntity() = CalendarEntity(id, name, color, accountName, isVisible, ownerEmail)
+    private fun UserCalendar.toEntity() = CalendarEntity(id, name, color, accountName, isVisible, ownerEmail, ownerAccountId)
     private fun CalendarEvent.toEntity() =
         EventEntity(id, calendarId, title, startMs, endMs, allDay, color, timeZone, description, location, remoteId)
 }

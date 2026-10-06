@@ -27,6 +27,9 @@ interface CalendarDao {
     @Query("DELETE FROM calendars WHERE ownerEmail = :ownerEmail")
     suspend fun deleteByOwnerEmail(ownerEmail: String)
 
+    @Query("DELETE FROM calendars WHERE ownerAccountId = :ownerAccountId")
+    suspend fun deleteByOwnerAccountId(ownerAccountId: String)
+
     @Transaction
     suspend fun upsertAll(calendars: List<CalendarEntity>) {
         insertIgnoreAll(calendars)

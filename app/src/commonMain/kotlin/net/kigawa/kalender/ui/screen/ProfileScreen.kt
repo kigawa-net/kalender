@@ -33,18 +33,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import net.kigawa.kalender.data.LinkedAccount
+import net.kigawa.kalender.data.LinkedCalendarAccount
 import net.kigawa.kalender.model.UserCalendar
 import net.kigawa.kalender.ui.component.ErrorMessage
 import net.kigawa.kalender.viewmodel.ProfileUiState
 import net.kigawa.kalender.viewmodel.ProfileViewModel
-
-private data class ProviderInfo(val id: String, val label: String)
-
-private val PROVIDERS = listOf(
-    ProviderInfo("google", "Google"),
-    ProviderInfo("microsoft", "Microsoft / Outlook"),
-)
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -57,7 +50,7 @@ fun ProfileScreen(
     ProfileContent(
         uiState = uiState,
         onLink = { provider -> viewModel.linkAccount(provider) },
-        onUnlink = { provider, ownerEmail -> viewModel.unlinkAccount(provider, ownerEmail) },
+        onUnlink = { accountId, ownerAccountId -> viewModel.unlinkAccount(accountId, ownerAccountId) },
         onCalendarVisibilityChanged = viewModel::updateCalendarVisibility,
         modifier = modifier,
     )
@@ -88,24 +81,31 @@ private fun ProfileContent(
                 ErrorMessage(message = uiState.linkError!!)
             }
 
-            PROVIDERS.forEach { provider ->
+            // プロバイダごとにグループ化
+            val accountsByProvider = uiState.linkedCalendarAccounts.groupBy { it.provider }
+            val providers = listOf("google", "microsoft")
+            val providerLabels = mapOf("google" to "Google", "microsoft" to "Microsoft / Outlook")
+
+            providers.forEach { providerId ->
+                val accounts = accountsByProvider[providerId] ?: emptyList()
+                val providerLabel = providerLabels[providerId] ?: providerId
+
                 Text(
-                    text = provider.label,
+                    text = providerLabel,
                     style = MaterialTheme.typography.labelMedium,
                     color = MaterialTheme.colorScheme.primary,
                     modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
                 )
                 HorizontalDivider()
 
-                val linkedAccount = uiState.linkedAccounts.find { it.provider == provider.id }
-                when {
-                    linkedAccount != null -> {
-                        ConnectedAccountItem(
-                            account = linkedAccount,
-                            onRemove = { onUnlink(provider.id, linkedAccount.providerUserName ?: "") },
+                if (accounts.isNotEmpty()) {
+                    accounts.forEach { account ->
+                        ConnectedCalendarAccountItem(
+                            account = account,
+                            onRemove = { onUnlink(account.id, account.providerUserId) },
                         )
                         HorizontalDivider()
-                        uiState.calendarsByOwnerEmail[linkedAccount.providerUserName].orEmpty().forEach { calendar ->
+                        uiState.calendarsByOwnerAccountId[account.providerUserId].orEmpty().forEach { calendar ->
                             CalendarItem(
                                 calendar = calendar,
                                 onVisibilityChanged = { isVisible ->
@@ -115,17 +115,16 @@ private fun ProfileContent(
                             HorizontalDivider()
                         }
                     }
-                    uiState.isLoadingLinkedAccounts -> {
-                        AddingAccountItem(label = "${provider.label}を確認中")
-                        HorizontalDivider()
-                    }
-                    uiState.pendingLinkProvider == provider.id -> {
-                        AddingAccountItem(label = "${provider.label}に接続中")
-                        HorizontalDivider()
-                    }
-                    else -> {
-                        AddAccountItem(label = "${provider.label}に接続", onAdd = { onLink(provider.id) })
-                        HorizontalDivider()
+                } else {
+                    when {
+                        uiState.isLoadingLinkedAccounts -> {
+                            AddingAccountItem(label = "確認中")
+                            HorizontalDivider()
+                        }
+                        else -> {
+                            AddAccountItem(label = "アカウントを追加", onAdd = { onLink(it) })
+                            HorizontalDivider()
+                        }
                     }
                 }
 
@@ -161,8 +160,8 @@ private fun CalendarItem(
 }
 
 @Composable
-private fun ConnectedAccountItem(
-    account: LinkedAccount,
+private fun ConnectedCalendarAccountItem(
+    account: net.kigawa.kalender.data.LinkedCalendarAccount,
     onRemove: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -176,8 +175,15 @@ private fun ConnectedAccountItem(
                 tint = MaterialTheme.colorScheme.primary,
             )
         },
-        headlineContent = { Text(account.providerUserName ?: "接続済み") },
-        supportingContent = { Text("接続済み") },
+        headlineContent = { Text(account.email) },
+        supportingContent = {
+            Column {
+                if (account.displayName != null) {
+                    Text(account.displayName!!, style = MaterialTheme.typography.bodySmall)
+                }
+                Text("連携済み", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+            }
+        },
         trailingContent = {
             OutlinedButton(onClick = onRemove) { Text("連携解除") }
         },
@@ -187,7 +193,7 @@ private fun ConnectedAccountItem(
 @Composable
 private fun AddAccountItem(
     label: String,
-    onAdd: () -> Unit,
+    onAdd: (String) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     ListItem(
@@ -202,7 +208,7 @@ private fun AddAccountItem(
         },
         headlineContent = { Text(label) },
         trailingContent = {
-            TextButton(onClick = onAdd) { Text("接続") }
+            TextButton(onClick = { onAdd("google") }) { Text("追加") }
         },
     )
 }
