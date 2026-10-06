@@ -110,12 +110,12 @@ fun Application.module() {
                 call.respond(HttpStatusCode.Unauthorized, mapOf("error" to "invalid or missing token"))
                 return@post
             }
-            val provider = call.parameters["provider"]
+            val provider = call.parameters["provider"] as String?
             if (provider.isNullOrBlank()) {
                 call.respond(HttpStatusCode.BadRequest, mapOf("error" to "missing provider"))
                 return@post
             }
-            val redirectUri = call.request.queryParameters["redirectUri"]
+            val redirectUri = call.request.queryParameters["redirectUri"] as String?
             if (redirectUri.isNullOrBlank()) {
                 call.respond(HttpStatusCode.BadRequest, mapOf("error" to "missing redirectUri"))
                 return@post
@@ -134,7 +134,7 @@ fun Application.module() {
                 call.respond(HttpStatusCode.Unauthorized, mapOf("error" to "invalid or missing token"))
                 return@delete
             }
-            val provider = call.parameters["provider"]
+            val provider = call.parameters["provider"] as String?
             if (provider.isNullOrBlank()) {
                 call.respond(HttpStatusCode.BadRequest, mapOf("error" to "missing provider"))
                 return@delete
@@ -153,7 +153,7 @@ fun Application.module() {
                 call.respond(HttpStatusCode.Unauthorized, mapOf("error" to "invalid or missing token"))
                 return@get
             }
-            val provider = call.parameters["provider"]
+            val provider = call.parameters["provider"] as String?
             if (provider.isNullOrBlank()) {
                 call.respond(HttpStatusCode.BadRequest, mapOf("error" to "missing provider"))
                 return@get
@@ -169,7 +169,7 @@ fun Application.module() {
 }
 
 private fun io.ktor.server.application.ApplicationCall.bearerToken(): String? =
-    request.header(HttpHeaders.Authorization)?.removePrefix("Bearer ")?.trim()?.takeIf { it.isNotBlank() }
+    (request.header(HttpHeaders.Authorization)?.removePrefix("Bearer ")?.trim()?.takeIf { it.isNotBlank() }) as String?
 
 /** ユーザー本人のアクセストークンをuserinfoエンドポイントで検証し、Keycloakユーザーid(sub)を返す */
 private suspend fun fetchUserId(client: HttpClient, token: String): String? = try {
@@ -261,23 +261,32 @@ private suspend fun unlinkAccount(client: HttpClient, userToken: String, provide
  * Keycloakのbrokerトークンエンドポイントから、紐付け済みIdP(Google/Microsoft)の
  * 実アクセストークンを取得する(storeToken=trueがrealm側で設定されている前提)。
  */
-private suspend fun fetchBrokeredAccessToken(client: HttpClient, userToken: String, provider: String): String? = try {
-    val response = client.get("$realmUrl/broker/$provider/token") {
-        header(HttpHeaders.Authorization, "Bearer $userToken")
-    }
-    if (response.status != HttpStatusCode.OK) {
+private suspend fun fetchBrokeredAccessToken(client: HttpClient, userToken: String, provider: String): String? {
+    return try {
+        val response = client.get("$realmUrl/broker/$provider/token") {
+            header(HttpHeaders.Authorization, "Bearer $userToken")
+        }
+        if (response.status != HttpStatusCode.OK) {
+            val errorBody = response.bodyAsText()
+            System.err.println("[fetchBrokeredAccessToken] provider=$provider status=${response.status.value} body=$errorBody")
+            null
+        } else {
+            val text = response.bodyAsText()
+            // Keycloakはブローカー先のトークンレスポンスをそのまま返すため、
+            // JSON(Google等)またはフォームエンコード文字列(access_token=...&...)の両対応にする
+            runCatching { Json.parseToJsonElement(text).jsonObject["access_token"]?.jsonPrimitive?.content }
+                .getOrNull()
+                ?: text.split("&")
+                    .mapNotNull { pair -> pair.split("=", limit = 2).takeIf { it.size == 2 } }
+                    .firstOrNull { it[0] == "access_token" }
+                    ?.get(1)
+        }
+    } catch (e: Exception) {
+        System.err.println("[fetchBrokeredAccessToken] provider=$provider error=${e.message}")
         null
-    } else {
-        val text = response.bodyAsText()
-        // Keycloakはブローカー先のトークンレスポンスをそのまま返すため、
-        // JSON(Google等)またはフォームエンコード文字列(access_token=...&...)の両対応にする
-        runCatching { Json.parseToJsonElement(text).jsonObject["access_token"]?.jsonPrimitive?.content }
-            .getOrNull()
-            ?: text.split("&")
-                .mapNotNull { pair -> pair.split("=", limit = 2).takeIf { it.size == 2 } }
-                .firstOrNull { it[0] == "access_token" }
-                ?.get(1)
     }
-} catch (e: Exception) {
-    null
 }
+
+
+private fun kotlinx.serialization.json.JsonPrimitive.contentOrNull(): String? =
+    if (this is kotlinx.serialization.json.JsonNull) null else content
