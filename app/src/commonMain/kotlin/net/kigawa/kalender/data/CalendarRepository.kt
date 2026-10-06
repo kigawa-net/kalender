@@ -4,6 +4,8 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
+import kotlinx.datetime.LocalDate
+import net.kigawa.kalender.util.startOfDayMs
 import net.kigawa.kalender.model.CalendarEvent
 import net.kigawa.kalender.model.UserCalendar
 
@@ -23,11 +25,13 @@ class CalendarRepository(
 
     private val activeJobs = mutableMapOf<Long, Job>()
 
-    fun eventsForWeek(startMs: Long, endMs: Long): Flow<List<CalendarEvent>> {
+    fun eventsForWeek(startMs: Long, endMs: Long): Flow<List<CalendarEvent>> = eventsForWeek(startMs, endMs, forceRefresh = false)
+
+    fun eventsForWeek(startMs: Long, endMs: Long, forceRefresh: Boolean): Flow<List<CalendarEvent>> {
         if (!activeJobs.containsKey(startMs)) {
             activeJobs[startMs] = scope.launch {
                 try {
-                    val isFresh = localStore.isWeekCacheFresh(startMs, CACHE_TTL_MS)
+                    val isFresh = if (forceRefresh) false else localStore.isWeekCacheFresh(startMs, CACHE_TTL_MS)
                     if (!isFresh) {
                         var allSucceeded = true
                         dataSources.forEach { dataSource ->
@@ -64,6 +68,20 @@ class CalendarRepository(
                     logError("CalendarRepository", "Failed to sync calendars from ${dataSource.javaClass.simpleName}", e)
                 }
             }
+        }
+    }
+
+    /** 指定週を強制的に再取得する（TTLを無視） */
+    fun refreshWeek(startMs: Long, endMs: Long) {
+        eventsForWeek(startMs, endMs, forceRefresh = true)
+    }
+
+    /** 複数週を一括で強制再取得する（周辺週も含めて更新） */
+    fun refreshWeeks(weekStarts: List<LocalDate>) {
+        weekStarts.forEach { weekStart ->
+            val startMs = weekStart.startOfDayMs()
+            val endMs = startMs + 7 * 24 * 60 * 60 * 1000L
+            eventsForWeek(startMs, endMs, forceRefresh = true)
         }
     }
 }
