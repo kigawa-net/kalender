@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -40,27 +39,32 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
+import androidx.lifecycle.compose.LocalLifecycleOwner
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.LifecycleEventObserver
-import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import kotlinx.coroutines.launch
-import kotlinx.datetime.LocalDate
 import net.kigawa.kalender.model.CalendarEvent
+import net.kigawa.kalender.ui.theme.KalenderTheme
 import net.kigawa.kalender.util.mondayOfWeek
 import net.kigawa.kalender.util.nowLocalTime
-import net.kigawa.kalender.util.pad2
-import net.kigawa.kalender.util.plusDays
 import net.kigawa.kalender.util.plusWeeks
+import net.kigawa.kalender.util.plusDays
 import net.kigawa.kalender.util.systemZone
 import net.kigawa.kalender.util.toLocalDate
 import net.kigawa.kalender.util.todayLocalDate
 import net.kigawa.kalender.viewmodel.WeeklyCalendarViewModel
+import kotlinx.datetime.LocalDate
+import kotlinx.datetime.LocalTime
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.ZoneOffset
 
 private val HourHeight = 64.dp
 private val TimeColumnWidth = 48.dp
@@ -71,6 +75,7 @@ private const val PAGER_INITIAL_PAGE = PAGER_TOTAL_PAGES / 2
 fun WeeklyCalendarScreen(
     onEventClick: (Long) -> Unit,
     onNewEvent: () -> Unit,
+    onEmptySlotClick: ((kotlinx.datetime.LocalDate, Int) -> Unit)? = null,
     viewModel: WeeklyCalendarViewModel,
     modifier: Modifier = Modifier,
 ) {
@@ -90,7 +95,7 @@ fun WeeklyCalendarScreen(
 
     val baseWeek = remember { mondayOfWeek(todayLocalDate()) }
 
-    fun pageToWeek(page: Int): LocalDate = baseWeek.plusWeeks(page - PAGER_INITIAL_PAGE)
+    fun pageToWeek(page: Int): kotlinx.datetime.LocalDate = baseWeek.plusWeeks(page - PAGER_INITIAL_PAGE)
 
     val pagerState = rememberPagerState(initialPage = PAGER_INITIAL_PAGE) { PAGER_TOTAL_PAGES }
 
@@ -128,6 +133,7 @@ fun WeeklyCalendarScreen(
                         weekStart = weekStart,
                         events = events.filter { !it.allDay },
                         onEventClick = onEventClick,
+                        onEmptySlotClick = onEmptySlotClick,
                         modifier = Modifier.weight(1f),
                     )
                 }
@@ -147,7 +153,7 @@ fun WeeklyCalendarScreen(
 
 @Composable
 private fun WeekNavigationHeader(
-    weekStart: LocalDate,
+    weekStart: kotlinx.datetime.LocalDate,
     onPrevious: () -> Unit,
     onNext: () -> Unit,
     onToday: () -> Unit,
@@ -162,7 +168,7 @@ private fun WeekNavigationHeader(
             Icon(Icons.AutoMirrored.Filled.KeyboardArrowLeft, contentDescription = "前週")
         }
         Text(
-            text = "${weekStart.year}年${weekStart.monthNumber}月",
+            text = "${weekStart.year}年${weekStart.month.ordinal + 1}月",
             style = MaterialTheme.typography.titleMedium,
         )
         IconButton(onClick = onNext) {
@@ -174,7 +180,7 @@ private fun WeekNavigationHeader(
 
 @Composable
 private fun WeekDayHeaders(
-    weekStart: LocalDate,
+    weekStart: kotlinx.datetime.LocalDate,
     modifier: Modifier = Modifier,
 ) {
     val today = todayLocalDate()
@@ -198,7 +204,7 @@ private fun WeekDayHeaders(
                 else -> MaterialTheme.colorScheme.onSurfaceVariant
             }
             // 月初は "M/D" 形式で月を明示する
-            val dateLabel = if (date.dayOfMonth == 1) "${date.monthNumber}/${date.dayOfMonth}" else date.dayOfMonth.toString()
+            val dateLabel = if (date.dayOfMonth == 1) "${date.month.ordinal + 1}/${date.dayOfMonth}" else date.dayOfMonth.toString()
             Column(
                 modifier = Modifier.weight(1f),
                 horizontalAlignment = Alignment.CenterHorizontally,
@@ -235,7 +241,7 @@ private fun WeekDayHeaders(
 
 @Composable
 private fun AllDayEventsRow(
-    weekStart: LocalDate,
+    weekStart: kotlinx.datetime.LocalDate,
     events: List<CalendarEvent>,
     onEventClick: (Long) -> Unit,
     modifier: Modifier = Modifier,
@@ -247,7 +253,7 @@ private fun AllDayEventsRow(
         for (i in 0..6) {
             val date = weekStart.plusDays(i)
             val dayEvents = events.filter { event ->
-                event.startMs.toLocalDate(kotlinx.datetime.TimeZone.UTC) == date
+                event.startMs.toLocalDate(TimeZone.UTC) == date
             }
             Column(modifier = Modifier.weight(1f)) {
                 dayEvents.forEach { event ->
@@ -274,9 +280,10 @@ private fun AllDayEventsRow(
 
 @Composable
 private fun WeekTimeGrid(
-    weekStart: LocalDate,
+    weekStart: kotlinx.datetime.LocalDate,
     events: List<CalendarEvent>,
     onEventClick: (Long) -> Unit,
+    onEmptySlotClick: ((kotlinx.datetime.LocalDate, Int) -> Unit)? = null,
     modifier: Modifier = Modifier,
 ) {
     val scrollState = rememberScrollState()
@@ -300,7 +307,7 @@ private fun WeekTimeGrid(
                     contentAlignment = Alignment.TopCenter,
                 ) {
                     Text(
-                        text = hour.pad2(),
+                        text = "%02d".format(hour),
                         style = MaterialTheme.typography.labelSmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                         modifier = Modifier.padding(top = 2.dp),
@@ -373,5 +380,13 @@ private fun WeekTimeGrid(
                 }
             }
         }
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun WeekDayHeadersPreview() {
+    KalenderTheme {
+        WeekDayHeaders(weekStart = todayLocalDate())
     }
 }
