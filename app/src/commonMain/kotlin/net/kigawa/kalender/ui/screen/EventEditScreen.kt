@@ -18,6 +18,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.List
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
@@ -73,6 +74,7 @@ fun EventEditScreen(
     onBack: () -> Unit,
     viewModel: EventEditViewModel,
     modifier: Modifier = Modifier,
+    onShowTemplates: (() -> Unit)? = null,
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
@@ -96,6 +98,7 @@ fun EventEditScreen(
         onEndTimeChange = viewModel::setEndTime,
         onEditScopeChange = viewModel::setEditScope,
         onRecurrenceChange = viewModel::setRecurrenceRule,
+        onShowTemplates = onShowTemplates,
         modifier = modifier,
     )
 }
@@ -156,24 +159,19 @@ private fun RecurrenceSelector(
         )
         Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
             RecurrenceFrequencyChip("なし", rule.frequency == Frequency.NONE, enabled) {
-                onChange(RecurrenceRule.NONE)
+                onChange(rule.withFrequency(Frequency.NONE))
             }
             RecurrenceFrequencyChip("毎日", rule.frequency == Frequency.DAILY, enabled) {
-                onChange(rule.copy(frequency = Frequency.DAILY))
+                onChange(rule.withFrequency(Frequency.DAILY))
             }
             RecurrenceFrequencyChip("毎週", rule.frequency == Frequency.WEEKLY, enabled) {
-                onChange(
-                    rule.copy(
-                        frequency = Frequency.WEEKLY,
-                        byDay = if (rule.byDay.isEmpty()) listOf(1) else rule.byDay,
-                    ),
-                )
+                onChange(rule.withFrequency(Frequency.WEEKLY))
             }
             RecurrenceFrequencyChip("毎月", rule.frequency == Frequency.MONTHLY, enabled) {
-                onChange(rule.copy(frequency = Frequency.MONTHLY))
+                onChange(rule.withFrequency(Frequency.MONTHLY))
             }
             RecurrenceFrequencyChip("毎年", rule.frequency == Frequency.YEARLY, enabled) {
-                onChange(rule.copy(frequency = Frequency.YEARLY))
+                onChange(rule.withFrequency(Frequency.YEARLY))
             }
         }
     }
@@ -210,6 +208,7 @@ private fun EventEditContent(
     onStartTimeChange: (Int, Int) -> Unit,
     onEndDateChange: (Long) -> Unit,
     onEndTimeChange: (Int, Int) -> Unit,
+    onShowTemplates: (() -> Unit)? = null,
     onEditScopeChange: (RecurrenceEditScope) -> Unit = {},
     onRecurrenceChange: (RecurrenceRule) -> Unit = {},
     modifier: Modifier = Modifier,
@@ -253,6 +252,22 @@ private fun EventEditContent(
             verticalArrangement = Arrangement.spacedBy(12.dp),
         ) {
             Spacer(Modifier.height(4.dp))
+
+            if (onShowTemplates != null && uiState.isNew) {
+                OutlinedButton(
+                    onClick = onShowTemplates,
+                    modifier = Modifier.fillMaxWidth(),
+                    enabled = !busy,
+                ) {
+                    Icon(
+                        Icons.Default.List,
+                        contentDescription = null,
+                        modifier = Modifier.size(18.dp),
+                    )
+                    Spacer(Modifier.width(8.dp))
+                    Text("テンプレートから作成")
+                }
+            }
 
             if (!uiState.isNew && uiState.isRecurringInstance) {
                 RecurrenceScopeSelector(

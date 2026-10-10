@@ -29,6 +29,35 @@ data class RecurrenceRule(
     /** 終了条件: 無期限 */
     val neverEnds: Boolean = true,
 ) {
+    /**
+     * 周波数を変更し、新しい周波数に適用されないフィールドをクリアする。
+     *
+     * `copy(frequency = ...)` だけだと、週次の byDay や月次の byMonthDay が
+     * 日次にも残り `FREQ=DAILY;BYDAY=MO` のような不正なRRULEになる。
+     */
+    fun withFrequency(frequency: Frequency): RecurrenceRule = when (frequency) {
+        Frequency.NONE -> copy(frequency = Frequency.NONE, byDay = emptyList(), byMonthDay = emptyList(), byMonth = emptyList())
+        Frequency.DAILY -> copy(frequency = Frequency.DAILY, byDay = emptyList(), byMonthDay = emptyList(), byMonth = emptyList())
+        Frequency.WEEKLY -> copy(
+            frequency = Frequency.WEEKLY,
+            byDay = byDay.ifEmpty { listOf(1) },
+            byMonthDay = emptyList(),
+            byMonth = emptyList(),
+        )
+        Frequency.MONTHLY -> copy(
+            frequency = Frequency.MONTHLY,
+            byDay = emptyList(),
+            byMonthDay = byMonthDay.ifEmpty { listOf(1) },
+            byMonth = emptyList(),
+        )
+        Frequency.YEARLY -> copy(
+            frequency = Frequency.YEARLY,
+            byDay = emptyList(),
+            byMonthDay = byMonthDay.ifEmpty { listOf(1) },
+            byMonth = byMonth.ifEmpty { listOf(1) },
+        )
+    }
+
     /** 繰り返しなし */
     companion object {
         val NONE = RecurrenceRule(frequency = Frequency.NONE)
