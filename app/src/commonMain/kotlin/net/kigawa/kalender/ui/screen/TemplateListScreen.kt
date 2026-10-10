@@ -289,7 +289,10 @@ private fun TemplateEditDialog(
             }
         },
         confirmButton = {
-            TextButton(onClick = onSave, enabled = !isSaving && template.name.isNotBlank()) {
+            TextButton(
+                onClick = onSave,
+                enabled = !isSaving && template.name.isNotBlank() && template.durationMinutes > 0,
+            ) {
                 Text("保存")
             }
         },
@@ -308,16 +311,16 @@ private fun RecurrenceSelector(
         Text("頻度", style = MaterialTheme.typography.labelMedium)
         Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
             FrequencyChip("毎日", rule.frequency == Frequency.DAILY) {
-                onChange(rule.copy(frequency = Frequency.DAILY))
+                onChange(rule.withFrequency(Frequency.DAILY))
             }
             FrequencyChip("毎週", rule.frequency == Frequency.WEEKLY) {
-                onChange(rule.copy(frequency = Frequency.WEEKLY))
+                onChange(rule.withFrequency(Frequency.WEEKLY))
             }
             FrequencyChip("毎月", rule.frequency == Frequency.MONTHLY) {
-                onChange(rule.copy(frequency = Frequency.MONTHLY))
+                onChange(rule.withFrequency(Frequency.MONTHLY))
             }
             FrequencyChip("毎年", rule.frequency == Frequency.YEARLY) {
-                onChange(rule.copy(frequency = Frequency.YEARLY))
+                onChange(rule.withFrequency(Frequency.YEARLY))
             }
         }
     }

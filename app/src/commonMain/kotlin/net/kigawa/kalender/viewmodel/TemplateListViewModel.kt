@@ -118,6 +118,11 @@ class TemplateListViewModel(
             _uiState.update { it.copy(error = "テンプレート名を入力してください") }
             return
         }
+        // 所要時間0は「終了=開始」の不正な予定を生成するため禁止する
+        if (template.durationMinutes <= 0) {
+            _uiState.update { it.copy(error = "所要時間は1分以上を入力してください") }
+            return
+        }
         viewModelScope.launch {
             _uiState.update { it.copy(isSaving = true, error = null) }
             try {

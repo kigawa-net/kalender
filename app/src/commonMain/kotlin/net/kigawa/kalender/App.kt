@@ -236,6 +236,10 @@ private fun KalenderApp(container: AppContainer) {
                 TemplatePickerScreen(
                     onBack = { navController.popBackStack() },
                     onUseTemplate = { templateId ->
+                        // テンプレート選択画面をバックスタックから外してから遷移する。
+                        // そのまま push すると、保存後の popBackStack で選択画面と
+                        // 空の新規予定画面が残り、カレンダーに戻れない。
+                        navController.popBackStack()
                         navController.navigate("event_from_template/$templateId")
                     },
                     onManageTemplates = { navController.navigate("event_template_list") },
