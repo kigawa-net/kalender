@@ -18,6 +18,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.List
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
@@ -71,6 +72,7 @@ fun EventEditScreen(
     onBack: () -> Unit,
     viewModel: EventEditViewModel,
     modifier: Modifier = Modifier,
+    onShowTemplates: (() -> Unit)? = null,
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
@@ -93,6 +95,7 @@ fun EventEditScreen(
         onEndDateChange = viewModel::setEndDate,
         onEndTimeChange = viewModel::setEndTime,
         onEditScopeChange = viewModel::setEditScope,
+        onShowTemplates = onShowTemplates,
         modifier = modifier,
     )
 }
@@ -151,6 +154,7 @@ private fun EventEditContent(
     onStartTimeChange: (Int, Int) -> Unit,
     onEndDateChange: (Long) -> Unit,
     onEndTimeChange: (Int, Int) -> Unit,
+    onShowTemplates: (() -> Unit)? = null,
     onEditScopeChange: (RecurrenceEditScope) -> Unit = {},
     modifier: Modifier = Modifier,
 ) {
@@ -193,6 +197,22 @@ private fun EventEditContent(
             verticalArrangement = Arrangement.spacedBy(12.dp),
         ) {
             Spacer(Modifier.height(4.dp))
+
+            if (onShowTemplates != null && uiState.isNew) {
+                OutlinedButton(
+                    onClick = onShowTemplates,
+                    modifier = Modifier.fillMaxWidth(),
+                    enabled = !busy,
+                ) {
+                    Icon(
+                        Icons.Default.List,
+                        contentDescription = null,
+                        modifier = Modifier.size(18.dp),
+                    )
+                    Spacer(Modifier.width(8.dp))
+                    Text("テンプレートから作成")
+                }
+            }
 
             if (!uiState.isNew && uiState.isRecurringInstance) {
                 RecurrenceScopeSelector(

@@ -17,12 +17,14 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import net.kigawa.kalender.data.GoogleCalendarDataSource
 import net.kigawa.kalender.data.KalenderApiClient
+import net.kigawa.kalender.data.LocalEventTemplateStore
 import net.kigawa.kalender.data.ProviderId
 import net.kigawa.kalender.data.LocalCalendarStore
 import net.kigawa.kalender.data.OutlookCalendarDataSource
 import net.kigawa.kalender.data.auth.AuthController
 import net.kigawa.kalender.data.auth.KeycloakAuthState
 import net.kigawa.kalender.model.CalendarEvent
+import net.kigawa.kalender.model.EventTemplate
 import net.kigawa.kalender.model.RecurrenceEditScope
 import net.kigawa.kalender.model.RecurrenceRule
 import net.kigawa.kalender.model.UserCalendar
@@ -72,6 +74,8 @@ class EventEditViewModel(
     private val httpClient: HttpClient,
     private val eventId: Long?,
     private val copyFromEventId: Long? = null,
+    private val templateStore: LocalEventTemplateStore? = null,
+    private val templateId: Long? = null,
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(EventEditUiState())
@@ -110,6 +114,16 @@ class EventEditViewModel(
                     )
                 }
             }
+        } else if (templateId != null && templateStore != null) {
+            // テンプレートから新規予定を作成
+            viewModelScope.launch {
+                val template = templateStore.findById(templateId)
+                if (template != null) {
+                    applyTemplateToState(template)
+                } else {
+                    _uiState.update { it.copy(isLoading = false, error = "テンプレートが見つかりません") }
+                }
+            }
         } else if (copyFromEventId != null) {
             viewModelScope.launch {
                 val event = localStore.observeEventById(copyFromEventId).filterNotNull().first()
@@ -139,6 +153,25 @@ class EventEditViewModel(
         }
     }
 
+    /** テンプレートの内容をUIステートに適用する（開始時刻は現在時刻基準） */
+    private fun applyTemplateToState(template: EventTemplate) {
+        val rounded = roundToNextHour(nowMs())
+        val endMs = rounded + template.durationMinutes * 60_000L
+        _uiState.update {
+            it.copy(
+                isNew = true,
+                isLoading = false,
+                title = template.title,
+                description = template.description,
+                location = template.location,
+                allDay = template.allDay,
+                calendarId = if (template.preferredCalendarId != 0L) template.preferredCalendarId else it.calendarId,
+                recurrenceRule = template.recurrence ?: RecurrenceRule.NONE,
+                startMs = rounded,
+                endMs = endMs,
+            )
+        }
+    }
 
     fun setTitle(value: String) = _uiState.update { it.copy(title = value, error = null) }
     fun setDescription(value: String) = _uiState.update { it.copy(description = value) }

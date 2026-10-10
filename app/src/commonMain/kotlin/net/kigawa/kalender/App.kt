@@ -36,12 +36,15 @@ import net.kigawa.kalender.ui.screen.EventDetailScreen
 import net.kigawa.kalender.ui.screen.EventEditScreen
 import net.kigawa.kalender.ui.screen.LoginScreen
 import net.kigawa.kalender.ui.screen.ProfileScreen
+import net.kigawa.kalender.ui.screen.TemplateListScreen
+import net.kigawa.kalender.ui.screen.TemplatePickerScreen
 import net.kigawa.kalender.ui.screen.WeeklyCalendarScreen
 import net.kigawa.kalender.ui.theme.KalenderTheme
 import net.kigawa.kalender.viewmodel.AuthViewModel
 import net.kigawa.kalender.viewmodel.EventDetailViewModel
 import net.kigawa.kalender.viewmodel.EventEditViewModel
 import net.kigawa.kalender.viewmodel.ProfileViewModel
+import net.kigawa.kalender.viewmodel.TemplateListViewModel
 import net.kigawa.kalender.viewmodel.WeeklyCalendarViewModel
 
 @Composable
@@ -185,6 +188,70 @@ private fun KalenderApp(container: AppContainer) {
                 })
                 EventEditScreen(onBack = { navController.popBackStack() }, viewModel = vm)
             }
+            composable(route = "event_new") {
+                val vm: EventEditViewModel = viewModel(factory = viewModelFactory {
+                    initializer {
+                        EventEditViewModel(
+                            container.authController,
+                            container.apiClient,
+                            container.localStore,
+                            container.httpClient,
+                            null,
+                        )
+                    }
+                })
+                EventEditScreen(
+                    onBack = { navController.popBackStack() },
+                    viewModel = vm,
+                    onShowTemplates = { navController.navigate("event_template_pick") },
+                )
+            }
+            composable(route = "event_from_template/{templateId}") { backStackEntry ->
+                val templateId = backStackEntry.arguments?.read { getLong("templateId") } ?: 0L
+                val vm: EventEditViewModel = viewModel(factory = viewModelFactory {
+                    initializer {
+                        EventEditViewModel(
+                            container.authController,
+                            container.apiClient,
+                            container.localStore,
+                            container.httpClient,
+                            null,
+                            null,
+                            container.templateStore,
+                            templateId,
+                        )
+                    }
+                })
+                EventEditScreen(onBack = { navController.popBackStack() }, viewModel = vm)
+            }
+            composable(route = "event_template_pick") {
+                val vm: TemplateListViewModel = viewModel(factory = viewModelFactory {
+                    initializer {
+                        TemplateListViewModel(container.templateStore ?: error("templateStore is not provided"))
+                    }
+                })
+                TemplatePickerScreen(
+                    onBack = { navController.popBackStack() },
+                    onUseTemplate = { templateId ->
+                        navController.navigate("event_from_template/$templateId")
+                    },
+                    onManageTemplates = { navController.navigate("event_template_list") },
+                )
+            }
+            composable(route = "event_template_list") {
+                val vm: TemplateListViewModel = viewModel(factory = viewModelFactory {
+                    initializer {
+                        TemplateListViewModel(container.templateStore ?: error("templateStore is not provided"))
+                    }
+                })
+                TemplateListScreen(
+                    onBack = { navController.popBackStack() },
+                    viewModel = vm,
+                    onUseTemplate = { templateId ->
+                        navController.navigate("event_from_template/$templateId")
+                    },
+                )
+            }
             composable(AppDestinations.PROFILE.route) {
                 val vm: ProfileViewModel = viewModel(factory = viewModelFactory {
                     initializer {
@@ -196,7 +263,10 @@ private fun KalenderApp(container: AppContainer) {
                         )
                     }
                 })
-                ProfileScreen(viewModel = vm)
+                ProfileScreen(
+                    viewModel = vm,
+                    onManageTemplates = { navController.navigate("event_template_list") },
+                )
             }
         }
     }
