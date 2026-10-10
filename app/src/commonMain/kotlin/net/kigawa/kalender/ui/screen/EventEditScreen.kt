@@ -12,11 +12,13 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.List
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
@@ -33,6 +35,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.MenuAnchorType
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
@@ -52,6 +55,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import net.kigawa.kalender.model.Frequency
+import net.kigawa.kalender.model.RecurrenceEditScope
+import net.kigawa.kalender.model.RecurrenceRule
 import net.kigawa.kalender.ui.component.ErrorMessage
 import net.kigawa.kalender.util.nowMs
 import net.kigawa.kalender.util.systemZone
@@ -68,6 +74,7 @@ fun EventEditScreen(
     onBack: () -> Unit,
     viewModel: EventEditViewModel,
     modifier: Modifier = Modifier,
+    onShowTemplates: (() -> Unit)? = null,
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
@@ -89,8 +96,100 @@ fun EventEditScreen(
         onStartTimeChange = viewModel::setStartTime,
         onEndDateChange = viewModel::setEndDate,
         onEndTimeChange = viewModel::setEndTime,
+        onEditScopeChange = viewModel::setEditScope,
+        onRecurrenceChange = viewModel::setRecurrenceRule,
+        onShowTemplates = onShowTemplates,
         modifier = modifier,
     )
+}
+
+/**
+ * 繰り返し予定の編集・削除対象を選択するセクション。
+ * 保存時・削除時の両方に適用される。
+ */
+@Composable
+private fun RecurrenceScopeSelector(
+    selected: RecurrenceEditScope,
+    enabled: Boolean,
+    onSelect: (RecurrenceEditScope) -> Unit,
+) {
+    Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
+        Text(
+            text = "繰り返し予定の変更範囲",
+            style = MaterialTheme.typography.labelLarge,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+        )
+        RecurrenceEditScope.entries.forEach { scope ->
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clickable(enabled = enabled) { onSelect(scope) }
+                    .padding(vertical = 4.dp),
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                RadioButton(
+                    selected = scope == selected,
+                    onClick = { onSelect(scope) },
+                    enabled = enabled,
+                )
+                Text(
+                    text = scope.label,
+                    modifier = Modifier.padding(start = 4.dp),
+                )
+            }
+        }
+    }
+}
+
+/**
+ * 繰り返しの頻度と間隔を選択するセクション。
+ * 繰り返しなしの場合は非表示にするトグルを持たない（頻度チップの先頭に「なし」を置く）。
+ */
+@Composable
+private fun RecurrenceSelector(
+    rule: RecurrenceRule,
+    enabled: Boolean,
+    onChange: (RecurrenceRule) -> Unit,
+) {
+    Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
+        Text(
+            text = "繰り返し",
+            style = MaterialTheme.typography.labelLarge,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+        )
+        Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
+            RecurrenceFrequencyChip("なし", rule.frequency == Frequency.NONE, enabled) {
+                onChange(rule.withFrequency(Frequency.NONE))
+            }
+            RecurrenceFrequencyChip("毎日", rule.frequency == Frequency.DAILY, enabled) {
+                onChange(rule.withFrequency(Frequency.DAILY))
+            }
+            RecurrenceFrequencyChip("毎週", rule.frequency == Frequency.WEEKLY, enabled) {
+                onChange(rule.withFrequency(Frequency.WEEKLY))
+            }
+            RecurrenceFrequencyChip("毎月", rule.frequency == Frequency.MONTHLY, enabled) {
+                onChange(rule.withFrequency(Frequency.MONTHLY))
+            }
+            RecurrenceFrequencyChip("毎年", rule.frequency == Frequency.YEARLY, enabled) {
+                onChange(rule.withFrequency(Frequency.YEARLY))
+            }
+        }
+    }
+}
+
+@Composable
+private fun RecurrenceFrequencyChip(
+    label: String,
+    selected: Boolean,
+    enabled: Boolean,
+    onClick: () -> Unit,
+) {
+    TextButton(onClick = onClick, enabled = enabled) {
+        Text(
+            text = label,
+            color = if (selected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant,
+        )
+    }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -109,6 +208,9 @@ private fun EventEditContent(
     onStartTimeChange: (Int, Int) -> Unit,
     onEndDateChange: (Long) -> Unit,
     onEndTimeChange: (Int, Int) -> Unit,
+    onShowTemplates: (() -> Unit)? = null,
+    onEditScopeChange: (RecurrenceEditScope) -> Unit = {},
+    onRecurrenceChange: (RecurrenceRule) -> Unit = {},
     modifier: Modifier = Modifier,
 ) {
     val busy = uiState.isSaving || uiState.isDeleting
@@ -151,6 +253,30 @@ private fun EventEditContent(
         ) {
             Spacer(Modifier.height(4.dp))
 
+            if (onShowTemplates != null && uiState.isNew) {
+                OutlinedButton(
+                    onClick = onShowTemplates,
+                    modifier = Modifier.fillMaxWidth(),
+                    enabled = !busy,
+                ) {
+                    Icon(
+                        Icons.Default.List,
+                        contentDescription = null,
+                        modifier = Modifier.size(18.dp),
+                    )
+                    Spacer(Modifier.width(8.dp))
+                    Text("テンプレートから作成")
+                }
+            }
+
+            if (!uiState.isNew && uiState.isRecurringInstance) {
+                RecurrenceScopeSelector(
+                    selected = uiState.editScope,
+                    enabled = !busy,
+                    onSelect = onEditScopeChange,
+                )
+            }
+
             OutlinedTextField(
                 value = uiState.title,
                 onValueChange = onTitleChange,
@@ -167,6 +293,12 @@ private fun EventEditContent(
                 Text("終日", modifier = Modifier.weight(1f))
                 Switch(checked = uiState.allDay, onCheckedChange = onAllDayChange, enabled = !busy)
             }
+
+            RecurrenceSelector(
+                rule = uiState.recurrenceRule,
+                enabled = !busy,
+                onChange = onRecurrenceChange,
+            )
 
             HorizontalDivider()
 

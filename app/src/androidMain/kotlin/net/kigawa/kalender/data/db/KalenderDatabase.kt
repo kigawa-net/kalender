@@ -7,7 +7,7 @@ import androidx.room.RoomDatabase
 import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
 
-@Database(entities = [CalendarEntity::class, EventEntity::class, CacheMetaEntity::class], version = 5)
+@Database(entities = [CalendarEntity::class, EventEntity::class, CacheMetaEntity::class], version = 6)
 abstract class KalenderDatabase : RoomDatabase() {
     abstract fun calendarDao(): CalendarDao
     abstract fun eventDao(): EventDao
@@ -44,13 +44,23 @@ abstract class KalenderDatabase : RoomDatabase() {
             }
         }
 
+        private val MIGRATION_5_6 = object : Migration(5, 6) {
+            override fun migrate(db: SupportSQLiteDatabase) {
+                // 繰り返し予定の情報をイベントに永続化する
+                db.execSQL("ALTER TABLE events ADD COLUMN recurrenceRule TEXT")
+                db.execSQL("ALTER TABLE events ADD COLUMN recurringEventId TEXT")
+                db.execSQL("ALTER TABLE events ADD COLUMN originalStartMs INTEGER")
+            }
+        }
+
         fun getInstance(context: Context): KalenderDatabase =
             instance ?: synchronized(this) {
                 instance ?: Room.databaseBuilder(
                     context.applicationContext,
                     KalenderDatabase::class.java,
                     "kalender.db",
-                ).addMigrations(MIGRATION_1_2, MIGRATION_2_3, MIGRATION_3_4, MIGRATION_4_5).build().also { instance = it }
+                ).addMigrations(MIGRATION_1_2, MIGRATION_2_3, MIGRATION_3_4, MIGRATION_4_5, MIGRATION_5_6)
+                    .build().also { instance = it }
             }
     }
 }

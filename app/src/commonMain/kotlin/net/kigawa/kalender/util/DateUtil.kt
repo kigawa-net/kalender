@@ -14,6 +14,7 @@ import kotlinx.datetime.minus
 import kotlinx.datetime.offsetAt
 import kotlinx.datetime.plus
 import kotlinx.datetime.todayIn
+import net.kigawa.kalender.model.RecurrenceRule
 import kotlinx.datetime.toLocalDateTime
 
 /**
@@ -95,3 +96,6 @@ fun parseIsoInstantMs(text: String): Long = Instant.parse(text).toEpochMilliseco
 /** "yyyy-MM-dd" をその日の0時(指定タイムゾーン)のエポックmsへ */
 fun parseIsoDateStartMs(text: String, zone: TimeZone = systemZone()): Long =
     LocalDate.parse(text).atStartOfDayIn(zone).toEpochMilliseconds()
+
+/** RecurrenceRule を RRULE 文字列に変換 (Google Calendar API用) */
+fun recurrenceRuleToRRule(rule: RecurrenceRule): String = rule.toRRule()
