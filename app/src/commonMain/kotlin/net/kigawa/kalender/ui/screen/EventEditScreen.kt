@@ -159,24 +159,19 @@ private fun RecurrenceSelector(
         )
         Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
             RecurrenceFrequencyChip("なし", rule.frequency == Frequency.NONE, enabled) {
-                onChange(RecurrenceRule.NONE)
+                onChange(rule.withFrequency(Frequency.NONE))
             }
             RecurrenceFrequencyChip("毎日", rule.frequency == Frequency.DAILY, enabled) {
-                onChange(rule.copy(frequency = Frequency.DAILY))
+                onChange(rule.withFrequency(Frequency.DAILY))
             }
             RecurrenceFrequencyChip("毎週", rule.frequency == Frequency.WEEKLY, enabled) {
-                onChange(
-                    rule.copy(
-                        frequency = Frequency.WEEKLY,
-                        byDay = if (rule.byDay.isEmpty()) listOf(1) else rule.byDay,
-                    ),
-                )
+                onChange(rule.withFrequency(Frequency.WEEKLY))
             }
             RecurrenceFrequencyChip("毎月", rule.frequency == Frequency.MONTHLY, enabled) {
-                onChange(rule.copy(frequency = Frequency.MONTHLY))
+                onChange(rule.withFrequency(Frequency.MONTHLY))
             }
             RecurrenceFrequencyChip("毎年", rule.frequency == Frequency.YEARLY, enabled) {
-                onChange(rule.copy(frequency = Frequency.YEARLY))
+                onChange(rule.withFrequency(Frequency.YEARLY))
             }
         }
     }

@@ -146,4 +146,74 @@ class RecurrenceRuleTest {
         val roundTripped = RecurrenceRule.fromRRule(original).toRRule()
         assertEquals(original, roundTripped)
     }
+
+    @Test
+    fun when_withFrequency_given_weeklyToDaily_then_clearsByDay() {
+        // 週次(月曜)から日次へ変更したら BYDAY は残ってはいけない
+        val weekly = RecurrenceRule.weekly(byDay = listOf(1))
+        val daily = weekly.withFrequency(Frequency.DAILY)
+        assertEquals(Frequency.DAILY, daily.frequency)
+        assertEquals(emptyList<Int>(), daily.byDay)
+        // BYDAY が残ると "FREQ=DAILY;BYDAY=MO" という月曜だけの日次予定になる
+        assertEquals("FREQ=DAILY", daily.toRRule())
+    }
+
+    @Test
+    fun when_withFrequency_given_dailyToWeekly_then_defaultsToMonday() {
+        val daily = RecurrenceRule.daily()
+        val weekly = daily.withFrequency(Frequency.WEEKLY)
+        assertEquals(Frequency.WEEKLY, weekly.frequency)
+        assertEquals(listOf(1), weekly.byDay)
+        assertEquals("FREQ=WEEKLY;BYDAY=MO", weekly.toRRule())
+    }
+
+    @Test
+    fun when_withFrequency_given_weeklyToMonthly_then_keepsMonthDayAndDropsByDay() {
+        val weekly = RecurrenceRule.weekly(byDay = listOf(1, 5))
+        val monthly = weekly.withFrequency(Frequency.MONTHLY)
+        assertEquals(Frequency.MONTHLY, monthly.frequency)
+        assertEquals(emptyList<Int>(), monthly.byDay)
+        assertEquals(listOf(1), monthly.byMonthDay)
+        assertEquals("FREQ=MONTHLY;BYMONTHDAY=1", monthly.toRRule())
+    }
+
+    @Test
+    fun when_withFrequency_given_weeklyToYearly_then_dropsByDayAndDefaultsMonth() {
+        val weekly = RecurrenceRule.weekly(byDay = listOf(3))
+        val yearly = weekly.withFrequency(Frequency.YEARLY)
+        assertEquals(Frequency.YEARLY, yearly.frequency)
+        assertEquals(emptyList<Int>(), yearly.byDay)
+        assertEquals(listOf(1), yearly.byMonthDay)
+        assertEquals(listOf(1), yearly.byMonth)
+        assertEquals("FREQ=YEARLY;BYMONTHDAY=1;BYMONTH=1", yearly.toRRule())
+    }
+
+    @Test
+    fun when_withFrequency_given_anyToNone_then_clearsAllFields() {
+        val weekly = RecurrenceRule.weekly(byDay = listOf(2))
+        val none = weekly.withFrequency(Frequency.NONE)
+        assertEquals(Frequency.NONE, none.frequency)
+        assertEquals(emptyList<Int>(), none.byDay)
+        assertEquals(emptyList<Int>(), none.byMonthDay)
+        assertEquals(emptyList<Int>(), none.byMonth)
+        assertEquals("FREQ=NONE", none.toRRule())
+    }
+
+    @Test
+    fun when_withFrequency_given_monthlyToDaily_then_clearsMonthDay() {
+        val monthly = RecurrenceRule.monthly(byMonthDay = listOf(15))
+        val daily = monthly.withFrequency(Frequency.DAILY)
+        assertEquals(Frequency.DAILY, daily.frequency)
+        assertEquals(emptyList<Int>(), daily.byMonthDay)
+        assertEquals("FREQ=DAILY", daily.toRRule())
+    }
+
+    @Test
+    fun when_withFrequency_given_weeklyToWeekly_then_preservesByDay() {
+        // 同じ周波数を選び直したときは選択中の曜日を保持する
+        val weekly = RecurrenceRule.weekly(byDay = listOf(1, 3, 5))
+        val reselected = weekly.withFrequency(Frequency.WEEKLY)
+        assertEquals(listOf(1, 3, 5), reselected.byDay)
+        assertEquals("FREQ=WEEKLY;BYDAY=MO,WE,FR", reselected.toRRule())
+    }
 }
