@@ -23,7 +23,10 @@ import net.kigawa.kalender.data.OutlookCalendarDataSource
 import net.kigawa.kalender.data.auth.AuthController
 import net.kigawa.kalender.data.auth.KeycloakAuthState
 import net.kigawa.kalender.model.CalendarEvent
+import net.kigawa.kalender.model.RecurrenceEditScope
+import net.kigawa.kalender.model.RecurrenceRule
 import net.kigawa.kalender.model.UserCalendar
+import net.kigawa.kalender.util.recurrenceRuleToRRule
 import net.kigawa.kalender.util.nowMs
 import net.kigawa.kalender.util.plusDays
 import net.kigawa.kalender.util.systemZone
@@ -50,7 +53,17 @@ data class EventEditUiState(
     val isSaving: Boolean = false,
     val isDeleting: Boolean = false,
     val error: String? = null,
-)
+    // 繰り返し設定
+    val recurrenceRule: RecurrenceRule = RecurrenceRule.NONE,
+    val recurringEventId: String? = null,
+    val originalStartMs: Long? = null,
+    /** 繰り返し予定の編集・削除対象（繰り返し予定の編集時のみ使用） */
+    val editScope: RecurrenceEditScope = RecurrenceEditScope.THIS_EVENT,
+) {
+    /** この予定が繰り返しシリーズのインスタンスかどうか */
+    val isRecurringInstance: Boolean
+        get() = !recurringEventId.isNullOrEmpty()
+}
 
 class EventEditViewModel(
     private val authController: AuthController,
@@ -91,6 +104,9 @@ class EventEditViewModel(
                         location = event.location,
                         calendarId = event.calendarId,
                         remoteId = event.remoteId,
+                        recurrenceRule = event.recurrenceRule?.let { rule -> RecurrenceRule.fromRRule(rule) } ?: RecurrenceRule.NONE,
+                        recurringEventId = event.recurringEventId,
+                        originalStartMs = event.originalStartMs,
                     )
                 }
             }
@@ -109,6 +125,9 @@ class EventEditViewModel(
                         location = event.location,
                         calendarId = event.calendarId,
                         remoteId = "",
+                        recurrenceRule = event.recurrenceRule?.let { rule -> RecurrenceRule.fromRRule(rule) } ?: RecurrenceRule.NONE,
+                        recurringEventId = event.recurringEventId,
+                        originalStartMs = event.originalStartMs,
                     )
                 }
             }
@@ -119,6 +138,7 @@ class EventEditViewModel(
             }
         }
     }
+
 
     fun setTitle(value: String) = _uiState.update { it.copy(title = value, error = null) }
     fun setDescription(value: String) = _uiState.update { it.copy(description = value) }
@@ -180,6 +200,14 @@ class EventEditViewModel(
         _uiState.update { it.copy(endMs = newEnd) }
     }
 
+    // 繰り返し設定
+    fun setRecurrenceRule(value: RecurrenceRule) = _uiState.update { it.copy(recurrenceRule = value) }
+    fun setRecurringEventId(value: String?) = _uiState.update { it.copy(recurringEventId = value) }
+    fun setOriginalStartMs(value: Long?) = _uiState.update { it.copy(originalStartMs = value) }
+
+    /** 繰り返し予定の編集・削除対象を設定する */
+    fun setEditScope(value: RecurrenceEditScope) = _uiState.update { it.copy(editScope = value) }
+
     fun save() {
         viewModelScope.launch {
             val state = _uiState.value
@@ -200,6 +228,9 @@ class EventEditViewModel(
                         return@launch
                     }
                 val isGoogle = calendar.accountName.contains("@")
+                val recurrenceRule = state.recurrenceRule
+                val recurringEventId = state.recurringEventId
+                val originalStartMs = state.originalStartMs
                 val event = CalendarEvent(
                     id = eventId ?: 0L,
                     calendarId = calendar.id,
@@ -212,6 +243,9 @@ class EventEditViewModel(
                     description = state.description.trim(),
                     location = state.location.trim(),
                     remoteId = state.remoteId,
+                    recurrenceRule = if (recurrenceRule != RecurrenceRule.NONE) recurrenceRule.toRRule() else null,
+                    recurringEventId = recurringEventId,
+                    originalStartMs = originalStartMs,
                 )
                 val saved = if (isGoogle) {
                     val dataSource = buildGoogleDataSource(calendar.ownerEmail) ?: run {
@@ -219,14 +253,14 @@ class EventEditViewModel(
                         return@launch
                     }
                     if (state.isNew) dataSource.createEvent(calendar.accountName, event)
-                    else dataSource.updateEvent(calendar.accountName, event)
+                    else dataSource.updateEvent(calendar.accountName, event, state.editScope)
                 } else {
                     val dataSource = buildOutlookDataSource(calendar.ownerEmail) ?: run {
                         _uiState.update { it.copy(isSaving = false, error = "Microsoftアカウントが連携されていません") }
                         return@launch
                     }
                     if (state.isNew) dataSource.createEvent(calendar.accountName, event)
-                    else dataSource.updateEvent(calendar.accountName, event)
+                    else dataSource.updateEvent(calendar.accountName, event, state.editScope)
                 }
                 localStore.upsertEvent(saved)
                 _navigateBack.emit(Unit)
@@ -257,13 +291,24 @@ class EventEditViewModel(
                         _uiState.update { it.copy(isDeleting = false, error = "Googleアカウントが連携されていません") }
                         return@launch
                     }
-                    dataSource.deleteEvent(calendar.accountName, state.remoteId)
+                    dataSource.deleteEvent(
+                        calendarAccountName = calendar.accountName,
+                        remoteId = state.remoteId,
+                        scope = state.editScope,
+                        originalStartMs = state.originalStartMs,
+                    )
                 } else {
                     val dataSource = buildOutlookDataSource(calendar.ownerEmail) ?: run {
                         _uiState.update { it.copy(isDeleting = false, error = "Microsoftアカウントが連携されていません") }
                         return@launch
                     }
-                    dataSource.deleteEvent(calendar.accountName, state.remoteId)
+                    dataSource.deleteEvent(
+                        calendarAccountName = calendar.accountName,
+                        remoteId = state.remoteId,
+                        scope = state.editScope,
+                        originalStartMs = state.originalStartMs,
+                        recurringEventId = state.recurringEventId,
+                    )
                 }
                 localStore.deleteEventById(id)
                 _navigateBack.emit(Unit)

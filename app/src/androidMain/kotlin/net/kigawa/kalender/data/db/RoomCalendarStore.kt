@@ -81,8 +81,38 @@ class RoomCalendarStore(
 
     private fun CalendarEntity.toModel() = UserCalendar(id, name, color, accountName, isVisible, ownerEmail, ownerAccountId)
     private fun EventEntity.toModel() =
-        CalendarEvent(id, calendarId, title, startMs, endMs, allDay, color, timeZone, description, location, remoteId)
+        CalendarEvent(
+            id = id,
+            calendarId = calendarId,
+            title = title,
+            startMs = startMs,
+            endMs = endMs,
+            allDay = allDay,
+            color = color,
+            timeZone = timeZone,
+            description = description,
+            location = location,
+            remoteId = remoteId,
+            recurrenceRule = recurrenceRule,
+            recurringEventId = recurringEventId,
+            originalStartMs = originalStartMs,
+        )
     private fun UserCalendar.toEntity() = CalendarEntity(id, name, color, accountName, isVisible, ownerEmail, ownerAccountId)
     private fun CalendarEvent.toEntity() =
-        EventEntity(id, calendarId, title, startMs, endMs, allDay, color, timeZone, description, location, remoteId)
+        EventEntity(
+            id = id,
+            calendarId = calendarId,
+            title = title,
+            startMs = startMs,
+            endMs = endMs,
+            allDay = allDay,
+            color = color,
+            timeZone = timeZone,
+            description = description,
+            location = location,
+            remoteId = remoteId,
+            recurrenceRule = recurrenceRule,
+            recurringEventId = recurringEventId,
+            originalStartMs = originalStartMs,
+        )
 }

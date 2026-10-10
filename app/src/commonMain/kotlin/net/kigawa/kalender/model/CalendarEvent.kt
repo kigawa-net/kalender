@@ -15,4 +15,9 @@ data class CalendarEvent(
     val description: String,
     val location: String,
     val remoteId: String = "",
+    // 繰り返し関連
+    val recurrenceRule: String? = null,      // RRULE 文字列
+    val recurrenceExceptions: List<Long> = emptyList(),  // 例外発生日時(ミリ秒)
+    val recurringEventId: String? = null,    // シリーズ全体を識別するID
+    val originalStartMs: Long? = null,       // シリーズ元の開始日時
 )
