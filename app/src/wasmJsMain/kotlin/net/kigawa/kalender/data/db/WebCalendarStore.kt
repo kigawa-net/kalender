@@ -111,6 +111,14 @@ class WebCalendarStore : LocalCalendarStore {
         persistEvents()
     }
 
+    override suspend fun deleteCalendarsByOwnerAccountId(ownerAccountId: String) {
+        val removedIds = _calendars.value.filter { it.ownerAccountId == ownerAccountId }.map { it.id }.toSet()
+        _calendars.value = _calendars.value.filterNot { it.ownerAccountId == ownerAccountId }
+        _events.value = _events.value.filterNot { it.calendarId in removedIds }
+        persistCalendars()
+        persistEvents()
+    }
+
     override suspend fun isWeekCacheFresh(weekStartMs: Long, ttlMs: Long): Boolean {
         val last = cacheMeta[weekStartMs] ?: return false
         return (nowMs() - last) < ttlMs

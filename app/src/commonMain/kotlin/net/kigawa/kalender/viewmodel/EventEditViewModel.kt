@@ -276,14 +276,14 @@ class EventEditViewModel(
     private suspend fun buildGoogleDataSource(ownerEmail: String): GoogleCalendarDataSource? {
         val authState = authController.authState.value
         if (authState !is KeycloakAuthState.SignedIn) return null
-        val token = apiClient.fetchCalendarToken(authState.accessToken, ProviderId("google")) ?: return null
+        val token = apiClient.fetchCalendarTokenByProvider(authState.accessToken, ProviderId("google")) ?: return null
         return GoogleCalendarDataSource(token, ownerEmail, httpClient)
     }
 
     private suspend fun buildOutlookDataSource(ownerEmail: String): OutlookCalendarDataSource? {
         val authState = authController.authState.value
         if (authState !is KeycloakAuthState.SignedIn) return null
-        val token = apiClient.fetchCalendarToken(authState.accessToken, ProviderId("microsoft")) ?: return null
+        val token = apiClient.fetchCalendarTokenByProvider(authState.accessToken, ProviderId("microsoft")) ?: return null
         return OutlookCalendarDataSource(token, ownerEmail, httpClient)
     }
 
