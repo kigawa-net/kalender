@@ -21,87 +21,32 @@ jobs:
         with:
           node-version: '20'
 
-      - name: Create placeholder site
+      - name: Setup JDK 21
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v4
+
+      - name: Build wasmJs production bundle
+        run: ./gradlew :app:wasmJsBrowserProductionWebpack --no-daemon --stacktrace
+
+      - name: Assemble web-dist
         run: |
+          set -euo pipefail
+          WEBPACK_OUT=app/build/kotlin-webpack/wasmJs/productionExecutable
+          rm -rf web-dist
           mkdir -p web-dist
-          cat > web-dist/index.html << 'EOF'
-          <!DOCTYPE html>
-          <html lang="ja">
-          <head>
-            <meta charset="UTF-8">
-            <meta name="viewport" content="width=device-width, initial-scale=1.0">
-            <meta name="description" content="Kalender - カレンダーアプリ">
-            <title>Kalender (Staging)</title>
-            <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📅</text></svg>">
-            <style>
-              * { box-sizing: border-box; margin: 0; padding: 0; }
-              body {
-                font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-                min-height: 100vh;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                background: linear-gradient(135deg, #fef7ff 0%, #f3e8ff 100%);
-                color: #1c1b1f;
-              }
-              .container {
-                text-align: center;
-                padding: 2rem;
-              }
-              .logo { font-size: 4rem; margin-bottom: 1rem; }
-              h1 { font-size: 2.5rem; font-weight: 600; color: #6750a4; margin-bottom: 0.5rem; }
-              .badge {
-                display: inline-block;
-                padding: 0.25rem 0.75rem;
-                background: #fef7ff;
-                border: 1px solid #6750a4;
-                border-radius: 9999px;
-                font-size: 0.75rem;
-                font-weight: 600;
-                color: #6750a4;
-                margin-bottom: 1rem;
-              }
-              p { font-size: 1.1rem; color: #49454f; margin-bottom: 2rem; }
-              .status {
-                display: inline-flex;
-                align-items: center;
-                gap: 0.5rem;
-                padding: 0.75rem 1.5rem;
-                background: #e8e0e8;
-                border-radius: 9999px;
-                font-size: 0.9rem;
-                color: #6750a4;
-              }
-              .dot {
-                width: 8px; height: 8px;
-                background: #6750a4;
-                border-radius: 50%;
-                animation: pulse 2s infinite;
-              }
-              @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
-              .links { margin-top: 2rem; display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; }
-              .links a { color: #6750a4; text-decoration: none; font-weight: 500; }
-              .links a:hover { text-decoration: underline; }
-            </style>
-          </head>
-          <body>
-            <div class="container">
-              <div class="logo">📅</div>
-              <h1>Kalender</h1>
-              <span class="badge">STAGING</span>
-              <p>カレンダーアプリ - Web版</p>
-              <div class="status">
-                <span class="dot"></span>
-                <span>Compose Multiplatform 開発中</span>
-              </div>
-              <div class="links">
-                <a href="https://github.com/kigawa-net/kalender">GitHub</a>
-                <a href="https://play.google.com/store/apps/details?id=net.kigawa.kalender">Android版</a>
-              </div>
-            </div>
-          </body>
-          </html>
-          EOF
+
+          # Webpackバンドル(JS/wasm)をコピー
+          cp -r "${WEBPACK_OUT}/." web-dist/
+
+          # Compose MultiplatformのエントリHTMLを配置
+          cp app/src/wasmJsMain/resources/index.html web-dist/index.html
+
+          # PWAマニフェストとアイコン
           cat > web-dist/manifest.json << 'EOF'
           {
             "name": "Kalender (Staging)",
@@ -117,6 +62,16 @@ jobs:
             ]
           }
           EOF
+          cp app/src/androidMain/res/drawable*/ic_launcher*.png web-dist/icon-192.png 2>/dev/null || \
+            echo "icon placeholder" > web-dist/icon-192.png
+
+          # Cloudflare PagesのSPAフォールバック
+          cat > web-dist/_redirects << 'EOF'
+          /*    /index.html   200
+          EOF
+
+          echo "=== web-dist contents ==="
+          ls -la web-dist/
 
       - name: Upload web artifacts
         uses: actions/upload-artifact@v4

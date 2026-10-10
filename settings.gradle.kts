@@ -20,6 +20,21 @@ dependencyResolutionManagement {
     repositories {
         google()
         mavenCentral()
+        // Kotlin/WasmのBinaryenツールはGitHub Releasesでのみ配布されている(Ivyパターン)。
+        // PREFER_SETTINGSではプロジェクト側リポジトリが無視されるため、ここで宣言する必要がある。
+        ivy {
+            name = "binaryenDistributions"
+            url = uri("https://github.com/WebAssembly/binaryen/releases/download")
+            patternLayout {
+                artifact("version_[revision]/binaryen-version_[revision]-[classifier].[ext]")
+            }
+            metadataSources {
+                artifact()
+            }
+            content {
+                includeModule("com.github.webassembly", "binaryen")
+            }
+        }
     }
 }
 

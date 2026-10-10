@@ -6,15 +6,14 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 import kotlinx.datetime.LocalDate
 import net.kigawa.kalender.util.startOfDayMs
+import net.kigawa.kalender.util.logErrorWithException
 import net.kigawa.kalender.model.CalendarEvent
 import net.kigawa.kalender.model.UserCalendar
 
 private const val CACHE_TTL_MS = 1_800_000L // 30分
 
-private fun logError(tag: String, message: String, e: Throwable? = null) {
-    val msg = if (e != null) "$message: ${e.message}\n${e.stackTraceToString()}" else message
-    System.err.println("[$tag] $msg")
-}
+private fun logError(tag: String, message: String, e: Throwable? = null) =
+    logErrorWithException(tag, message, e)
 
 class CalendarRepository(
     private val dataSources: List<CalendarDataSource>,
@@ -40,7 +39,7 @@ class CalendarRepository(
                                 val calendarIds = dataSource.fetchCalendars().map { it.id }
                                 localStore.upsertEventsForCalendars(events, startMs, endMs, calendarIds)
                             }.onFailure { e ->
-                                logError("CalendarRepository", "Failed to fetch events from ${dataSource.javaClass.simpleName}", e)
+                                logError("CalendarRepository", "Failed to fetch events from ${dataSource::class.simpleName}", e)
                                 allSucceeded = false
                             }
                         }
@@ -65,7 +64,7 @@ class CalendarRepository(
                     val calendars = dataSource.fetchCalendars()
                     localStore.upsertCalendars(calendars)
                 }.onFailure { e ->
-                    logError("CalendarRepository", "Failed to sync calendars from ${dataSource.javaClass.simpleName}", e)
+                    logError("CalendarRepository", "Failed to sync calendars from ${dataSource::class.simpleName}", e)
                 }
             }
         }
