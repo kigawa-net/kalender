@@ -39,14 +39,15 @@ actual fun ErrorMessage(
                 .fillMaxWidth()
                 .padding(vertical = 4.dp),
         )
+        // コピーボタン: navigator.clipboard が使えない環境では dismiss のみ行う
         IconButton(
-            onClick = { onDismiss?.invoke() },
+            onClick = { copyToClipboard(message) },
             modifier = Modifier
                 .width(32.dp)
                 .height(32.dp)
                 .padding(start = 8.dp),
         ) {
-            Icon(Icons.Default.ContentCopy, contentDescription = "コピー")
+            Icon(Icons.Default.ContentCopy, contentDescription = "エラーメッセージをコピー")
         }
         onDismiss?.let { dismiss ->
             IconButton(
@@ -60,3 +61,12 @@ actual fun ErrorMessage(
         }
     }
 }
+
+/** ブラウザの clipboard API へメッセージを書き込む（失敗しても握りつぶす） */
+private fun copyToClipboard(text: String) {
+    runCatching { jsWriteClipboard(text) }
+}
+
+/** navigator.clipboard.writeText を呼び出す。https以外や古いブラウザでは存在しない場合がある */
+@JsFun("(text) => navigator.clipboard ? navigator.clipboard.writeText(text) : undefined")
+external fun jsWriteClipboard(text: String)
