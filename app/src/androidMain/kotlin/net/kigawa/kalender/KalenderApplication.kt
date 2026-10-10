@@ -10,6 +10,7 @@ import net.kigawa.kalender.data.KalenderApiClient
 import net.kigawa.kalender.data.auth.KEYCLOAK_REDIRECT_URI
 import net.kigawa.kalender.data.auth.KeycloakAuthControllerAndroid
 import net.kigawa.kalender.data.db.RoomCalendarStore
+import net.kigawa.kalender.data.db.RoomEventTemplateStore
 import net.kigawa.kalender.di.AppContainer
 import net.kigawa.kalender.di.KeyValueStoreAndroid
 
@@ -34,5 +35,6 @@ class KalenderApplication : Application() {
         apiClient = KalenderApiClient(httpClient),
         accountLinkRedirectUri = KEYCLOAK_REDIRECT_URI,
         appScope = appScope,
+        templateStore = RoomEventTemplateStore.fromContext(this),
     )
 }
