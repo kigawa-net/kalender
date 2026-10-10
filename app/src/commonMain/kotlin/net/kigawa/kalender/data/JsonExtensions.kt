@@ -33,10 +33,12 @@ val JsonElement.jsonPrimitive: JsonPrimitive?
 val JsonElement.jsonArray: JsonArray?
     get() = this as? JsonArray
 
-fun List<JsonPrimitive>.toJsonArray(): JsonArray {
-    val jsonString = "[" + this.joinToString(",") { it.content } + "]"
-    return kotlinx.serialization.json.Json.parseToJsonElement(jsonString).jsonArray!!
-}
+/**
+ * JsonPrimitive のリストから JsonArray を構築する。
+ * 文字列連結して parseToJsonElement する方法は、`content` が JSON 引用符を
+ * 含まないため `[RRULE:...]` のような不正JSONになり即例外になる。
+ */
+fun List<JsonPrimitive>.toJsonArray(): JsonArray = JsonArray(this)
 
 fun JsonElement.optJSONArray(key: String): JsonArray? {
     return this.jsonObject()[key]?.jsonArray()

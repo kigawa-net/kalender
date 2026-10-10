@@ -125,9 +125,13 @@ class EventEditViewModel(
                         location = event.location,
                         calendarId = event.calendarId,
                         remoteId = "",
+                        // コピー先は独立した新規予定なので、コピー元シリーズの識別子は引き継がない。
+                        // 引き継ぐと複製が元シリーズに紐づき、「すべて」を選んだときに
+                        // 元のシリーズマスターを更新・削除してしまう。
+                        // 繰り返しルール自体は、シリーズを複製する意図なら保持する。
                         recurrenceRule = event.recurrenceRule?.let { rule -> RecurrenceRule.fromRRule(rule) } ?: RecurrenceRule.NONE,
-                        recurringEventId = event.recurringEventId,
-                        originalStartMs = event.originalStartMs,
+                        recurringEventId = null,
+                        originalStartMs = null,
                     )
                 }
             }

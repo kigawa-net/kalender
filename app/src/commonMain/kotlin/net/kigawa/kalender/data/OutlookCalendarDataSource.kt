@@ -278,8 +278,11 @@ class OutlookCalendarDataSource(
         val calId = calendar.accountName.encode()
         val start = formatLocalDateTimeNoOffset(startMs, TimeZone.UTC) + "Z"
         val end = formatLocalDateTimeNoOffset(endMs, TimeZone.UTC) + "Z"
+        // 注意: シリーズの元開始時刻は Graph では `originalStart`(DateTimeOffset文字列)。
+        //       `originalStartTime` というプロパティは存在せず、$select に指定すると
+        //       Graph がエラーを返して全Outlook予定の取得が失敗する。
         val url = "https://graph.microsoft.com/v1.0/me/calendars/$calId/calendarView" +
-                "?startDateTime=$start&endDateTime=$end&\$select=id,subject,start,end,isAllDay,bodyPreview,location,recurrence,seriesMasterId,originalStartTime"
+                "?startDateTime=$start&endDateTime=$end&\$select=id,subject,start,end,isAllDay,bodyPreview,location,recurrence,seriesMasterId,originalStart"
 
         val items = get(url, mapOf("Prefer" to "outlook.timezone=\"UTC\""))
             .jsonArray("value") ?: return emptyList()
@@ -293,9 +296,8 @@ class OutlookCalendarDataSource(
                 item["recurrence"]?.jsonObject,
             )
             val recurringEventId = item["seriesMasterId"]?.jsonPrimitive?.content?.takeIf { it.isNotBlank() }
-            val originalStartMs = item["originalStartTime"]?.jsonObject?.let { obj ->
-                obj["dateTime"]?.jsonPrimitive?.content?.let { parseIsoInstantMs(it + "Z") }
-            }
+            // originalStart は "2026-10-09T10:00:00" 形式の文字列
+            val originalStartMs = item["originalStart"]?.jsonPrimitive?.content?.let { parseIsoInstantMs(it + "Z") }
 
             CalendarEvent(
                 id = remoteId.toLongId(),

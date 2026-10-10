@@ -177,11 +177,15 @@ class GoogleCalendarDataSource(
             put("recurrence", listOf(JsonPrimitive(cut)).toJsonArray())
         })
 
+        // singleEvents=true で取得したインスタンスは recurrenceRule が null なので、
+        // マスターから取得した rrule を新シリーズに引き継ぐ。これがないと
+        // 「これ以降」を選んだときに以降の予定が全て消えて単発イベントだけが残る。
         val newSeries = event.copy(
             id = 0L,
             remoteId = "",
             recurringEventId = null,
             originalStartMs = null,
+            recurrenceRule = existingRrule,
         )
         return createEvent(calendarAccountName, newSeries)
     }
@@ -256,15 +260,28 @@ class GoogleCalendarDataSource(
      * RRULE に UNTIL を付与して [untilMs] の直前で終了させる。
      * 既存の UNTIL / COUNT は除去して上書きする。
      */
+    /**
+     * RRULE に UNTIL を付与して [untilMs] の直前で終了させる。
+     *
+     * 注意: RRULE 内の各プロパティ(FREQ, BYDAY, UNTIL...)はセミコロン区切りなので、
+     * セミコロンで分割してはならない。行分割は複数の recurrence 要素(改行区切り)に対してのみ行う。
+     */
     private fun cutRruleUntil(rrule: String, untilMs: Long): String {
-        val parts = rrule.split('\n', ';')
+        // 行単位(1行=1コンテントライン)で扱い、各行内はセミコロン区切りを保つ
+        val stripped = rrule.split('\n')
+            .map { withoutRRulePrefix(it.trim()) }
             .filter { it.isNotBlank() }
-            .filterNot { it.startsWith("UNTIL=", ignoreCase = true) }
-            .filterNot { it.startsWith("COUNT=", ignoreCase = true) }
-            .toMutableList()
-        val until = formatIsoBasic(untilMs - 1)
-        parts.add("UNTIL=$until")
-        return parts.joinToString("\n")
+
+        val lines = stripped.map { line ->
+            val props = line.split(';')
+                .filter { it.isNotBlank() }
+                .filterNot { it.startsWith("UNTIL=", ignoreCase = true) }
+                .filterNot { it.startsWith("COUNT=", ignoreCase = true) }
+                .toMutableList()
+            props.add("UNTIL=${formatIsoBasic(untilMs - 1)}")
+            props.joinToString(";")
+        }
+        return lines.joinToString("\n")
     }
 
     /** UTCの "yyyyMMddTHHmmssZ" 形式（RRULE の UNTIL 用） */
@@ -285,7 +302,13 @@ class GoogleCalendarDataSource(
             if (event.description.isNotEmpty()) put("description", event.description)
             if (event.location.isNotEmpty()) put("location", event.location)
             if (event.recurrenceRule != null && event.recurrenceRule.isNotEmpty()) {
-                val recurrenceArray = event.recurrenceRule?.split("\n")?.map { JsonPrimitive(it) } ?: emptyList()
+                // Google Calendar は各要素を RFC 5545 のコンテントライン全体
+                // (例: "RRULE:FREQ=DAILY") として要求するため "RRULE:" を付与する
+                val recurrenceArray = event.recurrenceRule
+                    ?.split("\n")
+                    ?.filter { it.isNotBlank() }
+                    ?.map { JsonPrimitive(withRRulePrefix(it)) }
+                    ?: emptyList()
                 put("recurrence", recurrenceArray.toJsonArray())
             }
             if (event.recurringEventId != null && event.recurringEventId.isNotEmpty()) {
@@ -330,7 +353,13 @@ class GoogleCalendarDataSource(
             val (endEpoch, _) = parseDateTime(endObj)
             val colorId = item["colorId"]?.jsonPrimitive?.content
             val remoteId = item["id"]!!.jsonPrimitive!!.content
-            val recurrenceRule = item["recurrence"]?.jsonArray?.joinToString("\n")
+            // Google は "RRULE:FREQ=DAILY" 形式で返すため、モデル保持用に
+            // プレフィックスを除去して "\n" で連結する
+            val recurrenceRule = item["recurrence"]?.jsonArray
+                ?.map { it.jsonPrimitive?.content ?: "" }
+                ?.filter { it.isNotBlank() }
+                ?.joinToString("\n") { withoutRRulePrefix(it) }
+                ?.takeIf { it.isNotBlank() }
             val recurringEventId = item["recurringEventId"]?.jsonPrimitive?.content
             val originalStartMs = item["originalStartTime"]?.jsonObject?.let { obj ->
                 parseDateTime(obj).first
@@ -379,5 +408,27 @@ private fun kotlinx.serialization.json.JsonPrimitive.booleanOrTrue(): Boolean =
 
 private val kotlinx.serialization.json.JsonPrimitive.booleanOrNull: Boolean?
     get() = content.toBooleanStrictOrNull()
+
+/**
+ * RFC 5545 のコンテントラインに "RRULE:" プレフィックスを付与する。
+ * Google Calendar API は recurrence[] の各要素をこの形式で要求する。
+ * 既にプレフィックス済み、または別種(RDATE/EXDATE/EXRULE)の場合はそのまま返す。
+ */
+private fun withRRulePrefix(line: String): String {
+    val trimmed = line.trim()
+    return if (trimmed.startsWith("RRULE:", ignoreCase = true) ||
+        trimmed.startsWith("RDATE", ignoreCase = true) ||
+        trimmed.startsWith("EXDATE", ignoreCase = true) ||
+        trimmed.startsWith("EXRULE", ignoreCase = true)
+    ) {
+        trimmed
+    } else {
+        "RRULE:$trimmed"
+    }
+}
+
+/** withRRulePrefix の逆処理。モデル内ではプレフィックスなしで保持する */
+private fun withoutRRulePrefix(line: String): String =
+    line.trim().removePrefix("RRULE:").removePrefix("rrule:")
 
 private fun encode(value: String): String = value.encodeURLParameter()

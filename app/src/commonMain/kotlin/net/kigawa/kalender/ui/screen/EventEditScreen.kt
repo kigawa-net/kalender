@@ -54,7 +54,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import net.kigawa.kalender.model.Frequency
 import net.kigawa.kalender.model.RecurrenceEditScope
+import net.kigawa.kalender.model.RecurrenceRule
 import net.kigawa.kalender.ui.component.ErrorMessage
 import net.kigawa.kalender.util.nowMs
 import net.kigawa.kalender.util.systemZone
@@ -93,6 +95,7 @@ fun EventEditScreen(
         onEndDateChange = viewModel::setEndDate,
         onEndTimeChange = viewModel::setEndTime,
         onEditScopeChange = viewModel::setEditScope,
+        onRecurrenceChange = viewModel::setRecurrenceRule,
         modifier = modifier,
     )
 }
@@ -135,6 +138,62 @@ private fun RecurrenceScopeSelector(
     }
 }
 
+/**
+ * 繰り返しの頻度と間隔を選択するセクション。
+ * 繰り返しなしの場合は非表示にするトグルを持たない（頻度チップの先頭に「なし」を置く）。
+ */
+@Composable
+private fun RecurrenceSelector(
+    rule: RecurrenceRule,
+    enabled: Boolean,
+    onChange: (RecurrenceRule) -> Unit,
+) {
+    Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
+        Text(
+            text = "繰り返し",
+            style = MaterialTheme.typography.labelLarge,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+        )
+        Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
+            RecurrenceFrequencyChip("なし", rule.frequency == Frequency.NONE, enabled) {
+                onChange(RecurrenceRule.NONE)
+            }
+            RecurrenceFrequencyChip("毎日", rule.frequency == Frequency.DAILY, enabled) {
+                onChange(rule.copy(frequency = Frequency.DAILY))
+            }
+            RecurrenceFrequencyChip("毎週", rule.frequency == Frequency.WEEKLY, enabled) {
+                onChange(
+                    rule.copy(
+                        frequency = Frequency.WEEKLY,
+                        byDay = if (rule.byDay.isEmpty()) listOf(1) else rule.byDay,
+                    ),
+                )
+            }
+            RecurrenceFrequencyChip("毎月", rule.frequency == Frequency.MONTHLY, enabled) {
+                onChange(rule.copy(frequency = Frequency.MONTHLY))
+            }
+            RecurrenceFrequencyChip("毎年", rule.frequency == Frequency.YEARLY, enabled) {
+                onChange(rule.copy(frequency = Frequency.YEARLY))
+            }
+        }
+    }
+}
+
+@Composable
+private fun RecurrenceFrequencyChip(
+    label: String,
+    selected: Boolean,
+    enabled: Boolean,
+    onClick: () -> Unit,
+) {
+    TextButton(onClick = onClick, enabled = enabled) {
+        Text(
+            text = label,
+            color = if (selected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant,
+        )
+    }
+}
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun EventEditContent(
@@ -152,6 +211,7 @@ private fun EventEditContent(
     onEndDateChange: (Long) -> Unit,
     onEndTimeChange: (Int, Int) -> Unit,
     onEditScopeChange: (RecurrenceEditScope) -> Unit = {},
+    onRecurrenceChange: (RecurrenceRule) -> Unit = {},
     modifier: Modifier = Modifier,
 ) {
     val busy = uiState.isSaving || uiState.isDeleting
@@ -218,6 +278,12 @@ private fun EventEditContent(
                 Text("終日", modifier = Modifier.weight(1f))
                 Switch(checked = uiState.allDay, onCheckedChange = onAllDayChange, enabled = !busy)
             }
+
+            RecurrenceSelector(
+                rule = uiState.recurrenceRule,
+                enabled = !busy,
+                onChange = onRecurrenceChange,
+            )
 
             HorizontalDivider()
 
