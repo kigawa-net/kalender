@@ -45,7 +45,24 @@ abstract class KalenderDatabase : RoomDatabase() {
             }
         }
 
+        /**
+         * v5→v6: 繰り返し予定の情報を events に永積化する。
+         *
+         * 注: この内容は #61(feature/61-recurring-events) で追加されたものと同一。
+         * #61 を先にマージしている環境では既に適用済みなので、ここで同じ
+         * ALTER TABLE を再度実行すると duplicate column エラーになる。
+         */
         private val MIGRATION_5_6 = object : Migration(5, 6) {
+            override fun migrate(db: SupportSQLiteDatabase) {
+                addRecurrenceColumnsIfMissing(db)
+            }
+        }
+
+        /**
+         * v6→v7: テンプレートテーブルを追加する。
+         * #61 で v5→v6 により繰り返しカラムを追加しているため、ここでは触らない。
+         */
+        private val MIGRATION_6_7 = object : Migration(6, 7) {
             override fun migrate(db: SupportSQLiteDatabase) {
                 db.execSQL(
                     "CREATE TABLE IF NOT EXISTS event_templates (" +
@@ -66,11 +83,22 @@ abstract class KalenderDatabase : RoomDatabase() {
             }
         }
 
-        private val MIGRATION_6_7 = object : Migration(6, 7) {
-            override fun migrate(db: SupportSQLiteDatabase) {
-                // 繰り返し予定の情報をイベントに永続化する
+        /** events に繰り返しカラムを追加する(既存なら何もしない) */
+        private fun addRecurrenceColumnsIfMissing(db: SupportSQLiteDatabase) {
+            val existing = mutableSetOf<String>()
+            db.query("PRAGMA table_info(events)").use { cursor ->
+                val nameIndex = cursor.getColumnIndex("name")
+                while (cursor.moveToNext()) {
+                    if (nameIndex >= 0) existing += cursor.getString(nameIndex)
+                }
+            }
+            if ("recurrenceRule" !in existing) {
                 db.execSQL("ALTER TABLE events ADD COLUMN recurrenceRule TEXT")
+            }
+            if ("recurringEventId" !in existing) {
                 db.execSQL("ALTER TABLE events ADD COLUMN recurringEventId TEXT")
+            }
+            if ("originalStartMs" !in existing) {
                 db.execSQL("ALTER TABLE events ADD COLUMN originalStartMs INTEGER")
             }
         }

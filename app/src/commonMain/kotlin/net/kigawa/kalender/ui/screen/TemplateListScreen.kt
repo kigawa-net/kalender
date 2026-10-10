@@ -47,6 +47,7 @@ import net.kigawa.kalender.model.EventTemplate
 import net.kigawa.kalender.model.Frequency
 import net.kigawa.kalender.model.RecurrenceRule
 import net.kigawa.kalender.ui.component.ErrorMessage
+import net.kigawa.kalender.viewmodel.Optional
 import net.kigawa.kalender.viewmodel.TemplateListViewModel
 
 /**
@@ -125,7 +126,7 @@ fun TemplateListScreen(
             onLocationChange = { viewModel.updateEditing(location = it) },
             onDurationChange = { viewModel.updateEditing(durationMinutes = it) },
             onAllDayChange = { viewModel.updateEditing(allDay = it) },
-            onRecurrenceChange = { viewModel.updateEditing(recurrence = it) },
+            onRecurrenceChange = { viewModel.updateEditing(recurrence = Optional.Present(it)) },
         )
     }
 }

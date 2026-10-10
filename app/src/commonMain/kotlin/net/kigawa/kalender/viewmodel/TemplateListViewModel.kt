@@ -24,6 +24,19 @@ data class TemplateListUiState(
 )
 
 /**
+ * 省略可能な引数で「変更なし」と「明示的な null」を区別するためのラッパー。
+ * `updateEditing` で `recurrence = null` を「繰り返しなしに変更」として
+ * 扱えるようにするために使う。
+ */
+sealed interface Optional<out T> {
+    /** 変更しない(現在の値を維持) */
+    data object Unchanged : Optional<Nothing>
+
+    /** 明示的な値(null を含みうる) */
+    data class Present<T>(val value: T) : Optional<T>
+}
+
+/**
  * イベントテンプレートの一覧・編集を管理するViewModel。
  */
 class TemplateListViewModel(
@@ -73,7 +86,8 @@ class TemplateListViewModel(
         location: String? = null,
         durationMinutes: Int? = null,
         allDay: Boolean? = null,
-        recurrence: RecurrenceRule? = null,
+        /** 繰り返し設定。明示的に null を渡して「繰り返しなし」へ変更できる */
+        recurrence: Optional<RecurrenceRule?> = Optional.Unchanged,
         color: Int? = null,
     ) {
         _uiState.update { state ->
@@ -86,7 +100,10 @@ class TemplateListViewModel(
                     location = location ?: current.location,
                     durationMinutes = durationMinutes ?: current.durationMinutes,
                     allDay = allDay ?: current.allDay,
-                    recurrence = recurrence ?: current.recurrence,
+                    recurrence = when (recurrence) {
+                        is Optional.Unchanged -> current.recurrence
+                        is Optional.Present -> recurrence.value
+                    },
                     color = color ?: current.color,
                 ),
                 error = null,

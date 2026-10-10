@@ -159,8 +159,21 @@ class EventEditViewModel(
 
     /** テンプレートの内容をUIステートに適用する（開始時刻は現在時刻基準） */
     private fun applyTemplateToState(template: EventTemplate) {
+        val zone = systemZone()
         val rounded = roundToNextHour(nowMs())
-        val endMs = rounded + template.durationMinutes * 60_000L
+        val startMs = if (template.allDay) {
+            // 終日はローカル日付の0時に揃える
+            rounded.toLocalDate(zone).atStartOfDayIn(zone).toEpochMilliseconds()
+        } else {
+            rounded
+        }
+        val endMs = if (template.allDay) {
+            // 終日イベントの end は排他日として扱われるため、最低でも翌日0時にする。
+            // 当日にすると開始と終了が同じ日付になり、長さゼロの不正な予定になる。
+            rounded.toLocalDate(zone).plusDays(1).atStartOfDayIn(zone).toEpochMilliseconds()
+        } else {
+            rounded + template.durationMinutes * 60_000L
+        }
         _uiState.update {
             it.copy(
                 isNew = true,
@@ -171,7 +184,7 @@ class EventEditViewModel(
                 allDay = template.allDay,
                 calendarId = if (template.preferredCalendarId != 0L) template.preferredCalendarId else it.calendarId,
                 recurrenceRule = template.recurrence ?: RecurrenceRule.NONE,
-                startMs = rounded,
+                startMs = startMs,
                 endMs = endMs,
             )
         }

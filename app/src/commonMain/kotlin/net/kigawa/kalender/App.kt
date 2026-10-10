@@ -206,7 +206,10 @@ private fun KalenderApp(container: AppContainer) {
                     onShowTemplates = { navController.navigate("event_template_pick") },
                 )
             }
-            composable(route = "event_from_template/{templateId}") { backStackEntry ->
+            composable(
+                route = "event_from_template/{templateId}",
+                arguments = listOf(navArgument("templateId") { type = NavType.LongType }),
+            ) { backStackEntry ->
                 val templateId = backStackEntry.arguments?.read { getLong("templateId") } ?: 0L
                 val vm: EventEditViewModel = viewModel(factory = viewModelFactory {
                     initializer {
