@@ -259,4 +259,74 @@ class RecurrenceRuleTest {
         val rule = RecurrenceRule.NONE.weeklyWithStartWeekday(0L)
         assertEquals(listOf(1), rule.byDay)
     }
+
+    @Test
+    fun when_toRRule_given_until_then_serializesWithZMarker() {
+        // UNTIL は UTC の絶対時刻なので Z サフィックスが必須。
+        // Z がないとローカル時刻として解釈され parser が neverEnds にする。
+        val untilMs = kotlinx.datetime.Instant.parse("2026-12-31T14:30:00Z").toEpochMilliseconds()
+        val rule = RecurrenceRule(
+            frequency = Frequency.DAILY,
+            until = untilMs,
+            neverEnds = false,
+        )
+        assertEquals("FREQ=DAILY;UNTIL=20261231T143000Z", rule.toRRule())
+    }
+
+    @Test
+    fun when_roundtrip_given_until_then_preservesUntilInstant() {
+        val untilMs = kotlinx.datetime.Instant.parse("2026-12-31T14:30:00Z").toEpochMilliseconds()
+        val original = "FREQ=DAILY;UNTIL=20261231T143000Z"
+
+        val parsed = RecurrenceRule.fromRRule(original)
+        assertEquals(untilMs, parsed.until)
+        assertEquals(false, parsed.neverEnds)
+
+        assertEquals(original, parsed.toRRule())
+    }
+
+    @Test
+    fun when_monthlyWithStartDay_given_october15_then_defaultsToDay15() {
+        // 10月15日に始めた予定が毎月1日に繰り返ってしまうバグの回帰テスト
+        val ms = kotlinx.datetime.Instant.parse("2026-10-15T10:00:00Z").toEpochMilliseconds()
+        val rule = RecurrenceRule.NONE.monthlyWithStartDay(ms)
+        assertEquals(Frequency.MONTHLY, rule.frequency)
+        assertEquals(listOf(15), rule.byMonthDay)
+        assertEquals("FREQ=MONTHLY;BYMONTHDAY=15", rule.toRRule())
+    }
+
+    @Test
+    fun when_yearlyWithStartDate_given_october15_then_defaultsToOctober15() {
+        val ms = kotlinx.datetime.Instant.parse("2026-10-15T10:00:00Z").toEpochMilliseconds()
+        val rule = RecurrenceRule.NONE.yearlyWithStartDate(ms)
+        assertEquals(Frequency.YEARLY, rule.frequency)
+        assertEquals(listOf(15), rule.byMonthDay)
+        assertEquals(listOf(10), rule.byMonth)
+        assertEquals("FREQ=YEARLY;BYMONTHDAY=15;BYMONTH=10", rule.toRRule())
+    }
+
+    @Test
+    fun when_monthlyWithStartDay_given_existingDay_then_preservesSelection() {
+        val ms = kotlinx.datetime.Instant.parse("2026-10-15T10:00:00Z").toEpochMilliseconds()
+        val rule = RecurrenceRule.monthly(byMonthDay = listOf(3)).monthlyWithStartDay(ms)
+        assertEquals(listOf(3), rule.byMonthDay)
+    }
+
+    @Test
+    fun when_yearlyWithStartDate_given_existingMonthDay_then_preservesSelection() {
+        val ms = kotlinx.datetime.Instant.parse("2026-10-15T10:00:00Z").toEpochMilliseconds()
+        val rule = RecurrenceRule(
+            frequency = Frequency.YEARLY,
+            byMonth = listOf(4),
+            byMonthDay = listOf(1),
+        ).yearlyWithStartDate(ms)
+        assertEquals(listOf(4), rule.byMonth)
+        assertEquals(listOf(1), rule.byMonthDay)
+    }
+
+    @Test
+    fun when_monthlyWithStartDay_given_zeroStartMs_then_fallsBackToDay1() {
+        val rule = RecurrenceRule.NONE.monthlyWithStartDay(0L)
+        assertEquals(listOf(1), rule.byMonthDay)
+    }
 }

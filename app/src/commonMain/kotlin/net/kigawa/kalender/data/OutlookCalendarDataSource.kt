@@ -184,7 +184,26 @@ class OutlookCalendarDataSource(
         val masterUrl = "https://graph.microsoft.com/v1.0/me/calendars/$calId/events/${masterId.encode()}"
 
         if (scope == RecurrenceEditScope.ALL) {
-            patch(masterUrl, buildEventJson(event))
+            // calendarView の発生インスタンスはその発生日の start/end を持つ。
+            // マスターにそのまま当てると初回発生日が上書きされ series がずれるため、
+            // マスターの開始日時を基準に、時間差分のみを適用する。
+            val master = runCatching { get(masterUrl) }.getOrNull()
+            val masterStart = master?.get("start")?.jsonObject?.get("dateTime")?.jsonPrimitive?.content
+            val patchJson = if (masterStart != null && masterStart != event.startMs.toString()) {
+                // 差分は分単位で扱う（タイムゾーンはUTC固定で送る）
+                val deltaMinutes =
+                    (event.startMs - (event.originalStartMs ?: event.startMs)) / 60_000L
+                val baseStartMs = runCatching {
+                    parseIsoInstantMs(normalizeIsoInstant(masterStart))
+                }.getOrNull() ?: event.startMs
+                event.copy(
+                    startMs = baseStartMs + deltaMinutes * 60_000L,
+                    endMs = baseStartMs + deltaMinutes * 60_000L + (event.endMs - event.startMs),
+                ).let { buildEventJson(it) }
+            } else {
+                buildEventJson(event)
+            }
+            patch(masterUrl, patchJson)
             return event.copy(remoteId = masterId)
         }
 
@@ -210,6 +229,14 @@ class OutlookCalendarDataSource(
     private suspend fun fetchMasterRrule(masterUrl: String): String? {
         val master = runCatching { get(masterUrl) }.getOrNull() ?: return null
         return OutlookRecurrenceConverter.graphToRrule(master["recurrence"]?.jsonObject)
+    }
+
+    companion object {
+        /** Z サフィックスが無い/二重の ISO 文字列を parseIsoInstantMs 用に正規化する */
+        internal fun normalizeIsoInstant(raw: String): String {
+            val trimmed = raw.trim()
+            return if (trimmed.endsWith("Z", ignoreCase = true)) trimmed else "${trimmed}Z"
+        }
     }
 
     /**

@@ -173,10 +173,13 @@ private fun RecurrenceSelector(
                 onChange(rule.weeklyWithStartWeekday(startMs))
             }
             RecurrenceFrequencyChip("毎月", rule.frequency == Frequency.MONTHLY, enabled) {
-                onChange(rule.withFrequency(Frequency.MONTHLY))
+                // 月次は開始日の「日」を既定値にする。1日固定だと
+                // 15日に始めた予定が毎月1日に繰り返ってしまう
+                onChange(rule.monthlyWithStartDay(startMs))
             }
             RecurrenceFrequencyChip("毎年", rule.frequency == Frequency.YEARLY, enabled) {
-                onChange(rule.withFrequency(Frequency.YEARLY))
+                // 年次は開始日の「月日」を既定値にする
+                onChange(rule.yearlyWithStartDate(startMs))
             }
         }
     }
