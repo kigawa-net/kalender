@@ -21,12 +21,19 @@ import kotlinx.serialization.json.jsonArray
 import kotlinx.serialization.json.jsonObject
 import kotlinx.serialization.json.jsonPrimitive
 import kotlinx.serialization.json.put
+import net.kigawa.kalender.data.jsonArray
+import net.kigawa.kalender.data.jsonObject
+import net.kigawa.kalender.data.optJSONObject
+import net.kigawa.kalender.data.optJSONArray
+import net.kigawa.kalender.data.optString
 import net.kigawa.kalender.model.CalendarEvent
+import net.kigawa.kalender.model.RecurrenceEditScope
 import net.kigawa.kalender.model.UserCalendar
+import net.kigawa.kalender.util.formatIsoDate
 import net.kigawa.kalender.util.formatIsoDateAtMidnight
-import net.kigawa.kalender.util.platformLogError
 import net.kigawa.kalender.util.formatLocalDateTimeNoOffset
 import net.kigawa.kalender.util.parseIsoInstantMs
+import net.kigawa.kalender.util.platformLogError
 
 class OutlookCalendarDataSource(
     private val accessToken: String,
@@ -124,6 +131,23 @@ class OutlookCalendarDataSource(
             if (event.location.isNotEmpty()) {
                 put("location", buildJsonObject { put("displayName", event.location) })
             }
+            // 繰り返し設定（RRULE → Microsoft Graph recurrence）
+            // 注意: range.startDate/endDate は Graph API 上 "yyyy-MM-dd" 形式(Date)が必須。
+            //       start.dateTime 用の formatIsoDateAtMidnight は使えない。
+            val graphRecurrence = event.recurrenceRule?.let { rrule ->
+                OutlookRecurrenceConverter.rruleToGraph(rrule, event.startMs) { ms ->
+                    formatIsoDate(ms)
+                }
+            }
+            if (graphRecurrence != null) {
+                put("recurrence", graphRecurrence)
+            }
+            if (event.recurringEventId != null && event.recurringEventId.isNotEmpty()) {
+                put("seriesMasterId", event.recurringEventId)
+            }
+            if (event.originalStartMs != null) {
+                // Outlookでは元の開始時刻を明示的に扱わないが、念のため
+            }
         }
     }
 
@@ -136,34 +160,144 @@ class OutlookCalendarDataSource(
         return event.copy(id = remoteId.toLongId(), remoteId = remoteId, calendarId = calendarId)
     }
 
-    suspend fun updateEvent(calendarAccountName: String, event: CalendarEvent): CalendarEvent {
+    /**
+     * 予定を更新する。
+     *
+     * @param scope 繰り返し予定の編集対象（繰り返しなしの予定では無視される）
+     */
+    suspend fun updateEvent(
+        calendarAccountName: String,
+        event: CalendarEvent,
+        scope: RecurrenceEditScope = RecurrenceEditScope.ALL,
+    ): CalendarEvent {
         require(event.remoteId.isNotEmpty()) { "remoteId が空です" }
         val calId = calendarAccountName.encode()
-        val eventId = event.remoteId.encode()
-        val url = "https://graph.microsoft.com/v1.0/me/calendars/$calId/events/$eventId"
-        patch(url, buildEventJson(event))
-        return event
+        val isRecurring = !event.recurrenceRule.isNullOrEmpty() || !event.recurringEventId.isNullOrEmpty()
+
+        if (!isRecurring || scope == RecurrenceEditScope.THIS_EVENT) {
+            val url = "https://graph.microsoft.com/v1.0/me/calendars/$calId/events/${event.remoteId.encode()}"
+            patch(url, buildEventJson(event))
+            return event
+        }
+
+        val masterId = event.recurringEventId?.takeIf { it.isNotBlank() } ?: event.remoteId
+        val masterUrl = "https://graph.microsoft.com/v1.0/me/calendars/$calId/events/${masterId.encode()}"
+
+        if (scope == RecurrenceEditScope.ALL) {
+            patch(masterUrl, buildEventJson(event))
+            return event.copy(remoteId = masterId)
+        }
+
+        // THIS_AND_FOLLOWING: マスターを endDate で打ち切り、この予定から新シリーズを作る
+        val overwrittenOriginalStart = event.originalStartMs ?: event.startMs
+        val masterRrule = fetchMasterRrule(masterUrl)
+        patch(masterUrl, buildSeriesCutJson(masterUrl, overwrittenOriginalStart))
+
+        // calendarView のインスタンスは recurrence が null なので、
+        // マスターから取得した rrule を引き継ぐ。これがないと
+        // 「これ以降」を選んだときに以降の予定が全て消えて単発イベントだけが残る。
+        val newSeries = event.copy(
+            id = 0L,
+            remoteId = "",
+            recurringEventId = null,
+            originalStartMs = null,
+            recurrenceRule = event.recurrenceRule ?: masterRrule,
+        )
+        return createEvent(calendarAccountName, newSeries)
     }
 
-    suspend fun deleteEvent(calendarAccountName: String, remoteId: String) {
+    /** 繰り返し予定のマスターから RRULE 文字列を取得する */
+    private suspend fun fetchMasterRrule(masterUrl: String): String? {
+        val master = runCatching { get(masterUrl) }.getOrNull() ?: return null
+        return OutlookRecurrenceConverter.graphToRrule(master["recurrence"]?.jsonObject)
+    }
+
+    /**
+     * 予定を削除する。
+     *
+     * @param scope 繰り返し予定の削除対象（繰り返しなしの予定では無視される）
+     * @param originalStartMs THIS_AND_FOLLOWING において打ち切り基準とする開始時刻
+     */
+    suspend fun deleteEvent(
+        calendarAccountName: String,
+        remoteId: String,
+        scope: RecurrenceEditScope = RecurrenceEditScope.ALL,
+        originalStartMs: Long? = null,
+        recurringEventId: String? = null,
+    ) {
         require(remoteId.isNotEmpty()) { "remoteId が空です" }
         val calId = calendarAccountName.encode()
-        val eventId = remoteId.encode()
-        val url = "https://graph.microsoft.com/v1.0/me/calendars/$calId/events/$eventId"
-        httpDelete(url)
+
+        if (scope == RecurrenceEditScope.THIS_EVENT) {
+            val url = "https://graph.microsoft.com/v1.0/me/calendars/$calId/events/${remoteId.encode()}"
+            httpDelete(url)
+            return
+        }
+
+        val masterId = recurringEventId?.takeIf { it.isNotBlank() } ?: remoteId
+        val masterUrl = "https://graph.microsoft.com/v1.0/me/calendars/$calId/events/${masterId.encode()}"
+
+        if (scope == RecurrenceEditScope.ALL) {
+            httpDelete(masterUrl)
+            return
+        }
+
+        // THIS_AND_FOLLOWING: マスターをこの予定の前日で終了させる
+        val untilMs = originalStartMs ?: return
+        patch(masterUrl, buildSeriesCutJson(masterUrl, untilMs))
+    }
+
+    /** 繰り返し予定のマスターを指定日で終了させるための部分更新JSON */
+    /**
+     * 繰り返し予定のマスターを指定日で終了させるための部分更新JSON。
+     *
+     * Graph では `recurrence` が1つのプロパティなので `range` だけを
+     * 部分更新できない。マスターから取得した既存の recurrence をベースに
+     * range だけ差し替えた完全な recurrence を送る必要がある。
+     * (endDate range には type/endDate に加えて startDate が必須)
+     */
+    private suspend fun buildSeriesCutJson(masterUrl: String, untilMs: Long): JsonObject {
+        val existing = runCatching { get(masterUrl) }.getOrNull()
+        val existingRecurrence = existing?.get("recurrence")?.jsonObject
+
+        val range = buildJsonObject {
+            put("type", "endDate")
+            put("endDate", formatIsoDate(untilMs - 24 * 60 * 60 * 1000L))
+            // startDate は必須。既存値を尊重し、取得できなければ開始日で埋める
+            put("startDate", existingRecurrence?.get("range")?.jsonObject?.get("startDate")?.jsonPrimitive?.content
+                ?: formatIsoDate(untilMs))
+        }
+
+        return buildJsonObject {
+            put(
+                "recurrence",
+                buildJsonObject {
+                    // pattern は必須。既存値があればそれを使う
+                    existingRecurrence?.get("pattern")?.jsonObject?.let { put("pattern", it) }
+                        ?: put(
+                            "pattern",
+                            buildJsonObject {
+                                put("type", "daily")
+                                put("interval", 1)
+                            },
+                        )
+                    put("range", range)
+                },
+            )
+        }
     }
 
     override suspend fun fetchCalendars(): List<UserCalendar> {
         cachedCalendars?.let { return it }
-        val items = get("https://graph.microsoft.com/v1.0/me/calendars")["value"]?.jsonArray
-            ?: return emptyList()
+        val items = get("https://graph.microsoft.com/v1.0/me/calendars")
+            .jsonArray("value") ?: return emptyList()
         val result = items.map { itemEl ->
             val item = itemEl.jsonObject
-            val id = item["id"]!!.jsonPrimitive.content
+            val id = item["id"]!!.jsonPrimitive!!.content
             UserCalendar(
                 id = id.toLongId(),
-                name = item["name"]?.jsonPrimitive?.contentOrNull() ?: "",
-                color = (item["color"]?.jsonPrimitive?.contentOrNull() ?: "").toOutlookColor(),
+                name = item.optString("name", ""),
+                color = item.optString("color").toOutlookColor(),
                 accountName = id,
                 ownerEmail = ownerEmail,
             )
@@ -179,47 +313,63 @@ class OutlookCalendarDataSource(
         val calId = calendar.accountName.encode()
         val start = formatLocalDateTimeNoOffset(startMs, TimeZone.UTC) + "Z"
         val end = formatLocalDateTimeNoOffset(endMs, TimeZone.UTC) + "Z"
+        // 注意: シリーズの元開始時刻は Graph では `originalStart`(DateTimeOffset文字列)。
+        //       `originalStartTime` というプロパティは存在せず、$select に指定すると
+        //       Graph がエラーを返して全Outlook予定の取得が失敗する。
         val url = "https://graph.microsoft.com/v1.0/me/calendars/$calId/calendarView" +
-            "?startDateTime=$start&endDateTime=$end&\$select=id,subject,start,end,isAllDay,bodyPreview,location"
+                "?startDateTime=$start&endDateTime=$end&\$select=id,subject,start,end,isAllDay,bodyPreview,location,recurrence,seriesMasterId,originalStart"
 
-        val items = get(url, mapOf("Prefer" to "outlook.timezone=\"UTC\""))["value"]?.jsonArray
-            ?: return emptyList()
+        val items = get(url, mapOf("Prefer" to "outlook.timezone=\"UTC\""))
+            .jsonArray("value") ?: return emptyList()
         return items.map { itemEl ->
             val item = itemEl.jsonObject
             val startObj = item["start"]!!.jsonObject
             val endObj = item["end"]!!.jsonObject
             val isAllDay = item["isAllDay"]?.jsonPrimitive?.content?.toBooleanStrictOrNull() ?: false
-            val remoteId = item["id"]!!.jsonPrimitive.content
+            val remoteId = item["id"]!!.jsonPrimitive!!.content
+            val recurrenceRule = OutlookRecurrenceConverter.graphToRrule(
+                item["recurrence"]?.jsonObject,
+            )
+            val recurringEventId = item["seriesMasterId"]?.jsonPrimitive?.content?.takeIf { it.isNotBlank() }
+            // originalStart は UTC の DateTimeOffset 文字列。
+            // "2026-10-09T10:00:00Z" のように Z 付きで返る場合もあるため、
+            // サフィックス有無を見てから parseIsoInstantMs に渡す。
+            val originalStartMs = item["originalStart"]?.jsonPrimitive?.content?.let { raw ->
+                val normalized = if (raw.endsWith("Z", ignoreCase = true)) raw else "${raw}Z"
+                runCatching { parseIsoInstantMs(normalized) }.getOrNull()
+            }
 
             CalendarEvent(
                 id = remoteId.toLongId(),
                 calendarId = calendar.id,
-                title = item["subject"]?.jsonPrimitive?.contentOrNull() ?: "(タイトルなし)",
-                startMs = parseIsoInstantMs(startObj["dateTime"]!!.jsonPrimitive.content + "Z"),
-                endMs = parseIsoInstantMs(endObj["dateTime"]!!.jsonPrimitive.content + "Z"),
+                title = item.optString("subject", "(タイトルなし)"),
+                startMs = parseIsoInstantMs(startObj["dateTime"]!!.jsonPrimitive!!.content + "Z"),
+                endMs = parseIsoInstantMs(endObj["dateTime"]!!.jsonPrimitive!!.content + "Z"),
                 allDay = isAllDay,
                 color = calendar.color,
                 timeZone = "UTC",
-                description = item["bodyPreview"]?.jsonPrimitive?.contentOrNull() ?: "",
-                location = item["location"]?.jsonObject?.get("displayName")?.jsonPrimitive?.contentOrNull() ?: "",
+                description = item.optString("bodyPreview", ""),
+                location = item["location"]?.jsonObject?.optString("displayName", "") ?: "",
                 remoteId = remoteId,
+                recurrenceRule = recurrenceRule,
+                recurringEventId = recurringEventId,
+                originalStartMs = originalStartMs,
             )
         }
     }
 
     private fun String.toLongId(): Long = hashCode().toLong().and(0x7FFFFFFFL)
 
-    private fun String.toOutlookColor(): Int = when (lowercase()) {
-        "lightblue" -> 0xFF99CCFF.toInt()
-        "lightgreen" -> 0xFF99FF99.toInt()
-        "lightorange" -> 0xFFFFCC99.toInt()
-        "lightred" -> 0xFFFF9999.toInt()
-        "lightyellow" -> 0xFFFFFFCC.toInt()
-        else -> 0xFF0078D4.toInt() // Default Outlook Blue
+    private fun String.toOutlookColor(): Int {
+        return when (lowercase()) {
+            "lightblue" -> 0xFF99CCFF.toInt()
+            "lightgreen" -> 0xFF99FF99.toInt()
+            "lightorange" -> 0xFFFFCC99.toInt()
+            "lightred" -> 0xFFFF9999.toInt()
+            "lightyellow" -> 0xFFFFFFCC.toInt()
+            else -> 0xFF0078D4.toInt() // Default Outlook Blue
+        }
     }
 
     private fun String.encode(): String = encodeURLParameter()
 }
-
-private fun kotlinx.serialization.json.JsonPrimitive.contentOrNull(): String? =
-    if (this is kotlinx.serialization.json.JsonNull) null else content
