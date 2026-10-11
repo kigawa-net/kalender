@@ -200,7 +200,13 @@ class GoogleCalendarDataSource(
             } else {
                 event.startMs
             }
-            val durationMs = if (masterStart != null && masterEnd != null) masterEnd - masterStart else null
+            val durationMs = if (masterStart != null && masterEnd != null) {
+                // 編集後の所要時間を優先する。マスターの旧durationを使うと
+                // 終了時刻だけを変えた編集が破棄される。
+                (event.endMs - event.startMs)
+            } else {
+                null
+            }
             val editedEndMs = if (durationMs != null) editedStartMs + durationMs else event.endMs
 
             val patch = buildJsonObject {
@@ -237,15 +243,20 @@ class GoogleCalendarDataSource(
         // THIS_AND_FOLLOWING: 既存シリーズをこの予定の直前で打ち切り、この予定から新シリーズを作る
         val overwrittenOriginalStart = event.originalStartMs ?: event.startMs
         val existingRrule = fetchRrule(masterUrl)
-        // ユーザーが UI で繰り返しを変更した場合はそれを優先し、
-        // 未変更(インスタンスなので null)のときだけマスターの rrule を引き継ぐ。
+        // 新シリーズに適用するルール。ユーザーが UI で繰り返しを変更した場合はそれを優先し、
+        // 未変更(singleEvents=true のインスタンスなので null)のときだけマスターの rrule を引き継ぐ。
         // 無条件に existingRrule を当てると周波数変更が破棄される。
         val desiredRrule = event.recurrenceRule?.takeIf { it.isNotBlank() } ?: existingRrule
         if (desiredRrule.isNullOrEmpty()) {
             patch(masterUrl, buildEventJson(event))
             return event.copy(remoteId = masterId)
         }
-        val cut = cutRruleUntil(desiredRrule, overwrittenOriginalStart)
+
+        // 旧マスターは「元のルール(existingRrule)」で打ち切る。
+        // ここで desiredRrule を使うと、日次→週次変更のような場合に
+        // 過去の日次発生まで週次として書き換えられ、過去の予定が消えてしまう。
+        val cutRule = existingRrule?.takeIf { it.isNotBlank() } ?: desiredRrule
+        val cut = cutRruleUntil(cutRule, overwrittenOriginalStart)
         // recurrence だけを PATCH する(PUT だとマスターの他フィールドが消える)。
         // cutRruleUntil は "RRULE:" を除去するので、Google へ送る前に復元する。
         val cutLines = cut.split("\n")
@@ -255,14 +266,15 @@ class GoogleCalendarDataSource(
             put("recurrence", cutLines.toJsonArray())
         })
 
-        // 新シリーズには打ち切り後の rrule を引き継ぐ。これがないと
-        // 「これ以降」を選んだときに以降の予定が全て消えて単発イベントだけが残る。
+        // 新シリーズには「打ち切り前の desiredRrule」をそのまま入れる。
+        // cut(UNTIL 入り)を入れると、この発生の直前に終了日が来るため
+        // DTSTART より前の UNTIL になり、拒否されるか以降の発生が作られない。
         val newSeries = event.copy(
             id = 0L,
             remoteId = "",
             recurringEventId = null,
             originalStartMs = null,
-            recurrenceRule = cut,
+            recurrenceRule = desiredRrule,
         )
         return createEvent(calendarAccountName, newSeries)
     }
