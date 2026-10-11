@@ -186,22 +186,52 @@ class GoogleCalendarDataSource(
             // singleEvents=true で取得したインスタンスは recurrence が省略されているため、
             // そのまま buildEventJson を送信するとマスターが繰り返しなしの単発イベントになる。
             // 編集対象のフィールドだけを PATCH で送る。
+            //
+            // 重要: event.startMs/endMs は singleEvents=true で取得した「その発生」の日付。
+            // この値をマスターにそのまま当てると、マスターが選択した発生日に移動し
+            // 以降の発生がずれる。マスターの元の開始日時を基準に、時間差分だけを適用する。
+            val master = runCatching { get(masterUrl) }.getOrNull()
+            val masterStart = master?.get("start")?.jsonObject?.let { parseDateTime(it).first }
+            val masterEnd = master?.get("end")?.jsonObject?.let { parseDateTime(it).first }
+            val editedStartMs = if (masterStart != null && masterStart != event.startMs) {
+                // 発生の開始が変わっている場合は、マスター開始時刻に対して同じ時刻へシフトさせる
+                val deltaMinutes = (event.startMs - (event.originalStartMs ?: event.startMs)) / 60_000L
+                masterStart + deltaMinutes * 60_000L
+            } else {
+                event.startMs
+            }
+            val durationMs = if (masterStart != null && masterEnd != null) {
+                // 編集後の所要時間を優先する。マスターの旧durationを使うと
+                // 終了時刻だけを変えた編集が破棄される。
+                (event.endMs - event.startMs)
+            } else {
+                null
+            }
+            val editedEndMs = if (durationMs != null) editedStartMs + durationMs else event.endMs
+
             val patch = buildJsonObject {
                 put("summary", event.title)
                 if (event.description.isNotEmpty()) put("description", event.description)
                 if (event.location.isNotEmpty()) put("location", event.location)
+                // 繰り返しルールは明示的に変更された場合のみ送る
+                if (!event.recurrenceRule.isNullOrEmpty()) {
+                    val lines = event.recurrenceRule.split("\n")
+                        .filter { it.isNotBlank() }
+                        .map { JsonPrimitive(withRRulePrefix(it)) }
+                    put("recurrence", lines.toJsonArray())
+                }
                 if (event.allDay) {
-                    put("start", buildJsonObject { put("date", formatIsoDate(event.startMs)) })
-                    put("end", buildJsonObject { put("date", formatIsoDate(event.endMs)) })
+                    put("start", buildJsonObject { put("date", formatIsoDate(editedStartMs)) })
+                    put("end", buildJsonObject { put("date", formatIsoDate(editedEndMs)) })
                 } else {
                     val tz = event.timeZone.ifEmpty { systemZone().id }
                     val zone = timeZoneOrNull(tz) ?: systemZone()
                     put("start", buildJsonObject {
-                        put("dateTime", formatIsoOffsetDateTime(event.startMs, zone))
+                        put("dateTime", formatIsoOffsetDateTime(editedStartMs, zone))
                         put("timeZone", tz)
                     })
                     put("end", buildJsonObject {
-                        put("dateTime", formatIsoOffsetDateTime(event.endMs, zone))
+                        put("dateTime", formatIsoOffsetDateTime(editedEndMs, zone))
                         put("timeZone", tz)
                     })
                 }
@@ -213,25 +243,38 @@ class GoogleCalendarDataSource(
         // THIS_AND_FOLLOWING: 既存シリーズをこの予定の直前で打ち切り、この予定から新シリーズを作る
         val overwrittenOriginalStart = event.originalStartMs ?: event.startMs
         val existingRrule = fetchRrule(masterUrl)
-        if (existingRrule.isNullOrEmpty()) {
+        // 新シリーズに適用するルール。ユーザーが UI で繰り返しを変更した場合はそれを優先し、
+        // 未変更(singleEvents=true のインスタンスなので null)のときだけマスターの rrule を引き継ぐ。
+        // 無条件に existingRrule を当てると周波数変更が破棄される。
+        val desiredRrule = event.recurrenceRule?.takeIf { it.isNotBlank() } ?: existingRrule
+        if (desiredRrule.isNullOrEmpty()) {
             patch(masterUrl, buildEventJson(event))
             return event.copy(remoteId = masterId)
         }
-        val cut = cutRruleUntil(existingRrule, overwrittenOriginalStart)
-        // recurrence だけを PATCH する(PUT だとマスターの他フィールドが消える)
+
+        // 旧マスターは「元のルール(existingRrule)」で打ち切る。
+        // ここで desiredRrule を使うと、日次→週次変更のような場合に
+        // 過去の日次発生まで週次として書き換えられ、過去の予定が消えてしまう。
+        val cutRule = existingRrule?.takeIf { it.isNotBlank() } ?: desiredRrule
+        val cut = cutRruleUntil(cutRule, overwrittenOriginalStart)
+        // recurrence だけを PATCH する(PUT だとマスターの他フィールドが消える)。
+        // cutRruleUntil は "RRULE:" を除去するので、Google へ送る前に復元する。
+        val cutLines = cut.split("\n")
+            .filter { it.isNotBlank() }
+            .map { JsonPrimitive(withRRulePrefix(it)) }
         patch(masterUrl, buildJsonObject {
-            put("recurrence", listOf(JsonPrimitive(cut)).toJsonArray())
+            put("recurrence", cutLines.toJsonArray())
         })
 
-        // singleEvents=true で取得したインスタンスは recurrenceRule が null なので、
-        // マスターから取得した rrule を新シリーズに引き継ぐ。これがないと
-        // 「これ以降」を選んだときに以降の予定が全て消えて単発イベントだけが残る。
+        // 新シリーズには「打ち切り前の desiredRrule」をそのまま入れる。
+        // cut(UNTIL 入り)を入れると、この発生の直前に終了日が来るため
+        // DTSTART より前の UNTIL になり、拒否されるか以降の発生が作られない。
         val newSeries = event.copy(
             id = 0L,
             remoteId = "",
             recurringEventId = null,
             originalStartMs = null,
-            recurrenceRule = existingRrule,
+            recurrenceRule = desiredRrule,
         )
         return createEvent(calendarAccountName, newSeries)
     }
@@ -271,9 +314,13 @@ class GoogleCalendarDataSource(
             return
         }
         val cut = cutRruleUntil(existingRrule, untilMs)
-        // recurrence だけを PATCH する(PUT だとマスターの他フィールドが消える)
+        // recurrence だけを PATCH する(PUT だとマスターの他フィールドが消える)。
+        // cutRruleUntil は "RRULE:" を除去するので、Google へ送る前に復元する。
+        val cutLines = cut.split("\n")
+            .filter { it.isNotBlank() }
+            .map { JsonPrimitive(withRRulePrefix(it)) }
         patch(masterUrl, buildJsonObject {
-            put("recurrence", listOf(JsonPrimitive(cut)).toJsonArray())
+            put("recurrence", cutLines.toJsonArray())
         })
     }
 
