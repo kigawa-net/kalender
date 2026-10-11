@@ -16,28 +16,17 @@ import kotlinx.serialization.json.jsonObject
 import kotlinx.serialization.json.jsonPrimitive
 
 /**
- * アカウントIDを表す値クラス（型安全性のため）
+ * アカウントIDを表す型（型安全性のため）
  */
 @kotlinx.serialization.Serializable
-@JvmInline
-value class AccountId(val value: String)
+data class AccountId(val value: String)
 
 /**
- * プロバイダIDを表す値クラス（型安全性のため）
+ * プロバイダIDを表す型（型安全性のため）
  */
 @kotlinx.serialization.Serializable
-@JvmInline
-value class ProviderId(val value: String)
+data class ProviderId(val value: String)
 
-@JvmName("fetchCalendarTokenByAccountId")
-suspend fun fetchCalendarToken(accessToken: String, accountId: AccountId): String? {
-    error("Platform-specific implementation required")
-}
-
-@JvmName("fetchCalendarTokenByProvider")
-suspend fun fetchCalendarToken(accessToken: String, provider: ProviderId): String? {
-    error("Platform-specific implementation required")
-}
 /**
  * 外部カレンダーアカウントの連携情報
  */
@@ -161,7 +150,7 @@ class KalenderApiClient(
      * 互換性のための旧API（段階的移行用）
      */
     @Deprecated("Use fetchCalendarToken with AccountId instead", replaceWith = ReplaceWith("fetchCalendarToken(accessToken, AccountId(accountId))"))
-    suspend fun fetchCalendarToken(accessToken: String, provider: ProviderId): String? {
+    suspend fun fetchCalendarTokenByProvider(accessToken: String, provider: ProviderId): String? {
         val response = httpClient.get("$baseUrl/api/calendar-token/${provider.value.encodeURLParameter()}") {
             header(HttpHeaders.Authorization, "Bearer $accessToken")
         }

@@ -27,6 +27,7 @@ import net.kigawa.kalender.model.CalendarEvent
 import net.kigawa.kalender.model.UserCalendar
 import net.kigawa.kalender.util.mondayOfWeek
 import net.kigawa.kalender.util.plusWeeks
+import net.kigawa.kalender.util.platformLogError
 import net.kigawa.kalender.util.startOfDayMs
 import net.kigawa.kalender.util.todayLocalDate
 
@@ -106,9 +107,9 @@ class WeeklyCalendarViewModel(
         val dataSources = mutableListOf<CalendarDataSource>()
         for (account in linkedAccounts) {
             val ownerEmail = account.providerUserName ?: continue
-            val providerToken = apiClient.fetchCalendarToken(keycloakAccessToken, ProviderId(account.provider))
+            val providerToken = apiClient.fetchCalendarTokenByProvider(keycloakAccessToken, ProviderId(account.provider))
                 ?: run {
-                    System.err.println("[WeeklyCalendarViewModel] Failed to fetch calendar token for provider=${account.provider}, email=$ownerEmail")
+                    platformLogError("WeeklyCalendarViewModel", "Failed to fetch calendar token for provider=${account.provider}, email=$ownerEmail")
                     continue
                 }
             when (account.provider) {

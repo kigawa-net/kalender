@@ -25,6 +25,7 @@ import net.kigawa.kalender.model.UserCalendar
 import net.kigawa.kalender.util.formatIsoDate
 import net.kigawa.kalender.util.formatIsoOffsetDateTime
 import net.kigawa.kalender.util.parseHexColorOrNull
+import net.kigawa.kalender.util.platformLogError
 import net.kigawa.kalender.util.parseIsoDateStartMs
 import net.kigawa.kalender.util.parseIsoInstantMs
 import net.kigawa.kalender.util.systemZone
@@ -54,7 +55,7 @@ class GoogleCalendarDataSource(
         val text = response.bodyAsText()
         if (!response.status.isSuccess()) {
             val errorMsg = "Google Calendar API Error ${response.status.value}: $text"
-            System.err.println("[GoogleCalendarDataSource] GET $url failed: $errorMsg")
+            platformLogError("GoogleCalendarDataSource", "GET $url failed: $errorMsg")
             throw Exception(errorMsg)
         }
         return Json.parseToJsonElement(text).jsonObject
@@ -69,7 +70,7 @@ class GoogleCalendarDataSource(
         val text = response.bodyAsText()
         if (!response.status.isSuccess()) {
             val errorMsg = "Google Calendar API Error ${response.status.value}: $text"
-            System.err.println("[GoogleCalendarDataSource] POST $url failed: $errorMsg")
+            platformLogError("GoogleCalendarDataSource", "POST $url failed: $errorMsg")
             throw Exception(errorMsg)
         }
         return Json.parseToJsonElement(text).jsonObject
@@ -84,7 +85,7 @@ class GoogleCalendarDataSource(
         val text = response.bodyAsText()
         if (!response.status.isSuccess()) {
             val errorMsg = "Google Calendar API Error ${response.status.value}: $text"
-            System.err.println("[GoogleCalendarDataSource] PUT $url failed: $errorMsg")
+            platformLogError("GoogleCalendarDataSource", "PUT $url failed: $errorMsg")
             throw Exception(errorMsg)
         }
         return Json.parseToJsonElement(text).jsonObject
@@ -96,7 +97,7 @@ class GoogleCalendarDataSource(
         }
         if (!response.status.isSuccess() && response.status.value != 204) {
             val errorMsg = "Google Calendar API Error ${response.status.value}: ${response.bodyAsText()}"
-            System.err.println("[GoogleCalendarDataSource] DELETE $url failed: $errorMsg")
+            platformLogError("GoogleCalendarDataSource", "DELETE $url failed: $errorMsg")
             throw Exception(errorMsg)
         }
     }

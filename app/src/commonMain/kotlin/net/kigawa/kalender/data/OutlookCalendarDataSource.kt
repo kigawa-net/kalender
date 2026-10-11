@@ -24,6 +24,7 @@ import kotlinx.serialization.json.put
 import net.kigawa.kalender.model.CalendarEvent
 import net.kigawa.kalender.model.UserCalendar
 import net.kigawa.kalender.util.formatIsoDateAtMidnight
+import net.kigawa.kalender.util.platformLogError
 import net.kigawa.kalender.util.formatLocalDateTimeNoOffset
 import net.kigawa.kalender.util.parseIsoInstantMs
 
@@ -44,7 +45,7 @@ class OutlookCalendarDataSource(
         val text = response.bodyAsText()
         if (!response.status.isSuccess()) {
             val errorMsg = "Graph API Error ${response.status.value}: $text"
-            System.err.println("[OutlookCalendarDataSource] GET $url failed: $errorMsg")
+            platformLogError("OutlookCalendarDataSource", "GET $url failed: $errorMsg")
             throw Exception(errorMsg)
         }
         return Json.parseToJsonElement(text).jsonObject
@@ -60,7 +61,7 @@ class OutlookCalendarDataSource(
         val text = response.bodyAsText()
         if (!response.status.isSuccess()) {
             val errorMsg = "Graph API Error ${response.status.value}: $text"
-            System.err.println("[OutlookCalendarDataSource] POST $url failed: $errorMsg")
+            platformLogError("OutlookCalendarDataSource", "POST $url failed: $errorMsg")
             throw Exception(errorMsg)
         }
         return Json.parseToJsonElement(text).jsonObject
@@ -76,7 +77,7 @@ class OutlookCalendarDataSource(
         val text = response.bodyAsText()
         if (!response.status.isSuccess()) {
             val errorMsg = "Graph API Error ${response.status.value}: $text"
-            System.err.println("[OutlookCalendarDataSource] PATCH $url failed: $errorMsg")
+            platformLogError("OutlookCalendarDataSource", "PATCH $url failed: $errorMsg")
             throw Exception(errorMsg)
         }
         return Json.parseToJsonElement(text).jsonObject
@@ -89,7 +90,7 @@ class OutlookCalendarDataSource(
         }
         if (!response.status.isSuccess() && response.status.value != 204) {
             val errorMsg = "Graph API Error ${response.status.value}: ${response.bodyAsText()}"
-            System.err.println("[OutlookCalendarDataSource] DELETE $url failed: $errorMsg")
+            platformLogError("OutlookCalendarDataSource", "DELETE $url failed: $errorMsg")
             throw Exception(errorMsg)
         }
     }

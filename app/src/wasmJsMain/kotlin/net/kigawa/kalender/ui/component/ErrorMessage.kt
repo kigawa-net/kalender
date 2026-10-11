@@ -1,54 +1,72 @@
 package net.kigawa.kalender.ui.component
 
-import org.jetbrains.compose.web.dom.window
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.ContentCopy
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 
 @Composable
 actual fun ErrorMessage(
     message: String,
     onDismiss: (() -> Unit)?,
-    modifier: androidx.compose.ui.Modifier,
+    modifier: Modifier,
 ) {
-    androidx.compose.foundation.layout.Row(
+    Row(
         modifier = modifier
             .fillMaxWidth()
             .padding(horizontal = 16.dp, vertical = 8.dp),
-        verticalAlignment = androidx.compose.ui.Alignment.CenterVertically,
-        horizontalArrangement = androidx.compose.foundation.layout.Arrangement.spacedBy(8.dp),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
     ) {
-        androidx.compose.material3.Text(
+        Text(
             text = message,
-            color = androidx.compose.material3.MaterialTheme.colorScheme.error,
-            style = androidx.compose.material3.MaterialTheme.typography.bodySmall,
-            modifier = androidx.compose.ui.Modifier
+            color = MaterialTheme.colorScheme.error,
+            style = MaterialTheme.typography.bodySmall,
+            modifier = Modifier
                 .fillMaxWidth()
-                .padding(vertical = 4.dp)
+                .padding(vertical = 4.dp),
         )
-        androidx.compose.material3.IconButton(
-            onClick = {
-                copyToClipboard(message)
-                onDismiss?.invoke()
-            },
-            modifier = androidx.compose.ui.Modifier
+        // コピーボタン: navigator.clipboard が使えない環境では dismiss のみ行う
+        IconButton(
+            onClick = { copyToClipboard(message) },
+            modifier = Modifier
                 .width(32.dp)
                 .height(32.dp)
                 .padding(start = 8.dp),
         ) {
-            androidx.compose.material.icons.Icons.Default.ContentCopy
+            Icon(Icons.Default.ContentCopy, contentDescription = "エラーメッセージをコピー")
         }
-        onDismiss?.let {
-            androidx.compose.material3.IconButton(
-                onClick = it,
-                modifier = androidx.compose.ui.Modifier
+        onDismiss?.let { dismiss ->
+            IconButton(
+                onClick = dismiss,
+                modifier = Modifier
                     .width(32.dp)
                     .height(32.dp),
             ) {
-                androidx.compose.material.icons.Icons.Default.Close
+                Icon(Icons.Default.Close, contentDescription = "閉じる")
             }
         }
     }
 }
 
-@Composable
-actual fun copyToClipboard(text: String) {
-    window.navigator.clipboard.writeText(text)
+/** ブラウザの clipboard API へメッセージを書き込む（失敗しても握りつぶす） */
+private fun copyToClipboard(text: String) {
+    runCatching { jsWriteClipboard(text) }
 }
+
+/** navigator.clipboard.writeText を呼び出す。https以外や古いブラウザでは存在しない場合がある */
+@JsFun("(text) => navigator.clipboard ? navigator.clipboard.writeText(text) : undefined")
+external fun jsWriteClipboard(text: String)

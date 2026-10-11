@@ -73,6 +73,12 @@ android {
         res.srcDirs("src/androidMain/res")
     }
 
+    testOptions {
+        // JVM単体テストで android.util.Log 等が未モックでも例外にせず既定値を返す。
+        // PlatformLog の android actual が Log.e / Log.w を呼ぶため、テスト実行に必要。
+        unitTests.isReturnDefaultValues = true
+    }
+
     buildTypes {
         release {
             isMinifyEnabled = false

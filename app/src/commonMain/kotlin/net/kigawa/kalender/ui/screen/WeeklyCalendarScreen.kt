@@ -47,7 +47,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import kotlinx.coroutines.launch
@@ -307,7 +306,7 @@ private fun WeekTimeGrid(
                     contentAlignment = Alignment.TopCenter,
                 ) {
                     Text(
-                        text = "%02d".format(hour),
+                        text = hour.toString().padStart(2, '0'),
                         style = MaterialTheme.typography.labelSmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                         modifier = Modifier.padding(top = 2.dp),
@@ -380,13 +379,5 @@ private fun WeekTimeGrid(
                 }
             }
         }
-    }
-}
-
-@Preview(showBackground = true)
-@Composable
-private fun WeekDayHeadersPreview() {
-    KalenderTheme {
-        WeekDayHeaders(weekStart = todayLocalDate())
     }
 }

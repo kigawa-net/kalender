@@ -111,6 +111,18 @@ class WebCalendarStore : LocalCalendarStore {
         persistEvents()
     }
 
+    override suspend fun deleteCalendarsByOwnerAccountId(ownerAccountId: String) {
+        // 現在のデータソースは ownerAccountId を設定しておらず ownerEmail のみを持っているため、
+        // ownerEmail との一致でも削除対象とする。これがないと連携解除後にキャッシュが残り続ける。
+        val targetIds = _calendars.value.filter {
+            it.ownerAccountId == ownerAccountId || it.ownerEmail == ownerAccountId
+        }.map { it.id }.toSet()
+        _calendars.value = _calendars.value.filterNot { it.id in targetIds }
+        _events.value = _events.value.filterNot { it.calendarId in targetIds }
+        persistCalendars()
+        persistEvents()
+    }
+
     override suspend fun isWeekCacheFresh(weekStartMs: Long, ttlMs: Long): Boolean {
         val last = cacheMeta[weekStartMs] ?: return false
         return (nowMs() - last) < ttlMs
