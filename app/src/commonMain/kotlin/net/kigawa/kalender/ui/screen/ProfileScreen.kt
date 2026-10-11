@@ -1,6 +1,7 @@
 package net.kigawa.kalender.ui.screen
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -44,6 +45,7 @@ import net.kigawa.kalender.viewmodel.ProfileViewModel
 fun ProfileScreen(
     viewModel: ProfileViewModel,
     modifier: Modifier = Modifier,
+    onManageTemplates: (() -> Unit)? = null,
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
@@ -52,6 +54,7 @@ fun ProfileScreen(
         onLink = { provider -> viewModel.linkAccount(provider) },
         onUnlink = { accountId, ownerAccountId -> viewModel.unlinkAccount(accountId, ownerAccountId) },
         onCalendarVisibilityChanged = viewModel::updateCalendarVisibility,
+        onManageTemplates = onManageTemplates,
         modifier = modifier,
     )
 }
@@ -64,6 +67,7 @@ private fun ProfileContent(
     onUnlink: (String, String) -> Unit,
     onCalendarVisibilityChanged: (Long, Boolean) -> Unit,
     modifier: Modifier = Modifier,
+    onManageTemplates: (() -> Unit)? = null,
 ) {
     Scaffold(
         modifier = modifier,
@@ -79,6 +83,15 @@ private fun ProfileContent(
         ) {
             if (uiState.linkError != null) {
                 ErrorMessage(message = uiState.linkError!!)
+            }
+
+            if (onManageTemplates != null) {
+                androidx.compose.material3.ListItem(
+                    headlineContent = { Text("テンプレート管理") },
+                    supportingContent = { Text("よく使う予定の雛形を登録・編集します") },
+                    modifier = Modifier.clickable(onClick = onManageTemplates),
+                )
+                HorizontalDivider()
             }
 
             // プロバイダごとにグループ化

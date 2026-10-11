@@ -14,6 +14,7 @@ import net.kigawa.kalender.data.KalenderApiClient
 import net.kigawa.kalender.data.auth.KeycloakAuthControllerWeb
 import net.kigawa.kalender.data.auth.jsRedirectUri
 import net.kigawa.kalender.data.db.WebCalendarStore
+import net.kigawa.kalender.data.db.WebEventTemplateStore
 import net.kigawa.kalender.di.AppContainer
 import net.kigawa.kalender.di.KeyValueStoreWeb
 
@@ -35,6 +36,7 @@ fun main() {
         apiClient = KalenderApiClient(httpClient),
         accountLinkRedirectUri = jsRedirectUri().toString(),
         appScope = appScope,
+        templateStore = WebEventTemplateStore(),
     )
     ComposeViewport(document.body!!) {
         KalenderRoot(container = container)
