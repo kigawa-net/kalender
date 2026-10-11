@@ -190,15 +190,26 @@ class OutlookCalendarDataSource(
 
         // THIS_AND_FOLLOWING: マスターを endDate で打ち切り、この予定から新シリーズを作る
         val overwrittenOriginalStart = event.originalStartMs ?: event.startMs
-        patch(masterUrl, buildSeriesCutJson(overwrittenOriginalStart))
+        val masterRrule = fetchMasterRrule(masterUrl)
+        patch(masterUrl, buildSeriesCutJson(masterUrl, overwrittenOriginalStart))
 
+        // calendarView のインスタンスは recurrence が null なので、
+        // マスターから取得した rrule を引き継ぐ。これがないと
+        // 「これ以降」を選んだときに以降の予定が全て消えて単発イベントだけが残る。
         val newSeries = event.copy(
             id = 0L,
             remoteId = "",
             recurringEventId = null,
             originalStartMs = null,
+            recurrenceRule = event.recurrenceRule ?: masterRrule,
         )
         return createEvent(calendarAccountName, newSeries)
+    }
+
+    /** 繰り返し予定のマスターから RRULE 文字列を取得する */
+    private suspend fun fetchMasterRrule(masterUrl: String): String? {
+        val master = runCatching { get(masterUrl) }.getOrNull() ?: return null
+        return OutlookRecurrenceConverter.graphToRrule(master["recurrence"]?.jsonObject)
     }
 
     /**
@@ -233,23 +244,47 @@ class OutlookCalendarDataSource(
 
         // THIS_AND_FOLLOWING: マスターをこの予定の前日で終了させる
         val untilMs = originalStartMs ?: return
-        patch(masterUrl, buildSeriesCutJson(untilMs))
+        patch(masterUrl, buildSeriesCutJson(masterUrl, untilMs))
     }
 
     /** 繰り返し予定のマスターを指定日で終了させるための部分更新JSON */
-    private fun buildSeriesCutJson(untilMs: Long): JsonObject = buildJsonObject {
-        put(
-            "recurrence",
-            buildJsonObject {
-                put(
-                    "range",
-                    buildJsonObject {
-                        put("type", "endDate")
-                        put("endDate", formatIsoDate(untilMs - 24 * 60 * 60 * 1000L))
-                    },
-                )
-            },
-        )
+    /**
+     * 繰り返し予定のマスターを指定日で終了させるための部分更新JSON。
+     *
+     * Graph では `recurrence` が1つのプロパティなので `range` だけを
+     * 部分更新できない。マスターから取得した既存の recurrence をベースに
+     * range だけ差し替えた完全な recurrence を送る必要がある。
+     * (endDate range には type/endDate に加えて startDate が必須)
+     */
+    private suspend fun buildSeriesCutJson(masterUrl: String, untilMs: Long): JsonObject {
+        val existing = runCatching { get(masterUrl) }.getOrNull()
+        val existingRecurrence = existing?.get("recurrence")?.jsonObject
+
+        val range = buildJsonObject {
+            put("type", "endDate")
+            put("endDate", formatIsoDate(untilMs - 24 * 60 * 60 * 1000L))
+            // startDate は必須。既存値を尊重し、取得できなければ開始日で埋める
+            put("startDate", existingRecurrence?.get("range")?.jsonObject?.get("startDate")?.jsonPrimitive?.content
+                ?: formatIsoDate(untilMs))
+        }
+
+        return buildJsonObject {
+            put(
+                "recurrence",
+                buildJsonObject {
+                    // pattern は必須。既存値があればそれを使う
+                    existingRecurrence?.get("pattern")?.jsonObject?.let { put("pattern", it) }
+                        ?: put(
+                            "pattern",
+                            buildJsonObject {
+                                put("type", "daily")
+                                put("interval", 1)
+                            },
+                        )
+                    put("range", range)
+                },
+            )
+        }
     }
 
     override suspend fun fetchCalendars(): List<UserCalendar> {
@@ -296,8 +331,13 @@ class OutlookCalendarDataSource(
                 item["recurrence"]?.jsonObject,
             )
             val recurringEventId = item["seriesMasterId"]?.jsonPrimitive?.content?.takeIf { it.isNotBlank() }
-            // originalStart は "2026-10-09T10:00:00" 形式の文字列
-            val originalStartMs = item["originalStart"]?.jsonPrimitive?.content?.let { parseIsoInstantMs(it + "Z") }
+            // originalStart は UTC の DateTimeOffset 文字列。
+            // "2026-10-09T10:00:00Z" のように Z 付きで返る場合もあるため、
+            // サフィックス有無を見てから parseIsoInstantMs に渡す。
+            val originalStartMs = item["originalStart"]?.jsonPrimitive?.content?.let { raw ->
+                val normalized = if (raw.endsWith("Z", ignoreCase = true)) raw else "${raw}Z"
+                runCatching { parseIsoInstantMs(normalized) }.getOrNull()
+            }
 
             CalendarEvent(
                 id = remoteId.toLongId(),

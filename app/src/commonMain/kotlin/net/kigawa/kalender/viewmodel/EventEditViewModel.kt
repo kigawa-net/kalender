@@ -266,7 +266,20 @@ class EventEditViewModel(
                     if (state.isNew) dataSource.createEvent(calendar.accountName, event)
                     else dataSource.updateEvent(calendar.accountName, event, state.editScope)
                 }
-                localStore.upsertEvent(saved)
+                // シリーズ単位の編集結果は「発生インスタンスのローカルid + マスターID」という
+                // 混在した識別子になるため、そのまま upsert するとキャッシュが壊れる。
+                // 再表示時の既定動作「この予定のみ」がマスターIDを指して
+                // シリーズ全体を更新・削除してしまう危険もある。
+                // その場合はローカルキャッシュから当該イベントを削除し、
+                // 次回表示時にサーバーから再取得させる。
+                val seriesScoped = !state.isNew &&
+                    state.editScope != RecurrenceEditScope.THIS_EVENT &&
+                    state.isRecurringInstance
+                if (seriesScoped) {
+                    localStore.deleteEventById(eventId ?: saved.id)
+                } else {
+                    localStore.upsertEvent(saved)
+                }
                 _navigateBack.emit(Unit)
             } catch (e: Exception) {
                 _uiState.update { it.copy(isSaving = false, error = e.message ?: "保存に失敗しました") }

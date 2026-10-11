@@ -1,3 +1,5 @@
+@file:OptIn(kotlin.time.ExperimentalTime::class)
+
 package net.kigawa.kalender.model
 
 import org.junit.Assert.assertEquals
@@ -215,5 +217,46 @@ class RecurrenceRuleTest {
         val reselected = weekly.withFrequency(Frequency.WEEKLY)
         assertEquals(listOf(1, 3, 5), reselected.byDay)
         assertEquals("FREQ=WEEKLY;BYDAY=MO,WE,FR", reselected.toRRule())
+    }
+
+    @Test
+    fun when_weeklyWithStartWeekday_given_fridayStart_then_defaultsToFriday() {
+        // 2026-10-09 は金曜。金曜に始めた予定が月曜に繰り返ってしまうバグの回帰テスト
+        val fridayMs = kotlinx.datetime.Instant.parse("2026-10-09T10:00:00Z").toEpochMilliseconds()
+        val rule = RecurrenceRule.NONE.weeklyWithStartWeekday(fridayMs)
+        assertEquals(Frequency.WEEKLY, rule.frequency)
+        assertEquals(listOf(5), rule.byDay)
+        assertEquals("FREQ=WEEKLY;BYDAY=FR", rule.toRRule())
+    }
+
+    @Test
+    fun when_weeklyWithStartWeekday_given_mondayStart_then_defaultsToMonday() {
+        // 2026-10-05 は月曜
+        val mondayMs = kotlinx.datetime.Instant.parse("2026-10-05T10:00:00Z").toEpochMilliseconds()
+        val rule = RecurrenceRule.NONE.weeklyWithStartWeekday(mondayMs)
+        assertEquals(listOf(1), rule.byDay)
+    }
+
+    @Test
+    fun when_weeklyWithStartWeekday_given_sundayStart_then_defaultsToSunday() {
+        // 2026-10-11 は日曜
+        val sundayMs = kotlinx.datetime.Instant.parse("2026-10-11T10:00:00Z").toEpochMilliseconds()
+        val rule = RecurrenceRule.NONE.weeklyWithStartWeekday(sundayMs)
+        assertEquals(listOf(7), rule.byDay)
+        assertEquals("FREQ=WEEKLY;BYDAY=SU", rule.toRRule())
+    }
+
+    @Test
+    fun when_weeklyWithStartWeekday_given_existingByDay_then_preservesSelection() {
+        // 既に曜日が選ばれている場合は開始日ではなく選択値を尊重する
+        val fridayMs = kotlinx.datetime.Instant.parse("2026-10-09T10:00:00Z").toEpochMilliseconds()
+        val rule = RecurrenceRule.weekly(byDay = listOf(2, 4)).weeklyWithStartWeekday(fridayMs)
+        assertEquals(listOf(2, 4), rule.byDay)
+    }
+
+    @Test
+    fun when_weeklyWithStartWeekday_given_zeroStartMs_then_fallsBackToMonday() {
+        val rule = RecurrenceRule.NONE.weeklyWithStartWeekday(0L)
+        assertEquals(listOf(1), rule.byDay)
     }
 }

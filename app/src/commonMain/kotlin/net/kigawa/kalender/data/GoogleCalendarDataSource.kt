@@ -4,6 +4,7 @@ import io.ktor.client.HttpClient
 import io.ktor.client.request.delete
 import io.ktor.client.request.get
 import io.ktor.client.request.header
+import io.ktor.client.request.patch
 import io.ktor.client.request.post
 import io.ktor.client.request.put
 import io.ktor.client.request.setBody
@@ -92,6 +93,26 @@ class GoogleCalendarDataSource(
         return Json.parseToJsonElement(text).jsonObject
     }
 
+    /**
+     * HTTP PATCH でリソースの一部だけを更新する。
+     * PUT(events.update) はリソース全体を置換するため、繰り返し予定の
+     * マスターを編集するときに recurrence が消えないよう PATCH を使う。
+     */
+    private suspend fun patch(url: String, body: JsonObject): JsonObject {
+        val response = httpClient.patch(url) {
+            header(HttpHeaders.Authorization, "Bearer $accessToken")
+            contentType(ContentType.Application.Json)
+            setBody(body.toString())
+        }
+        val text = response.bodyAsText()
+        if (!response.status.isSuccess()) {
+            val errorMsg = "Google Calendar API Error ${response.status.value}: $text"
+            platformLogError("GoogleCalendarDataSource", "PATCH $url failed: $errorMsg")
+            throw Exception(errorMsg)
+        }
+        return Json.parseToJsonElement(text).jsonObject
+    }
+
     private suspend fun httpDelete(url: String) {
         val response = httpClient.delete(url) {
             header(HttpHeaders.Authorization, "Bearer $accessToken")
@@ -161,7 +182,31 @@ class GoogleCalendarDataSource(
         val masterUrl = "https://www.googleapis.com/calendar/v3/calendars/$calId/events/${encode(masterId)}"
 
         if (scope == RecurrenceEditScope.ALL) {
-            put(masterUrl, buildEventJson(event))
+            // Events.update は PATCH セマンティクスを持たない PUT でリソース全体を置換する。
+            // singleEvents=true で取得したインスタンスは recurrence が省略されているため、
+            // そのまま buildEventJson を送信するとマスターが繰り返しなしの単発イベントになる。
+            // 編集対象のフィールドだけを PATCH で送る。
+            val patch = buildJsonObject {
+                put("summary", event.title)
+                if (event.description.isNotEmpty()) put("description", event.description)
+                if (event.location.isNotEmpty()) put("location", event.location)
+                if (event.allDay) {
+                    put("start", buildJsonObject { put("date", formatIsoDate(event.startMs)) })
+                    put("end", buildJsonObject { put("date", formatIsoDate(event.endMs)) })
+                } else {
+                    val tz = event.timeZone.ifEmpty { systemZone().id }
+                    val zone = timeZoneOrNull(tz) ?: systemZone()
+                    put("start", buildJsonObject {
+                        put("dateTime", formatIsoOffsetDateTime(event.startMs, zone))
+                        put("timeZone", tz)
+                    })
+                    put("end", buildJsonObject {
+                        put("dateTime", formatIsoOffsetDateTime(event.endMs, zone))
+                        put("timeZone", tz)
+                    })
+                }
+            }
+            patch(masterUrl, patch)
             return event.copy(remoteId = masterId)
         }
 
@@ -169,11 +214,12 @@ class GoogleCalendarDataSource(
         val overwrittenOriginalStart = event.originalStartMs ?: event.startMs
         val existingRrule = fetchRrule(masterUrl)
         if (existingRrule.isNullOrEmpty()) {
-            put(masterUrl, buildEventJson(event))
+            patch(masterUrl, buildEventJson(event))
             return event.copy(remoteId = masterId)
         }
         val cut = cutRruleUntil(existingRrule, overwrittenOriginalStart)
-        put(masterUrl, buildJsonObject {
+        // recurrence だけを PATCH する(PUT だとマスターの他フィールドが消える)
+        patch(masterUrl, buildJsonObject {
             put("recurrence", listOf(JsonPrimitive(cut)).toJsonArray())
         })
 
@@ -225,7 +271,8 @@ class GoogleCalendarDataSource(
             return
         }
         val cut = cutRruleUntil(existingRrule, untilMs)
-        put(masterUrl, buildJsonObject {
+        // recurrence だけを PATCH する(PUT だとマスターの他フィールドが消える)
+        patch(masterUrl, buildJsonObject {
             put("recurrence", listOf(JsonPrimitive(cut)).toJsonArray())
         })
     }
