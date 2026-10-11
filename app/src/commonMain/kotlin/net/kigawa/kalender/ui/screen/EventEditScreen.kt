@@ -144,12 +144,15 @@ private fun RecurrenceScopeSelector(
 /**
  * 繰り返しの頻度と間隔を選択するセクション。
  * 繰り返しなしの場合は非表示にするトグルを持たない（頻度チップの先頭に「なし」を置く）。
+ *
+ * @param startMs 週次選択時の既定曜日を開始日から導出するために使う
  */
 @Composable
 private fun RecurrenceSelector(
     rule: RecurrenceRule,
     enabled: Boolean,
     onChange: (RecurrenceRule) -> Unit,
+    startMs: Long = 0L,
 ) {
     Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
         Text(
@@ -164,8 +167,10 @@ private fun RecurrenceSelector(
             RecurrenceFrequencyChip("毎日", rule.frequency == Frequency.DAILY, enabled) {
                 onChange(rule.withFrequency(Frequency.DAILY))
             }
+            // 週次は開始日の曜日を既定値にする。既定が月曜固定だと、
+            // 金曜に始めた予定が月曜に繰り返ってしまう
             RecurrenceFrequencyChip("毎週", rule.frequency == Frequency.WEEKLY, enabled) {
-                onChange(rule.withFrequency(Frequency.WEEKLY))
+                onChange(rule.weeklyWithStartWeekday(startMs))
             }
             RecurrenceFrequencyChip("毎月", rule.frequency == Frequency.MONTHLY, enabled) {
                 onChange(rule.withFrequency(Frequency.MONTHLY))
@@ -298,6 +303,7 @@ private fun EventEditContent(
                 rule = uiState.recurrenceRule,
                 enabled = !busy,
                 onChange = onRecurrenceChange,
+                startMs = uiState.startMs,
             )
 
             HorizontalDivider()

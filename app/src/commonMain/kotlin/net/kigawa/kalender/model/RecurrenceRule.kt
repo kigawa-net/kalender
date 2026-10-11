@@ -3,8 +3,13 @@
 package net.kigawa.kalender.model
 
 import kotlinx.serialization.Serializable
+import kotlinx.datetime.DayOfWeek
 import kotlinx.datetime.Instant
 import kotlinx.datetime.LocalDate
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.isoDayNumber
+import kotlinx.datetime.toLocalDateTime
+import net.kigawa.kalender.util.systemZone
 
 /**
  * 繰り返しルールを表現するモデル
@@ -58,7 +63,21 @@ data class RecurrenceRule(
         )
     }
 
-    /** 繰り返しなし */
+    /**
+     * 週次の既定曜日を [startMs] の曜日に設定する。
+     * 既定が月曜固定だと、金曜に始めた予定が月曜に繰り返ってしまう。
+     * 既に曜日が選択されている場合はそれを尊重する。
+     */
+    fun weeklyWithStartWeekday(startMs: Long): RecurrenceRule {
+        // withFrequency は byDay が空なら月曜を補うため、その前の状態で判定する
+        val alreadySelected = byDay.isNotEmpty()
+        val base = withFrequency(Frequency.WEEKLY)
+        if (alreadySelected || startMs <= 0L) return base
+        return base.copy(byDay = listOf(weekdayNumberOf(startMs)))
+    }
+
+    /**
+     * 繰り返しなし */
     companion object {
         val NONE = RecurrenceRule(frequency = Frequency.NONE)
 
@@ -186,4 +205,14 @@ enum class Frequency {
     WEEKLY,  // 每週
     MONTHLY, // 每月
     YEARLY,  // 每年
+}
+
+/**
+ * エポックミリ秒からモデルの曜日表記(1=月..7=日)を返す。
+ * システムタイムゾーン基準で解釈する。
+ */
+internal fun weekdayNumberOf(epochMs: Long, zone: TimeZone = systemZone()): Int {
+    val dayOfWeek: DayOfWeek = Instant.fromEpochMilliseconds(epochMs).toLocalDateTime(zone).dayOfWeek
+    // isoDayNumber は 1=月 .. 7=日 でモデルの表記と一致する
+    return dayOfWeek.isoDayNumber
 }
