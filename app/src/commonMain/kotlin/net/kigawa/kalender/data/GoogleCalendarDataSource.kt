@@ -22,6 +22,7 @@ import kotlinx.serialization.json.jsonArray
 import kotlinx.serialization.json.jsonObject
 import kotlinx.serialization.json.put
 import net.kigawa.kalender.model.CalendarEvent
+import net.kigawa.kalender.model.EventSource
 import net.kigawa.kalender.model.RecurrenceEditScope
 import net.kigawa.kalender.model.UserCalendar
 import net.kigawa.kalender.util.formatIsoDate
@@ -139,6 +140,7 @@ class GoogleCalendarDataSource(
                     ?: 0xFF808080.toInt(),
                 accountName = id,
                 ownerEmail = ownerEmail,
+                source = EventSource.GOOGLE,
             )
         }
         cachedCalendars = result
@@ -470,6 +472,7 @@ class GoogleCalendarDataSource(
                 description = item["description"]?.jsonPrimitive?.content ?: "",
                 location = item["location"]?.jsonPrimitive?.content ?: "",
                 remoteId = remoteId,
+                source = EventSource.GOOGLE,
                 recurrenceRule = recurrenceRule,
                 recurringEventId = recurringEventId,
                 originalStartMs = originalStartMs,
@@ -494,7 +497,17 @@ class GoogleCalendarDataSource(
         return formatIsoOffsetDateTime(ms, zone)
     }
 
-    private fun String.toLongId(): Long = hashCode().toLong().and(0x7FFFFFFFL)
+    /**
+     * 文字列IDをLongに変換する。
+     * hashCode()の衝突リスクを軽減するため、文字列の各バイトをハッシュに組み込む。
+     */
+    private fun String.toLongId(): Long {
+        var hash = 0L
+        for (i in indices) {
+            hash = hash * 31L + this[i].code.toLong()
+        }
+        return hash.and(0x7FFFFFFFL)
+    }
 }
 
 private fun kotlinx.serialization.json.JsonPrimitive.booleanOrTrue(): Boolean =

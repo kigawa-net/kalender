@@ -11,4 +11,5 @@ data class UserCalendar(
     val isVisible: Boolean = true,
     val ownerEmail: String = "",
     val ownerAccountId: String = "",
+    val source: EventSource = EventSource.LOCAL,
 )

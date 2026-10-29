@@ -27,6 +27,7 @@ import net.kigawa.kalender.data.optJSONObject
 import net.kigawa.kalender.data.optJSONArray
 import net.kigawa.kalender.data.optString
 import net.kigawa.kalender.model.CalendarEvent
+import net.kigawa.kalender.model.EventSource
 import net.kigawa.kalender.model.RecurrenceEditScope
 import net.kigawa.kalender.model.UserCalendar
 import net.kigawa.kalender.util.formatIsoDate
@@ -327,6 +328,7 @@ class OutlookCalendarDataSource(
                 color = item.optString("color").toOutlookColor(),
                 accountName = id,
                 ownerEmail = ownerEmail,
+                source = EventSource.OUTLOOK,
             )
         }
         cachedCalendars = result
@@ -378,6 +380,7 @@ class OutlookCalendarDataSource(
                 description = item.optString("bodyPreview", ""),
                 location = item["location"]?.jsonObject?.optString("displayName", "") ?: "",
                 remoteId = remoteId,
+                source = EventSource.OUTLOOK,
                 recurrenceRule = recurrenceRule,
                 recurringEventId = recurringEventId,
                 originalStartMs = originalStartMs,
@@ -385,7 +388,17 @@ class OutlookCalendarDataSource(
         }
     }
 
-    private fun String.toLongId(): Long = hashCode().toLong().and(0x7FFFFFFFL)
+    /**
+     * 文字列IDをLongに変換する。
+     * hashCode()の衝突リスクを軽減するため、文字列の各バイトをハッシュに組み込む。
+     */
+    private fun String.toLongId(): Long {
+        var hash = 0L
+        for (i in indices) {
+            hash = hash * 31L + this[i].code.toLong()
+        }
+        return hash.and(0x7FFFFFFFL)
+    }
 
     private fun String.toOutlookColor(): Int {
         return when (lowercase()) {

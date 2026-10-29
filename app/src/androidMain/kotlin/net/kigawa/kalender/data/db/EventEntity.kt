@@ -1,5 +1,6 @@
 package net.kigawa.kalender.data.db
 
+import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.Index
@@ -29,6 +30,7 @@ data class EventEntity(
     val description: String,
     val location: String,
     val remoteId: String = "",
+    @ColumnInfo(defaultValue = "LOCAL") val source: String = "LOCAL",
     // 繰り返し予定関連
     /** RRULE文字列（繰り返しなしの場合はnull） */
     val recurrenceRule: String? = null,

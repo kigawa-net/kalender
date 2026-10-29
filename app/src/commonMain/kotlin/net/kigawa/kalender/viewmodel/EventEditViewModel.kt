@@ -24,6 +24,7 @@ import net.kigawa.kalender.data.OutlookCalendarDataSource
 import net.kigawa.kalender.data.auth.AuthController
 import net.kigawa.kalender.data.auth.KeycloakAuthState
 import net.kigawa.kalender.model.CalendarEvent
+import net.kigawa.kalender.model.EventSource
 import net.kigawa.kalender.model.EventTemplate
 import net.kigawa.kalender.model.RecurrenceEditScope
 import net.kigawa.kalender.model.RecurrenceRule
@@ -269,6 +270,10 @@ class EventEditViewModel(
                 _uiState.update { it.copy(error = "この予定は編集できません（再同期してください）") }
                 return@launch
             }
+            if (state.endMs <= state.startMs) {
+                _uiState.update { it.copy(error = "終了時刻は開始時刻より後にしてください") }
+                return@launch
+            }
             _uiState.update { it.copy(isSaving = true, error = null) }
             try {
                 val calendar = state.calendars.find { it.id == state.calendarId }
@@ -277,7 +282,7 @@ class EventEditViewModel(
                         _uiState.update { it.copy(isSaving = false, error = "カレンダーが見つかりません") }
                         return@launch
                     }
-                val isGoogle = calendar.accountName.contains("@")
+                val isGoogle = calendar.source == EventSource.GOOGLE
                 val recurrenceRule = state.recurrenceRule
                 val recurringEventId = state.recurringEventId
                 val originalStartMs = state.originalStartMs
@@ -293,6 +298,7 @@ class EventEditViewModel(
                     description = state.description.trim(),
                     location = state.location.trim(),
                     remoteId = state.remoteId,
+                    source = calendar.source,
                     recurrenceRule = if (recurrenceRule != RecurrenceRule.NONE) recurrenceRule.toRRule() else null,
                     recurringEventId = recurringEventId,
                     originalStartMs = originalStartMs,
@@ -348,7 +354,7 @@ class EventEditViewModel(
                         _uiState.update { it.copy(isDeleting = false, error = "カレンダーが見つかりません") }
                         return@launch
                     }
-                val isGoogle = calendar.accountName.contains("@")
+                val isGoogle = calendar.source == EventSource.GOOGLE
                 if (isGoogle) {
                     val dataSource = buildGoogleDataSource(calendar.ownerEmail) ?: run {
                         _uiState.update { it.copy(isDeleting = false, error = "Googleアカウントが連携されていません") }

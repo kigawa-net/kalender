@@ -15,6 +15,7 @@ data class CalendarEvent(
     val description: String,
     val location: String,
     val remoteId: String = "",
+    val source: EventSource = EventSource.LOCAL,
     // 繰り返し関連
     val recurrenceRule: String? = null,      // RRULE 文字列
     val recurrenceExceptions: List<Long> = emptyList(),  // 例外発生日時(ミリ秒)
