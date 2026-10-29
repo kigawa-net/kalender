@@ -77,6 +77,28 @@ data class RecurrenceRule(
     }
 
     /**
+     * 月次の既定日を [startMs] の日付に設定する。
+     * 既定が1日固定だと、15日に始めた予定が毎月1日に繰り返ってしまう。
+     */
+    fun monthlyWithStartDay(startMs: Long): RecurrenceRule {
+        val alreadySelected = byMonthDay.isNotEmpty()
+        val base = withFrequency(Frequency.MONTHLY)
+        if (alreadySelected || startMs <= 0L) return base
+        return base.copy(byMonthDay = listOf(dayNumberOf(startMs)))
+    }
+
+    /**
+     * 年次の既定値(月日)を [startMs] に設定する。
+     * 既定が1月1日固定だと、10月15日に始めた予定が毎年1月1日に繰り返ってしまう。
+     */
+    fun yearlyWithStartDate(startMs: Long): RecurrenceRule {
+        val alreadySelected = byMonthDay.isNotEmpty() && byMonth.isNotEmpty()
+        val base = withFrequency(Frequency.YEARLY)
+        if (alreadySelected || startMs <= 0L) return base
+        return base.copy(byMonthDay = listOf(dayNumberOf(startMs)), byMonth = listOf(monthNumberOf(startMs)))
+    }
+
+    /**
      * 繰り返しなし */
     companion object {
         val NONE = RecurrenceRule(frequency = Frequency.NONE)
@@ -159,11 +181,29 @@ data class RecurrenceRule(
 
         private fun parseUntil(str: String): Long? {
             return try {
-                // UNTIL=20241231T235959Z 形式
-                kotlinx.datetime.Instant.parse(str.replace("Z", "") + "Z").toEpochMilliseconds()
+                // RRULE の UNTIL は基本形式 "yyyyMMddTHHmmssZ"（Zなしもありうる）。
+                // kotlinx.datetime.Instant.parse は ISO-8601 を要求するため変換する。
+                val normalized = basicToIsoInstant(str)
+                kotlinx.datetime.Instant.parse(normalized).toEpochMilliseconds()
             } catch (e: Exception) {
                 null
             }
+        }
+
+        /** "20261231T143000Z" → "2026-12-31T14:30:00Z" */
+        private fun basicToIsoInstant(value: String): String {
+            val v = value.trim().removeSuffix("Z").removeSuffix("z")
+            // 日付部分は8桁、時刻部分はT以降6桁を期待する
+            val date = v.take(8)
+            val time = v.drop(8).removePrefix("T")
+            if (date.length != 8) return value
+            val y = date.substring(0, 4)
+            val mo = date.substring(4, 6)
+            val d = date.substring(6, 8)
+            val hh = time.take(2).ifEmpty { "00" }
+            val mm = time.drop(2).take(2).ifEmpty { "00" }
+            val ss = time.drop(4).take(2).ifEmpty { "00" }
+            return "$y-$mo-${d}T$hh:$mm:${ss}Z"
         }
     }
 
@@ -194,7 +234,16 @@ data class RecurrenceRule(
     @OptIn(kotlin.time.ExperimentalTime::class)
     private fun formatUntil(ms: Long): String {
         val instant = kotlinx.datetime.Instant.fromEpochMilliseconds(ms)
-        return instant.toString().replace(":", "").replace("-", "").replace("Z", "")
+        // UNTIL は UTC の絶対時刻なので "yyyyMMddTHHmmssZ" 形式にする。
+        // Z を落とすとローカル時刻として解釈され、有限ルールの解析に失敗して
+        // neverEnds になったり、Google の時刻付き繰り返しで拒否される。
+        // Instant.toString() は "...+00:00" または "...Z" で返るため、
+        // オフセットを除去して Z を付ける。
+        return instant.toString()
+            .replace(":", "")
+            .replace("-", "")
+            .substringBefore('+')
+            .let { if (it.endsWith("Z")) it else "${it}Z" }
     }
 }
 
@@ -216,3 +265,11 @@ internal fun weekdayNumberOf(epochMs: Long, zone: TimeZone = systemZone()): Int 
     // isoDayNumber は 1=月 .. 7=日 でモデルの表記と一致する
     return dayOfWeek.isoDayNumber
 }
+
+/** エポックミリ秒から「日」(1-31)を返す */
+internal fun dayNumberOf(epochMs: Long, zone: TimeZone = systemZone()): Int =
+    Instant.fromEpochMilliseconds(epochMs).toLocalDateTime(zone).dayOfMonth
+
+/** エポックミリ秒から「月」(1-12)を返す */
+internal fun monthNumberOf(epochMs: Long, zone: TimeZone = systemZone()): Int =
+    Instant.fromEpochMilliseconds(epochMs).toLocalDateTime(zone).monthNumber

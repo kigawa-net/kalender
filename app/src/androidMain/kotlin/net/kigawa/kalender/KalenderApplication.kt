@@ -19,22 +19,30 @@ class KalenderApplication : Application() {
 
     private val httpClient = HttpClient(OkHttp)
 
-    val authController = KeycloakAuthControllerAndroid(
-        applicationContext = this,
-        appScope = appScope,
-        realmUrl = getString(R.string.keycloak_realm_url),
-        clientId = getString(R.string.keycloak_client_id),
-        httpClient = httpClient,
-    )
+    lateinit var authController: KeycloakAuthControllerAndroid
+        private set
 
-    val container = AppContainer(
-        httpClient = httpClient,
-        localStore = RoomCalendarStore.fromContext(this),
-        settings = KeyValueStoreAndroid(this),
-        authController = authController,
-        apiClient = KalenderApiClient(httpClient),
-        accountLinkRedirectUri = KEYCLOAK_REDIRECT_URI,
-        appScope = appScope,
-        templateStore = RoomEventTemplateStore.fromContext(this),
-    )
+    lateinit var container: AppContainer
+        private set
+
+    override fun onCreate() {
+        super.onCreate()
+        authController = KeycloakAuthControllerAndroid(
+            applicationContext = this,
+            appScope = appScope,
+            realmUrl = getString(R.string.keycloak_realm_url),
+            clientId = getString(R.string.keycloak_client_id),
+            httpClient = httpClient,
+        )
+        container = AppContainer(
+            httpClient = httpClient,
+            localStore = RoomCalendarStore.fromContext(this),
+            settings = KeyValueStoreAndroid(this),
+            authController = authController,
+            apiClient = KalenderApiClient(httpClient),
+            accountLinkRedirectUri = KEYCLOAK_REDIRECT_URI,
+            appScope = appScope,
+            templateStore = RoomEventTemplateStore.fromContext(this),
+        )
+    }
 }

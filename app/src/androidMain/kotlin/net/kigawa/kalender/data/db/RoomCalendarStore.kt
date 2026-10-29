@@ -5,6 +5,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import net.kigawa.kalender.data.LocalCalendarStore
 import net.kigawa.kalender.model.CalendarEvent
+import net.kigawa.kalender.model.EventSource
 import net.kigawa.kalender.model.UserCalendar
 
 class RoomCalendarStore(
@@ -79,7 +80,7 @@ class RoomCalendarStore(
         cacheMetaDao.deleteAll()
     }
 
-    private fun CalendarEntity.toModel() = UserCalendar(id, name, color, accountName, isVisible, ownerEmail, ownerAccountId)
+    private fun CalendarEntity.toModel() = UserCalendar(id, name, color, accountName, isVisible, ownerEmail, ownerAccountId, EventSource.valueOf(source))
     private fun EventEntity.toModel() =
         CalendarEvent(
             id = id,
@@ -93,11 +94,12 @@ class RoomCalendarStore(
             description = description,
             location = location,
             remoteId = remoteId,
+            source = EventSource.valueOf(source),
             recurrenceRule = recurrenceRule,
             recurringEventId = recurringEventId,
             originalStartMs = originalStartMs,
         )
-    private fun UserCalendar.toEntity() = CalendarEntity(id, name, color, accountName, isVisible, ownerEmail, ownerAccountId)
+    private fun UserCalendar.toEntity() = CalendarEntity(id, name, color, accountName, isVisible, ownerEmail, ownerAccountId, source.name)
     private fun CalendarEvent.toEntity() =
         EventEntity(
             id = id,
@@ -111,6 +113,7 @@ class RoomCalendarStore(
             description = description,
             location = location,
             remoteId = remoteId,
+            source = source.name,
             recurrenceRule = recurrenceRule,
             recurringEventId = recurringEventId,
             originalStartMs = originalStartMs,

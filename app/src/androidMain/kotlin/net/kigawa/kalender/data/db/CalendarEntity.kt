@@ -13,4 +13,5 @@ data class CalendarEntity(
     @ColumnInfo(defaultValue = "1") val isVisible: Boolean = true,
     @ColumnInfo(defaultValue = "") val ownerEmail: String = "",
     @ColumnInfo(defaultValue = "") val ownerAccountId: String = "",
+    @ColumnInfo(defaultValue = "LOCAL") val source: String = "LOCAL",
 )
