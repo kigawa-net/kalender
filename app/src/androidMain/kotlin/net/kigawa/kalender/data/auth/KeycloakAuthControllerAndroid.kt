@@ -79,7 +79,10 @@ class KeycloakAuthControllerAndroid(
             append("&code_challenge_method=S256")
             append("&state=").append(Uri.encode(state))
         }
-        CustomTabsIntent.Builder().build().launchUrl(context, Uri.parse(url))
+        val intent = CustomTabsIntent.Builder().build().intent
+        intent.data = Uri.parse(url)
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+        context.startActivity(intent)
     }
 
     /** AndroidManifestのカスタムスキームintent-filter経由でMainActivityが受け取ったリダイレクトを処理する */

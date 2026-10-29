@@ -188,7 +188,11 @@ class OutlookCalendarDataSource(
             // calendarView の発生インスタンスはその発生日の start/end を持つ。
             // マスターにそのまま当てると初回発生日が上書きされ series がずれるため、
             // マスターの開始日時を基準に、時間差分のみを適用する。
-            val master = runCatching { get(masterUrl) }.getOrNull()
+            val master = runCatching { get(masterUrl) }.getOrNull() ?: run {
+                // マスター取得に失敗した場合はPATCHせず、エラーを投げる(fail closed)。
+                // 失敗時にPATCHすると、選択した発生日でマスターが上書きされ、シリーズ全体がずれる。
+                throw Exception("繰り返し予定のマスター情報を取得できませんでした")
+            }
             val masterStart = master?.get("start")?.jsonObject?.get("dateTime")?.jsonPrimitive?.content
             val patchJson = if (masterStart != null && masterStart != event.startMs.toString()) {
                 // 差分は分単位で扱う（タイムゾーンはUTC固定で送る）
@@ -204,7 +208,49 @@ class OutlookCalendarDataSource(
             } else {
                 buildEventJson(event)
             }
-            patch(masterUrl, patchJson)
+            // 繰り返しルールの変更を処理:
+            // - null なら繰り返しを「なし」に変更するために recurrence を削除
+            // - 空でない文字列なら新しいルールを設定
+            val finalPatchJson = if (event.recurrenceRule.isNullOrEmpty()) {
+                // 繰り返しを「なし」に変更する場合、recurrence を削除して送信
+                // Graph API では recurrence を null にすると繰り返しが無効になる
+                buildJsonObject {
+                    put("subject", event.title)
+                    put("isAllDay", event.allDay)
+                    put("start", buildJsonObject {
+                        put(
+                            "dateTime",
+                            if (event.allDay) formatIsoDateAtMidnight(event.startMs)
+                            else formatLocalDateTimeNoOffset(event.startMs, TimeZone.UTC)
+                        )
+                        put("timeZone", "UTC")
+                    })
+                    put("end", buildJsonObject {
+                        put(
+                            "dateTime",
+                            if (event.allDay) formatIsoDateAtMidnight(event.endMs)
+                            else formatLocalDateTimeNoOffset(event.endMs, TimeZone.UTC)
+                        )
+                        put("timeZone", "UTC")
+                    })
+                    if (event.description.isNotEmpty()) {
+                        put("body", buildJsonObject {
+                            put("contentType", "text")
+                            put("content", event.description)
+                        })
+                    }
+                    if (event.location.isNotEmpty()) {
+                        put("location", buildJsonObject { put("displayName", event.location) })
+                    }
+                    // recurrence を含めないことで、既存の繰り返し設定を削除する
+                    // Graph API の PATCH で recurrence を省略すると、既存値が保持されるため、
+                    // 明示的に null を設定する必要がある
+                    put("recurrence", kotlinx.serialization.json.JsonNull)
+                }
+            } else {
+                patchJson
+            }
+            patch(masterUrl, finalPatchJson)
             return event.copy(remoteId = masterId)
         }
 

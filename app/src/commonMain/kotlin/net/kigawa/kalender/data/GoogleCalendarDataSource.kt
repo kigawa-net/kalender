@@ -18,6 +18,7 @@ import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.JsonPrimitive
 import kotlinx.serialization.json.buildJsonObject
+import kotlinx.serialization.json.buildJsonArray
 import kotlinx.serialization.json.jsonArray
 import kotlinx.serialization.json.jsonObject
 import kotlinx.serialization.json.put
@@ -192,7 +193,11 @@ class GoogleCalendarDataSource(
             // 重要: event.startMs/endMs は singleEvents=true で取得した「その発生」の日付。
             // この値をマスターにそのまま当てると、マスターが選択した発生日に移動し
             // 以降の発生がずれる。マスターの元の開始日時を基準に、時間差分だけを適用する。
-            val master = runCatching { get(masterUrl) }.getOrNull()
+            val master = runCatching { get(masterUrl) }.getOrNull() ?: run {
+                // マスター取得に失敗した場合はPATCHせず、エラーを投げる(fail closed)。
+                // 失敗時にPATCHすると、選択した発生日でマスターが上書きされ、シリーズ全体がずれる。
+                throw Exception("繰り返し予定のマスター情報を取得できませんでした")
+            }
             val masterStart = master?.get("start")?.jsonObject?.let { parseDateTime(it).first }
             val masterEnd = master?.get("end")?.jsonObject?.let { parseDateTime(it).first }
             val editedStartMs = if (masterStart != null && masterStart != event.startMs) {
@@ -215,9 +220,18 @@ class GoogleCalendarDataSource(
                 put("summary", event.title)
                 if (event.description.isNotEmpty()) put("description", event.description)
                 if (event.location.isNotEmpty()) put("location", event.location)
-                // 繰り返しルールは明示的に変更された場合のみ送る
-                if (!event.recurrenceRule.isNullOrEmpty()) {
-                    val lines = event.recurrenceRule.split("\n")
+                // 繰り返しルールの変更を処理:
+                // - null なら繰り返しを「なし」に変更するために recurrence を空配列に設定
+                // - 空でない文字列なら新しいルールを設定
+                // - 既存のルールが変更されていない場合は送らない
+                val existingRecurrence = master["recurrence"]?.jsonArray
+                val newRecurrence = event.recurrenceRule
+                if (newRecurrence.isNullOrEmpty()) {
+                    // 繰り返しを「なし」に変更する場合、recurrence を空配列に設定
+                    put("recurrence", buildJsonArray {})
+                } else {
+                    // 新しいルールを設定
+                    val lines = newRecurrence.split("\n")
                         .filter { it.isNotBlank() }
                         .map { JsonPrimitive(withRRulePrefix(it)) }
                     put("recurrence", lines.toJsonArray())
