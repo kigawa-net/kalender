@@ -32,6 +32,10 @@ import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.jsonArray
 import kotlinx.serialization.json.jsonObject
 import kotlinx.serialization.json.jsonPrimitive
+import java.sql.DriverManager
+import java.sql.ResultSet
+import java.sql.Statement
+import java.util.concurrent.ConcurrentHashMap
 
 /**
  * kigawa-net共有Keycloakの1realmを、このバックエンドが仲介する対象とする。
@@ -43,7 +47,41 @@ private val keycloakRealm = System.getenv("KEYCLOAK_REALM") ?: "kigawa-net"
 private val orgServiceClientId = System.getenv("KEYCLOAK_ORG_SERVICE_CLIENT_ID") ?: "kalender-org-service"
 private val orgServiceClientSecret = System.getenv("KEYCLOAK_ORG_SERVICE_CLIENT_SECRET") ?: ""
 
+// OAuth2 クライアント設定 (Google/Microsoft)
+private val googleClientId = System.getenv("GOOGLE_CLIENT_ID") ?: ""
+private val googleClientSecret = System.getenv("GOOGLE_CLIENT_SECRET") ?: ""
+private val microsoftClientId = System.getenv("MICROSOFT_CLIENT_ID") ?: ""
+private val microsoftClientSecret = System.getenv("MICROSOFT_CLIENT_SECRET") ?: ""
+private val calendarRedirectUri = System.getenv("CALENDAR_REDIRECT_URI") ?: "https://kalender-api.kigawa.net/api/calendar-accounts/callback"
+
 private val realmUrl get() = "$keycloakBaseUrl/realms/$keycloakRealm"
+
+// H2インメモリデータベース接続
+private val dbConnection: java.sql.Connection by lazy {
+    val url = "jdbc:h2:mem:kalender;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE"
+    DriverManager.getConnection(url, "sa", "").also { conn ->
+        // テーブル作成
+        conn.createStatement().use { stmt ->
+            stmt.execute("""
+                CREATE TABLE IF NOT EXISTS calendar_accounts (
+                    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+                    user_id VARCHAR(255) NOT NULL,
+                    provider VARCHAR(50) NOT NULL,
+                    provider_user_id VARCHAR(255) NOT NULL,
+                    email VARCHAR(255) NOT NULL,
+                    display_name VARCHAR(255),
+                    refresh_token TEXT,
+                    scopes TEXT NOT NULL,
+                    created_at BIGINT NOT NULL,
+                    updated_at BIGINT NOT NULL
+                )
+            """.trimIndent())
+        }
+    }
+}
+
+// トークン更新キャッシュ (userId -> refreshToken)
+private val refreshTokenCache = ConcurrentHashMap<String, String>()
 
 @Serializable
 data class LinkedAccount(val provider: String, val providerUserName: String?)
@@ -55,6 +93,8 @@ data class LinkAccountResponse(val accountLinkUrl: String?)
 data class CalendarTokenResponse(val accessToken: String)
 
 fun main() {
+    // データベース初期化
+    dbConnection // force initialization
     val port = System.getenv("PORT")?.toIntOrNull() ?: 8080
     embeddedServer(Netty, port = port, module = Application::module).start(wait = true)
 }
@@ -128,6 +168,31 @@ fun Application.module() {
             call.respond(response)
         }
 
+        // calendar-accounts API パス: Google/MicrosoftのOAuth2承認URLを直接生成
+        post("/api/calendar-accounts/{provider}/link") {
+            val token = call.bearerToken()
+            if (token == null) {
+                call.respond(HttpStatusCode.Unauthorized, mapOf("error" to "invalid or missing token"))
+                return@post
+            }
+            val provider = call.parameters["provider"] as String?
+            if (provider.isNullOrBlank()) {
+                call.respond(HttpStatusCode.BadRequest, mapOf("error" to "missing provider"))
+                return@post
+            }
+            val redirectUri = call.request.queryParameters["redirectUri"] as String?
+            if (redirectUri.isNullOrBlank()) {
+                call.respond(HttpStatusCode.BadRequest, mapOf("error" to "missing redirectUri"))
+                return@post
+            }
+            val oauthUrl = generateOAuth2Url(provider, redirectUri)
+            if (oauthUrl == null) {
+                call.respond(HttpStatusCode.BadRequest, mapOf("error" to "unsupported provider: $provider"))
+                return@post
+            }
+            call.respond(mapOf("accountLinkUrl" to oauthUrl))
+        }
+
         delete("/api/linked-accounts/{provider}") {
             val token = call.bearerToken()
             if (token == null) {
@@ -161,6 +226,83 @@ fun Application.module() {
             val accessToken = fetchBrokeredAccessToken(httpClient, token, provider)
             if (accessToken == null) {
                 call.respond(HttpStatusCode.NotFound, mapOf("error" to "no linked account token for provider"))
+                return@get
+            }
+            call.respond(CalendarTokenResponse(accessToken))
+        }
+
+        // カレンダー連携アカウント一覧取得
+        get("/api/calendar-accounts") {
+            val token = call.bearerToken()
+            if (token == null) {
+                call.respond(HttpStatusCode.Unauthorized, mapOf("error" to "invalid or missing token"))
+                return@get
+            }
+            val userId = fetchUserId(httpClient, token)
+            if (userId == null) {
+                call.respond(HttpStatusCode.Unauthorized, mapOf("error" to "invalid or missing token"))
+                return@get
+            }
+            val accounts = getCalendarAccounts(userId)
+            call.respond(accounts)
+        }
+
+        // カレンダー連携アカウント解除
+        delete("/api/calendar-accounts/{accountId}") {
+            val token = call.bearerToken()
+            if (token == null) {
+                call.respond(HttpStatusCode.Unauthorized, mapOf("error" to "invalid or missing token"))
+                return@delete
+            }
+            val userId = fetchUserId(httpClient, token)
+            if (userId == null) {
+                call.respond(HttpStatusCode.Unauthorized, mapOf("error" to "invalid or missing token"))
+                return@delete
+            }
+            val accountId = call.parameters["accountId"] as String?
+            if (accountId.isNullOrBlank()) {
+                call.respond(HttpStatusCode.BadRequest, mapOf("error" to "missing accountId"))
+                return@delete
+            }
+            val success = deleteCalendarAccount(userId, accountId.toLong())
+            if (!success) {
+                call.respond(HttpStatusCode.NotFound, mapOf("error" to "account not found"))
+                return@delete
+            }
+            call.respond(HttpStatusCode.NoContent)
+        }
+
+        // カレンダーAPIトークン取得 (accountId指定)
+        get("/api/calendar-accounts/{accountId}/token") {
+            val token = call.bearerToken()
+            if (token == null) {
+                call.respond(HttpStatusCode.Unauthorized, mapOf("error" to "invalid or missing token"))
+                return@get
+            }
+            val userId = fetchUserId(httpClient, token)
+            if (userId == null) {
+                call.respond(HttpStatusCode.Unauthorized, mapOf("error" to "invalid or missing token"))
+                return@get
+            }
+            val accountId = call.parameters["accountId"] as String?
+            if (accountId.isNullOrBlank()) {
+                call.respond(HttpStatusCode.BadRequest, mapOf("error" to "missing accountId"))
+                return@get
+            }
+            val account = getCalendarAccountById(userId, accountId.toLong())
+            if (account == null) {
+                call.respond(HttpStatusCode.NotFound, mapOf("error" to "account not found"))
+                return@get
+            }
+            val providerToken = account["refreshToken"] as? String
+            if (providerToken.isNullOrBlank()) {
+                call.respond(HttpStatusCode.NotFound, mapOf("error" to "no refresh token"))
+                return@get
+            }
+            val provider = account["provider"] as? String ?: ""
+            val accessToken = refreshProviderToken(httpClient, provider, providerToken)
+            if (accessToken == null) {
+                call.respond(HttpStatusCode.BadGateway, mapOf("error" to "failed to refresh token"))
                 return@get
             }
             call.respond(CalendarTokenResponse(accessToken))
@@ -224,7 +366,43 @@ private suspend fun fetchLinkedAccounts(client: HttpClient, serviceToken: String
     emptyList()
 }
 
+/** Google/MicrosoftのOAuth2承認URLを生成する */
+private fun generateOAuth2Url(provider: String, redirectUri: String): String? {
+    return when (provider.lowercase()) {
+        "google" -> {
+            if (googleClientId.isBlank()) return null
+            val state = java.util.UUID.randomUUID().toString()
+            val encodedRedirect = java.net.URLEncoder.encode(redirectUri, "UTF-8")
+            val encodedScope = java.net.URLEncoder.encode("https://www.googleapis.com/auth/calendar.readonly offline_access", "UTF-8")
+            val encodedState = java.net.URLEncoder.encode("google:$state", "UTF-8")
+            "https://accounts.google.com/o/oauth2/v2/auth" +
+                "?response_type=code" +
+                "&client_id=${java.net.URLEncoder.encode(googleClientId, "UTF-8")}" +
+                "&redirect_uri=$encodedRedirect" +
+                "&scope=$encodedScope" +
+                "&state=$encodedState" +
+                "&access_type=offline" +
+                "&prompt=consent"
+        }
+        "microsoft" -> {
+            if (microsoftClientId.isBlank()) return null
+            val state = java.util.UUID.randomUUID().toString()
+            val encodedRedirect = java.net.URLEncoder.encode(redirectUri, "UTF-8")
+            val encodedScope = java.net.URLEncoder.encode("https://outlook.office.com/Calendars.Read offline_access", "UTF-8")
+            val encodedState = java.net.URLEncoder.encode("microsoft:$state", "UTF-8")
+            "https://login.microsoftonline.com/common/oauth2/v2.0/authorize" +
+                "?response_type=code" +
+                "&client_id=${java.net.URLEncoder.encode(microsoftClientId, "UTF-8")}" +
+                "&redirect_uri=$encodedRedirect" +
+                "&scope=$encodedScope" +
+                "&state=$encodedState"
+        }
+        else -> null
+    }
+}
+
 /** Keycloak Account REST API でアカウントリンク用URLを取得する(ユーザー本人のトークンで呼ぶ) */
+@Deprecated("Use generateOAuth2Url instead")
 private suspend fun fetchAccountLinkUrl(
     client: HttpClient,
     userToken: String,
@@ -290,3 +468,168 @@ private suspend fun fetchBrokeredAccessToken(client: HttpClient, userToken: Stri
 
 private fun kotlinx.serialization.json.JsonPrimitive.contentOrNull(): String? =
     if (this is kotlinx.serialization.json.JsonNull) null else content
+
+// ============================================================================
+// カレンダー連携アカウントのデータベース操作
+// ============================================================================
+
+/**
+ * ユーザーのカレンダー連携アカウント一覧を取得する
+ */
+private fun getCalendarAccounts(userId: String): List<Map<String, Any?>> {
+    val sql = "SELECT * FROM calendar_accounts WHERE user_id = ?"
+    val accounts = mutableListOf<Map<String, Any?>>()
+    dbConnection.prepareStatement(sql).use { pstmt ->
+        pstmt.setString(1, userId)
+        pstmt.executeQuery().use { rs ->
+            while (rs.next()) {
+                val scopesStr = rs.getString("scopes")
+                accounts.add(mapOf<String, Any?>(
+                    "id" to rs.getLong("id"),
+                    "userId" to rs.getString("user_id"),
+                    "provider" to rs.getString("provider"),
+                    "providerUserId" to rs.getString("provider_user_id"),
+                    "email" to rs.getString("email"),
+                    "displayName" to rs.getString("display_name"),
+                    "refreshToken" to rs.getString("refresh_token"),
+                    "scopes" to (scopesStr?.split(",") ?: emptyList()),
+                    "createdAt" to rs.getLong("created_at"),
+                    "updatedAt" to rs.getLong("updated_at"),
+                ))
+            }
+        }
+    }
+    return accounts
+}
+
+/**
+ * 指定されたaccountIdのアカウントを取得する
+ */
+private fun getCalendarAccountById(userId: String, accountId: Long): Map<String, Any?>? {
+    val sql = "SELECT * FROM calendar_accounts WHERE user_id = ? AND id = ?"
+    dbConnection.prepareStatement(sql).use { pstmt ->
+        pstmt.setString(1, userId)
+        pstmt.setLong(2, accountId)
+        pstmt.executeQuery().use { rs ->
+            if (rs.next()) {
+                val scopesStr = rs.getString("scopes")
+                return mapOf<String, Any?>(
+                    "id" to rs.getLong("id"),
+                    "userId" to rs.getString("user_id"),
+                    "provider" to rs.getString("provider"),
+                    "providerUserId" to rs.getString("provider_user_id"),
+                    "email" to rs.getString("email"),
+                    "displayName" to rs.getString("display_name"),
+                    "refreshToken" to rs.getString("refresh_token"),
+                    "scopes" to (scopesStr?.split(",") ?: emptyList()),
+                    "createdAt" to rs.getLong("created_at"),
+                    "updatedAt" to rs.getLong("updated_at"),
+                )
+            }
+        }
+    }
+    return null
+}
+
+/**
+ * カレンダー連携アカウントを削除する
+ */
+private fun deleteCalendarAccount(userId: String, accountId: Long): Boolean {
+    val sql = "DELETE FROM calendar_accounts WHERE user_id = ? AND id = ?"
+    dbConnection.prepareStatement(sql).use { pstmt ->
+        pstmt.setString(1, userId)
+        pstmt.setLong(2, accountId)
+        return pstmt.executeUpdate() > 0
+    }
+}
+
+/**
+ * カレンダー連携アカウントを保存する
+ */
+private fun saveCalendarAccount(
+    userId: String,
+    provider: String,
+    providerUserId: String,
+    email: String,
+    displayName: String?,
+    refreshToken: String?,
+    scopes: List<String>,
+): Long {
+    val now = System.currentTimeMillis()
+    val insertSql = """
+        INSERT INTO calendar_accounts (user_id, provider, provider_user_id, email, display_name, refresh_token, scopes, created_at, updated_at)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+    """.trimIndent()
+    val selectSql = "SELECT MAX(id) FROM calendar_accounts WHERE user_id = ?"
+    
+    dbConnection.prepareStatement(insertSql).use { pstmt ->
+        pstmt.setString(1, userId)
+        pstmt.setString(2, provider)
+        pstmt.setString(3, providerUserId)
+        pstmt.setString(4, email)
+        pstmt.setString(5, displayName)
+        pstmt.setString(6, refreshToken)
+        pstmt.setString(7, scopes.joinToString(","))
+        pstmt.setLong(8, now)
+        pstmt.setLong(9, now)
+        pstmt.executeUpdate()
+    }
+    
+    // INSERT後に最新のIDを取得
+    dbConnection.prepareStatement(selectSql).use { pstmt ->
+        pstmt.setString(1, userId)
+        pstmt.executeQuery().use { rs ->
+            if (rs.next()) {
+                return rs.getLong(1)
+            }
+        }
+    }
+    throw RuntimeException("Failed to save calendar account")
+}
+
+/**
+ * プロバイダのアクセストークンをrefreshTokenで更新する
+ */
+private suspend fun refreshProviderToken(client: HttpClient, provider: String, refreshToken: String): String? {
+    return try {
+        when (provider.lowercase()) {
+            "google" -> {
+                val response = client.submitForm(
+                    url = "https://oauth2.googleapis.com/token",
+                    formParameters = Parameters.build {
+                        append("client_id", System.getenv("GOOGLE_CLIENT_ID") ?: "")
+                        append("client_secret", System.getenv("GOOGLE_CLIENT_SECRET") ?: "")
+                        append("grant_type", "refresh_token")
+                        append("refresh_token", refreshToken)
+                    },
+                )
+                if (response.status != HttpStatusCode.OK) {
+                    null
+                } else {
+                    Json.parseToJsonElement(response.bodyAsText()).jsonObject["access_token"]?.jsonPrimitive?.content
+                }
+            }
+            "microsoft" -> {
+                val response = client.submitForm(
+                    url = "https://login.microsoftonline.com/common/oauth2/v2.0/token",
+                    formParameters = Parameters.build {
+                        append("client_id", System.getenv("MICROSOFT_CLIENT_ID") ?: "")
+                        append("client_secret", System.getenv("MICROSOFT_CLIENT_SECRET") ?: "")
+                        append("grant_type", "refresh_token")
+                        append("refresh_token", refreshToken)
+                        append("scope", "https://outlook.office.com/Calendars.Read offline_access")
+                    },
+                )
+                if (response.status != HttpStatusCode.OK) {
+                    null
+                } else {
+                    Json.parseToJsonElement(response.bodyAsText()).jsonObject["access_token"]?.jsonPrimitive?.content
+                }
+            }
+            else -> null
+        }
+    } catch (e: Exception) {
+        System.err.println("[refreshProviderToken] provider=$provider error=${e.message}")
+        null
+    }
+}

@@ -94,6 +94,7 @@ class KeycloakAuthControllerAndroid(
         val code = uri.getQueryParameter("code")
         val state = uri.getQueryParameter("state")
         val storedState = prefs.getString(KEY_STATE, null)
+        val verifier = prefs.getString(KEY_VERIFIER, null)
         prefs.edit().remove(KEY_STATE).remove(KEY_VERIFIER).apply()
 
         if (error != null) {
@@ -103,7 +104,6 @@ class KeycloakAuthControllerAndroid(
         if (code == null || state == null || state != storedState) {
             return
         }
-        val verifier = prefs.getString(KEY_VERIFIER, null)
         appScope.launch {
             try {
                 if (verifier == null) {

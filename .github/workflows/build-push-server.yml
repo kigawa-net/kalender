@@ -63,3 +63,21 @@ jobs:
           git add k8s/overlays/production/kustomization.yaml
           git commit -m "chore: kalender-apiのイメージタグをmain-${{ github.sha }}に更新する" || exit 0
           git push
+
+  deploy-to-k8s:
+    runs-on: ubuntu-latest
+    needs: build-push
+    if: github.ref == 'refs/heads/master'
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Configure kubectl
+        uses: azure/k8s-set-context@v3
+        with:
+          kubeconfig: ${{ secrets.KUBE_CONFIG }}
+
+      - name: Deploy to Kubernetes
+        run: |
+          kubectl apply -k k8s/overlays/production
+          kubectl rollout restart deployment/kalender-api -n kigawa-net-kalender

@@ -19,6 +19,7 @@ dependencies {
     implementation(libs.ktor.serialization.kotlinx.json)
     implementation(libs.kotlinx.serialization.json)
     implementation(libs.logback.classic)
+    implementation(libs.h2)
 
     testImplementation(kotlin("test"))
 }

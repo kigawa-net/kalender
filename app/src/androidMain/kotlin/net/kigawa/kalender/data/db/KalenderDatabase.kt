@@ -42,8 +42,11 @@ abstract class KalenderDatabase : RoomDatabase() {
         private val MIGRATION_4_5 = object : Migration(4, 5) {
             override fun migrate(db: SupportSQLiteDatabase) {
                 db.execSQL("ALTER TABLE calendars ADD COLUMN ownerEmail TEXT NOT NULL DEFAULT ''")
+                db.execSQL("ALTER TABLE calendars ADD COLUMN ownerAccountId TEXT NOT NULL DEFAULT ''")
+                db.execSQL("ALTER TABLE calendars ADD COLUMN source TEXT NOT NULL DEFAULT 'LOCAL'")
             }
         }
+
 
         /**
          * v5→v6: 繰り返し予定の情報を events に永積化する。

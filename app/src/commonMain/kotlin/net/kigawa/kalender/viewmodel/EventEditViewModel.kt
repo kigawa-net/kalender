@@ -15,10 +15,10 @@ import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import net.kigawa.kalender.data.AccountId
 import net.kigawa.kalender.data.GoogleCalendarDataSource
 import net.kigawa.kalender.data.KalenderApiClient
 import net.kigawa.kalender.data.LocalEventTemplateStore
-import net.kigawa.kalender.data.ProviderId
 import net.kigawa.kalender.data.LocalCalendarStore
 import net.kigawa.kalender.data.OutlookCalendarDataSource
 import net.kigawa.kalender.data.auth.AuthController
@@ -390,14 +390,22 @@ class EventEditViewModel(
     private suspend fun buildGoogleDataSource(ownerEmail: String): GoogleCalendarDataSource? {
         val authState = authController.authState.value
         if (authState !is KeycloakAuthState.SignedIn) return null
-        val token = apiClient.fetchCalendarTokenByProvider(authState.accessToken, ProviderId("google")) ?: return null
+        val accounts = apiClient.fetchLinkedCalendarAccounts(authState.accessToken)
+        val account = accounts.find { it.provider == "google" && it.email == ownerEmail }
+            ?: accounts.find { it.provider == "google" }
+            ?: return null
+        val token = apiClient.fetchCalendarToken(authState.accessToken, AccountId(account.id)) ?: return null
         return GoogleCalendarDataSource(token, ownerEmail, httpClient)
     }
 
     private suspend fun buildOutlookDataSource(ownerEmail: String): OutlookCalendarDataSource? {
         val authState = authController.authState.value
         if (authState !is KeycloakAuthState.SignedIn) return null
-        val token = apiClient.fetchCalendarTokenByProvider(authState.accessToken, ProviderId("microsoft")) ?: return null
+        val accounts = apiClient.fetchLinkedCalendarAccounts(authState.accessToken)
+        val account = accounts.find { it.provider == "microsoft" && it.email == ownerEmail }
+            ?: accounts.find { it.provider == "microsoft" }
+            ?: return null
+        val token = apiClient.fetchCalendarToken(authState.accessToken, AccountId(account.id)) ?: return null
         return OutlookCalendarDataSource(token, ownerEmail, httpClient)
     }
 

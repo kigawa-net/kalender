@@ -14,13 +14,13 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.datetime.LocalDate
+import net.kigawa.kalender.data.AccountId
 import net.kigawa.kalender.data.CalendarDataSource
 import net.kigawa.kalender.data.CalendarRepository
 import net.kigawa.kalender.data.GoogleCalendarDataSource
 import net.kigawa.kalender.data.KalenderApiClient
 import net.kigawa.kalender.data.LocalCalendarStore
 import net.kigawa.kalender.data.OutlookCalendarDataSource
-import net.kigawa.kalender.data.ProviderId
 import net.kigawa.kalender.data.auth.AuthController
 import net.kigawa.kalender.data.auth.KeycloakAuthState
 import net.kigawa.kalender.model.CalendarEvent
@@ -101,18 +101,24 @@ class WeeklyCalendarViewModel(
             }
         }.stateIn(viewModelScope, SharingStarted.Eagerly, WeeklyCalendarUiState())
 
-    /** Keycloakに紐付け済みのGoogle/Microsoftアカウントごとに、実カレンダーAPI用のデータソースを構築する */
+    /** DBに保存済みのGoogle/Microsoftアカウントごとに、実カレンダーAPI用のデータソースを構築する */
     private suspend fun buildDataSources(keycloakAccessToken: String): List<CalendarDataSource> {
-        val linkedAccounts = apiClient.fetchLinkedAccounts(keycloakAccessToken)
+        val linkedAccounts = apiClient.fetchLinkedCalendarAccounts(keycloakAccessToken)
         val dataSources = mutableListOf<CalendarDataSource>()
+        val calendarProviders = setOf("google", "microsoft")
         for (account in linkedAccounts) {
-            val ownerEmail = account.providerUserName ?: continue
-            val providerToken = apiClient.fetchCalendarTokenByProvider(keycloakAccessToken, ProviderId(account.provider))
+            val provider = account.provider
+            if (provider !in calendarProviders) {
+                continue
+            }
+            val ownerEmail = account.email.ifBlank { account.providerUserId }
+            if (ownerEmail.isBlank()) continue
+            val providerToken = apiClient.fetchCalendarToken(keycloakAccessToken, AccountId(account.id))
                 ?: run {
-                    platformLogError("WeeklyCalendarViewModel", "Failed to fetch calendar token for provider=${account.provider}, email=$ownerEmail")
+                    platformLogError("WeeklyCalendarViewModel", "Failed to fetch calendar token for provider=$provider, email=$ownerEmail")
                     continue
                 }
-            when (account.provider) {
+            when (provider) {
                 "google" -> dataSources.add(GoogleCalendarDataSource(providerToken, ownerEmail, httpClient))
                 "microsoft" -> dataSources.add(OutlookCalendarDataSource(providerToken, ownerEmail, httpClient))
             }
