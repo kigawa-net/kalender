@@ -26,9 +26,11 @@ jobs:
       - name: Setup Android SDK
         uses: android-actions/setup-android@v3
         with:
-          api-level: 36
-          ndk-version: r27c
-          build-tools-version: "36.0.0"
+          packages: |
+            platform-tools
+            platforms;android-36
+            build-tools;36.0.0
+            ndk;27.2.12479018
 
       - name: Build server
         run: ./gradlew :server:installDist --no-daemon
