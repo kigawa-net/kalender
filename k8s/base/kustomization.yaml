@@ -5,4 +5,4 @@ resources:
   - api-deployment.yaml
   - api-service.yaml
   - ingress.yaml
-  - keycloak-bws.yaml
+  - openbao-config.yaml
