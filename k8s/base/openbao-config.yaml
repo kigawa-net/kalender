@@ -1,0 +1,41 @@
+# OpenBao Agent Injector must be installed in the cluster. Configure the KV v2
+# secret at secret/data/kalender/oauth2 with the keys referenced below, and
+# create a Kubernetes auth role bound to this service account and namespace.
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: kalender-api
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: kalender-openbao-agent
+data:
+  config.hcl: |
+    exit_after_auth = true
+    pid_file = "/home/vault/pidfile"
+    auto_auth {
+      method "kubernetes" {
+        mount_path = "auth/kubernetes"
+        config = {
+          role = "kalender-api"
+        }
+      }
+      sink "file" {
+        config = {
+          path = "/home/vault/.token"
+        }
+      }
+    }
+    template {
+      destination = "/vault/secrets/kalender.env"
+      contents = <<EOT
+    {{- with secret "secret/data/kalender/oauth2" -}}
+    export KEYCLOAK_ORG_SERVICE_CLIENT_SECRET={{ .Data.data.keycloak_org_service_client_secret | toJSON }}
+    export GOOGLE_CLIENT_ID={{ .Data.data.google_client_id | toJSON }}
+    export GOOGLE_CLIENT_SECRET={{ .Data.data.google_client_secret | toJSON }}
+    export MICROSOFT_CLIENT_ID={{ .Data.data.microsoft_client_id | toJSON }}
+    export MICROSOFT_CLIENT_SECRET={{ .Data.data.microsoft_client_secret | toJSON }}
+    {{- end }}
+    EOT
+    }

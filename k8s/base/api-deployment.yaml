@@ -13,11 +13,29 @@ spec:
     metadata:
       labels:
         app: kalender-api
+      annotations:
+        vault.hashicorp.com/agent-inject: "true"
+        vault.hashicorp.com/role: "kalender-api"
+        vault.hashicorp.com/agent-configmap: "kalender-openbao-agent"
+        vault.hashicorp.com/agent-inject-containers: "kalender-api"
+        vault.hashicorp.com/agent-inject-secret-kalender.env: "secret/data/kalender/oauth2"
+        vault.hashicorp.com/agent-inject-template-kalender.env: |
+          {{- with secret "secret/data/kalender/oauth2" -}}
+          export KEYCLOAK_ORG_SERVICE_CLIENT_SECRET={{ .Data.data.keycloak_org_service_client_secret | toJSON }}
+          export GOOGLE_CLIENT_ID={{ .Data.data.google_client_id | toJSON }}
+          export GOOGLE_CLIENT_SECRET={{ .Data.data.google_client_secret | toJSON }}
+          export MICROSOFT_CLIENT_ID={{ .Data.data.microsoft_client_id | toJSON }}
+          export MICROSOFT_CLIENT_SECRET={{ .Data.data.microsoft_client_secret | toJSON }}
+          {{- end }}
     spec:
+      serviceAccountName: kalender-api
       containers:
         - name: kalender-api
           image: harbor.kigawa.net/library/kalender-api:latest
           imagePullPolicy: IfNotPresent
+          command: ["/bin/sh", "-ec"]
+          args:
+            - . /vault/secrets/kalender.env; exec bin/server
           ports:
             - containerPort: 8080
           env:
@@ -27,31 +45,6 @@ spec:
               value: "kigawa-net"
             - name: KEYCLOAK_ORG_SERVICE_CLIENT_ID
               value: "kalender-org-service"
-            - name: KEYCLOAK_ORG_SERVICE_CLIENT_SECRET
-              valueFrom:
-                secretKeyRef:
-                  name: kalender-org-service-keycloak
-                  key: client-secret
-            - name: GOOGLE_CLIENT_ID
-              valueFrom:
-                secretKeyRef:
-                  name: kalender-oauth2
-                  key: google-client-id
-            - name: GOOGLE_CLIENT_SECRET
-              valueFrom:
-                secretKeyRef:
-                  name: kalender-oauth2
-                  key: google-client-secret
-            - name: MICROSOFT_CLIENT_ID
-              valueFrom:
-                secretKeyRef:
-                  name: kalender-oauth2
-                  key: microsoft-client-id
-            - name: MICROSOFT_CLIENT_SECRET
-              valueFrom:
-                secretKeyRef:
-                  name: kalender-oauth2
-                  key: microsoft-client-secret
           resources:
             requests:
               cpu: 50m
