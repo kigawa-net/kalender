@@ -1,3 +1,5 @@
+@file:OptIn(kotlin.js.ExperimentalWasmJsInterop::class)
+
 package net.kigawa.kalender.ui.component
 
 import androidx.compose.foundation.layout.Arrangement
