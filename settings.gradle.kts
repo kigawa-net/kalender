@@ -35,6 +35,20 @@ dependencyResolutionManagement {
                 includeModule("com.github.webassembly", "binaryen")
             }
         }
+        // Kotlin/Wasm・Kotlin/JSツールチェインがNode.js配布物解決のために必要。
+        ivy {
+            name = "nodejsDist"
+            url = uri("https://nodejs.org/dist")
+            patternLayout {
+                artifact("v[revision]/[artifact]-v[revision]-[classifier].[ext]")
+            }
+            metadataSources {
+                artifact()
+            }
+            content {
+                includeModule("org.nodejs", "node")
+            }
+        }
     }
 }
 

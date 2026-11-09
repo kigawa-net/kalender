@@ -13,6 +13,9 @@ permissions:
 jobs:
   build-push:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      id-token: write
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -32,6 +35,15 @@ jobs:
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
+
+      - name: Read Harbor credentials from OpenBao
+        uses: hashicorp/vault-action@v3
+        with:
+          url: ${{ vars.OPENBAO_ADDR }}
+          method: jwt
+          path: jwt
+          role: kalender-github-actions
+          secrets: secret/data/kalender/ci harbor_password | HARBOR_PASS
 
       - name: Login to Harbor
         uses: docker/login-action@v3
@@ -69,14 +81,26 @@ jobs:
     runs-on: ubuntu-latest
     needs: build-push
     if: github.ref == 'refs/heads/master'
+    permissions:
+      contents: read
+      id-token: write
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Read Kubernetes credentials from OpenBao
+        uses: hashicorp/vault-action@v3
+        with:
+          url: ${{ vars.OPENBAO_ADDR }}
+          method: jwt
+          path: jwt
+          role: kalender-github-actions
+          secrets: secret/data/kalender/ci kube_config | KUBE_CONFIG
+
       - name: Configure kubectl
         uses: azure/k8s-set-context@v3
         with:
-          kubeconfig: ${{ secrets.KUBE_CONFIG }}
+          kubeconfig: ${{ env.KUBE_CONFIG }}
 
       - name: Deploy to Kubernetes
         run: |
