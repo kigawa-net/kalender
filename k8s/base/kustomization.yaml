@@ -6,3 +6,4 @@ resources:
   - api-service.yaml
   - ingress.yaml
   - kalender-api-bws.yaml
+  - kalender-api-sa.yaml
