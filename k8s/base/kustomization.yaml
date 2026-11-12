@@ -5,4 +5,4 @@ resources:
   - api-deployment.yaml
   - api-service.yaml
   - ingress.yaml
-  - openbao-config.yaml
+  - kalender-api-bws.yaml

@@ -1,0 +1,24 @@
+# kalender-api # OAuth2 クライアント設定 (Google/Microsoft)
+apiVersion: k8s.bitwarden.com/v1
+kind: BitwardenSecret
+metadata:
+  name: kalender-api-bws
+  namespace: kigawa-net-kalender
+spec:
+  organizationId: "a2b57f3d-6e2b-4467-b499-b31e00bfd804"
+  secretName: kalender-api-secret
+  authToken:
+    secretName: bitwarden-sec
+    secretKey: token
+  onlyMappedSecrets: true
+  map:
+    - bwSecretId: "9ef6eefa-7f1b-4773-b749-b500001ffb86"
+      secretKeyName: GOOGLE_CLIENT_ID
+    - bwSecretId: "0996a508-6e17-440c-8d9f-b500002002d8"
+      secretKeyName: GOOGLE_CLIENT_SECRET
+    - bwSecretId: e36efaea-7d0e-45da-8a6d-b500002009ef
+      secretKeyName: KEYCLOAK_ORG_SERVICE_CLIENT_SECRET
+    - bwSecretId: "a95b16e1-7324-4076-aaa1-b500005385c4"
+      secretKeyName: MICROSOFT_CLIENT_ID
+    - bwSecretId: "a88fb1d8-be3f-405f-8de3-b500005385ea"
+      secretKeyName: MICROSOFT_CLIENT_SECRET
