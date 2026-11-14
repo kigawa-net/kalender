@@ -24,6 +24,9 @@ spec:
             - exec bin/server
           ports:
             - containerPort: 8080
+          envFrom:
+            - secretRef:
+                name: kalender-api-secret
           env:
             - name: KEYCLOAK_BASE_URL
               value: "https://user.kigawa.net"
