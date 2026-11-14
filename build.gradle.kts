@@ -9,10 +9,15 @@ plugins {
     alias(libs.plugins.ksp) apply false
 }
 
-rootProject.plugins.withType<org.jetbrains.kotlin.gradle.targets.wasm.nodejs.WasmNodeJsRootPlugin> {
-    rootProject.extensions.configure<org.jetbrains.kotlin.gradle.targets.wasm.nodejs.WasmNodeJsEnvSpec> {
-        download.set(false)
-        command.set("node")
+// Kotlin 2.2.x では WasmNodeJsEnvSpec が各プロジェクト(:app 含む)に個別登録され、
+// webpack タスクは :app 側の spec を参照する。rootProject だけ設定しても効かないため
+// 全プロジェクトで download=false / システムの node を使うよう設定する。
+allprojects {
+    plugins.withType<org.jetbrains.kotlin.gradle.targets.wasm.nodejs.WasmNodeJsPlugin> {
+        extensions.configure<org.jetbrains.kotlin.gradle.targets.wasm.nodejs.WasmNodeJsEnvSpec> {
+            download.set(false)
+            command.set("node")
+        }
     }
 }
 rootProject.plugins.withType<org.jetbrains.kotlin.gradle.targets.wasm.yarn.WasmYarnPlugin> {
