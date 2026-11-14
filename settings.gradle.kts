@@ -49,6 +49,19 @@ dependencyResolutionManagement {
                 includeModule("org.nodejs", "node")
             }
         }
+        ivy {
+            name = "yarnDist"
+            url = uri("https://github.com/yarnpkg/yarn/releases/download")
+            patternLayout {
+                artifact("yarn/v[revision]/[artifact]-[revision].[ext]")
+            }
+            metadataSources {
+                artifact()
+            }
+            content {
+                includeModule("com.yarnpkg", "yarn")
+            }
+        }
     }
 }
 
